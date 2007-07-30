@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+<extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.dtsworkshop.flextools.editor.FtDerivingActionScriptEditor"
+            default="false"
+            extensions="as"
+            id="Flex Tools Project.editor1"
+            name="Flex Tools Project.editor1">
+      </editor>
+      <editor
+            class="com.dtsworkshop.flextools.sampleEditors.XMLEditor"
+            icon="icons/sample.gif"
+            id="com.dtsworkshop.flextools.sampleEditors.XMLEditor"
+            name="Sample XML Editor"/>
+   </extension>
+   <extension
+         id="sampleBuilder"
+         name="Sample Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="com.dtsworkshop.flextools.builder.SampleBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="sampleNature"
+         name="Sample Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="com.dtsworkshop.flextools.builder.SampleNature">
+         </run>
+      </runtime>
+      <builder
+            id="launcher.sampleBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            nameFilter="*"
+            id="launcher.contribution1">
+         <action
+               label="Add/Remove Sample Nature"
+               class="com.dtsworkshop.flextools.builder.ToggleNatureAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="launcher.addRemoveNatureAction">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         id="xmlProblem"
+         name="XML Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+  
+   <extension
+         point="org.eclipse.debug.core.launchModes">
+      <launchMode
+            label="label"
+            launchAsLabel="FunkyFlexLaunch"
+            mode="launcher.launchMode2">
+      </launchMode>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchDelegates">
+ 
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="com.dtsworkshop.flextools.launch.LocalFlexLauncher"
+            id="com.dtsworkshop.flextools.localLaunch"
+            modes="run,debug"
+            name="Flex Tools Launch Profiles"
+            public="true">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationComparators">
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="com.dtsworkshop.flextools.launch.LocalLaunchConfigTabGroup"
+            id="com.dtsworkshop.flextools.localLaunchConfig"
+            type="com.dtsworkshop.flextools.localLaunch">
+      </launchConfigurationTabGroup>
+   </extension>
+   <!--
+   <extension
+         id="com.dtsworkshop.launcConfigTab"
+         name="afdasfsadfadsf"
+         point="org.eclipse.debug.ui.launchConfigurationTabs">
+      <tab
+            class="launcher.launch.LaunchTab1"
+            group="launcher.tab1"
+            id="launcher.tab1"
+            name="launcher.tab1">
+      </tab>
+      <tab
+            class="org.eclipse.debug.ui.CommonTab"
+            group="launcher.tab2"
+            id="launcher.tab2"
+            name="launcher.tab2">
+      </tab>
+      <tab
+            class="org.eclipse.debug.ui.RefreshTab"
+            group="launcher.tab3"
+            id="launcher.tab3"
+            name="launcher.tab3">
+      </tab>
+   </extension>
+-->
+</plugin>
