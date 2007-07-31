@@ -4,17 +4,17 @@
 <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="com.dtsworkshop.flextools.editor.FtDerivingActionScriptEditor"
-            default="false"
-            extensions="as"
-            id="Flex Tools Project.editor1"
-            name="Flex Tools Project.editor1">
-      </editor>
-      <editor
             class="com.dtsworkshop.flextools.sampleEditors.XMLEditor"
+            extensions="as"
             icon="icons/sample.gif"
             id="com.dtsworkshop.flextools.sampleEditors.XMLEditor"
             name="Sample XML Editor"/>
+      <editor
+            class="com.dtsworkshop.flextools.editor.AsEditor2"
+            default="false"
+            extensions="test"
+            id="Flex Tools Project.editor1"
+            name="Flex Tools Project.editor1"/>
    </extension>
    <extension
          id="sampleBuilder"
@@ -100,6 +100,53 @@
             id="com.dtsworkshop.flextools.localLaunchConfig"
             type="com.dtsworkshop.flextools.localLaunch">
       </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="com.dtsworkshop.flextools.actionSet"
+            label="Refactor..."
+            visible="true">
+         <menu
+               id="sampleMenu"
+               label="Sample &amp;Menu">
+            <separator name="sampleGroup"/>
+         </menu>
+         <action
+               class="com.dtsworkshop.flextools.actions.SampleAction"
+               icon="icons/sample.gif"
+               id="com.dtsworkshop.flextools.actions.SampleAction"
+               label="&amp;Sample Action"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               tooltip="Hello, Eclipse world"/>
+         <action
+               class="com.dtsworkshop.flextools.actions.ExtractMethodAction"
+               id="com.dtsworkshop.flextools.actions.refactor.extractMethod"
+               label="Extract method..."
+               style="push"/>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            id="com.dtsworkshop.flextools.fbContribution"
+            targetID="Flex Tools Project.editorContribution1"/>
+      <editorContribution
+            id="com.dtsworkshop.flextools.editorContribution"
+            targetID="com.dtsworkshop.flextools.sampleEditors.XMLEditor">
+         <action
+               class="com.dtsworkshop.flextools.actions.refactor.ExtractMethodEditorAction"
+               id="com.dtsworkshop.flextools.actions.refactor.extractMethod"
+               label="Extract method..."
+               menubarPath="refactorMenu/tools"
+               style="push"/>
+         <menu
+               id="refactorMenu"
+               label="Refactor...">
+            <groupMarker name="tools"/>
+         </menu>
+      </editorContribution>
    </extension>
    <!--
    <extension
