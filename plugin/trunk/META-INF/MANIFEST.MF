@@ -43,7 +43,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.presentations.r21,
  org.eclipse.ui.views.properties.tabbed,
  org.eclipse.ui.workbench.texteditor,
- org.eclipse.jface.text
+ org.eclipse.jface.text,
+ org.eclipse.ltk.core.refactoring,
+ org.eclipse.ltk.ui.refactoring
 Eclipse-LazyStart: true
 Bundle-Vendor: DTS Workshop
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -9,12 +9,6 @@
             icon="icons/sample.gif"
             id="com.dtsworkshop.flextools.sampleEditors.XMLEditor"
             name="Sample XML Editor"/>
-      <editor
-            class="com.dtsworkshop.flextools.editor.AsEditor2"
-            default="false"
-            extensions="test"
-            id="Flex Tools Project.editor1"
-            name="Flex Tools Project.editor1"/>
    </extension>
    <extension
          id="sampleBuilder"
@@ -39,22 +33,6 @@
       <builder
             id="launcher.sampleBuilder">
       </builder>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            objectClass="org.eclipse.core.resources.IProject"
-            nameFilter="*"
-            id="launcher.contribution1">
-         <action
-               label="Add/Remove Sample Nature"
-               class="com.dtsworkshop.flextools.builder.ToggleNatureAction"
-               menubarPath="additions"
-               enablesFor="+"
-               id="launcher.addRemoveNatureAction">
-         </action>
-      </objectContribution>
    </extension>
    <extension
          id="xmlProblem"
@@ -101,6 +79,7 @@
             type="com.dtsworkshop.flextools.localLaunch">
       </launchConfigurationTabGroup>
    </extension>
+   <!--
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -146,8 +125,15 @@
                label="Refactor...">
             <groupMarker name="tools"/>
          </menu>
+         <action
+               class="com.dtsworkshop.flextools.actions.refactor.ExtractMethodEditorAction"
+               id="Flex Tools Project.action2"
+               label="Gah!"
+               menubarPath="additions"
+               style="push"/>
       </editorContribution>
    </extension>
+   -->
    <!--
    <extension
          id="com.dtsworkshop.launcConfigTab"
