@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<fragment>
+
+	<extension point="org.eclipse.ui.popupMenus">
+	<!--
+		<viewerContribution id="com.dtsworkshop.flextools.refactoringSupport.editorContribution"
+			targetID="playaroundplugin.editors.XMLEditor">
+
+
+		</viewerContribution>
+	-->
+		<viewerContribution id="playaround.viewContribution2"
+			targetID="com.dtsworkshop.flextools.sampleEditors.XMLEditor">
+			<action class="com.dtsworkshop.flextools.actions.refactor.ExtractMethodEditorAction"
+				id="com.dtsworkshop.flextools.actions.refactor.extractMethod" label="Extract method..."
+				menubarPath="playaround.menu/group1" />
+			<menu id="playaround.menu" label="Refactor...">
+				<separator name="group1" />
+			</menu>
+		</viewerContribution>
+	</extension>
+ <extension
+       point="org.eclipse.ltk.core.refactoring.refactoringContributions">
+    <contribution 
+          class="flexToolsRefactoringSupport.RefactoringContribution1"
+          id="Flex Tools Refactoring Support.contribution1"/>
+ </extension>
+
+</fragment>
