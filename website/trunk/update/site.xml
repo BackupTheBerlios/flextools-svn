@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.dtsworkshop.flextools.feature_0.1.1.jar" id="com.dtsworkshop.flextools.feature" version="0.1.1" os="linux,win32" nl="en">
+      <category name="com.dtsworkshop.flextools.releases.beta"/>
+   </feature>
+   <category-def name="com.dtsworkshop.flextools.releases.stable" label="Stable releases">
+      <description>
+         Stable releases of the Flex Tools project. These have been tested (to a certain) extent and the number and frequency of bugs has been deemed it suitable for marking as stable.
+      </description>
+   </category-def>
+   <category-def name="com.dtsworkshop.flextools.releases.beta" label="Beta Releases">
+      <description>
+         These are beta releases (and very possible alpha) releases of the Flex Tools project. Caveat Emptor!
+      </description>
+   </category-def>
+</site>
