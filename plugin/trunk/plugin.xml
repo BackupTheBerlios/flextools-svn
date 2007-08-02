@@ -37,7 +37,7 @@
          </run>
       </runtime>
       <builder
-            id="launcher.sampleBuilder">
+            id="com.dtsworkshop.flextools.sampleBuilder">
       </builder>
    </extension>
    <extension
