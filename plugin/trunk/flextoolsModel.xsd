@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.dtsworkshop.com/flextools/model" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.dtsworkshop.com/flextools/model">
+
+    <complexType name="NodeType">
+    	<sequence>
+    		<element name="contents" type="string"></element>
+    		<sequence maxOccurs="unbounded" minOccurs="0">    			    		<group ref="tns:treeNodeElements"></group></sequence>
+
+    	</sequence>
+    	<attribute name="startPos" type="int"></attribute>
+    	<attribute name="endPos" type="int"></attribute>
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+
+
+
+    <element name="FileNode" type="tns:NodeType"></element>
+
+    <element name="PackageNode" type="tns:NodeType"></element>
+    <element name="BlockNode" type="tns:NodeType"></element>
+    <element name="ModifiersNode" type="tns:NodeType"></element>
+    <element name="IdentifierNode" type="tns:NodeType"></element>
+    <element name="FunctionNode" type="tns:NodeType"></element>
+    <element name="KeywordNode" type="tns:NodeType"></element>
+    <element name="ContainerNode" type="tns:NodeType"></element>
+    <element name="ImportNode" type="tns:NodeType"></element>
+    <element name="FullNameNode" type="tns:NodeType"></element>
+    <element name="VariableNode" type="tns:NodeType"></element>
+    <element name="FunctionCallNode" type="tns:FunctionCallType"></element>
+    <element name="MemberAccessExpressionNode" type="tns:NodeType"></element>
+    <element name="StopNode" type="tns:NodeType"></element>    
+    <element name="AssignmentExpressionNode" type="tns:NodeType"></element>    
+    <element name="LiteralNode" type="tns:NodeType"></element>    
+    <element name="ClassNode" type="tns:ClassStateType"></element>    
+    <element name="InterfaceNode" type="tns:NodeType"></element>    
+    <element name="TransparentContainerNode" type="tns:NodeType"></element>    
+    <element name="GetterNode" type="tns:NodeType"></element>    
+    <element name="SetterNode" type="tns:NodeType"></element>    
+
+
+    <group name="treeNodeElements">
+    	<sequence>
+    		<element ref="tns:AssignmentExpressionNode"></element>
+    		<element ref="tns:BlockNode"></element>
+    		<element ref="tns:ModifiersNode"></element>
+    		<element ref="tns:IdentifierNode"></element>
+    		<element ref="tns:FunctionNode"></element>
+    		<element ref="tns:KeywordNode"></element>
+    		<element ref="tns:ContainerNode"></element>
+    		<element ref="tns:ImportNode"></element>
+    		<element ref="tns:FullNameNode"></element>
+    		<element ref="tns:VariableNode"></element>
+    		<element ref="tns:FunctionCallNode"></element>
+    		<element ref="tns:MemberAccessExpressionNode"></element>
+    		<element ref="tns:StopNode"></element>
+    		<element ref="tns:AssignmentExpressionNode"></element>
+    		<element ref="tns:LiteralNode"></element>
+    		<element ref="tns:ClassNode"></element>
+    		<element ref="tns:InterfaceNode"></element>
+    		<element ref="tns:TransparentContainerNode"></element>
+    		<element ref="tns:GetterNode"></element>
+    		<element ref="tns:SetterNode"></element>
+    		<element ref="tns:PackageNode"></element>
+    		<element ref="tns:ArgumentNode"></element>
+    	</sequence>
+    </group>
+
+    <element name="buildState" type="tns:BuildStateType"></element>
+    
+    <complexType name="BuildStateType">
+    	<sequence>
+    		<element ref="tns:FileNode" minOccurs="1" maxOccurs="1"></element>
+    	</sequence>
+    	<attribute name="file" type="string"></attribute>
+    	<attribute name="project" type="string"></attribute>
+    </complexType>
+
+    <element name="ArgumentNode" type="tns:NodeType"></element>
+
+    <complexType name="ClassStateType">
+    	<complexContent>
+    		<extension base="tns:NodeType">
+    			<sequence>
+    				<element name="constructor"
+    					type="tns:FunctionNodeType">
+    				</element>
+    				<sequence>
+    					<element name="implements" type="string"></element>
+    				</sequence>
+    			</sequence>
+    			<attribute name="baseClassName" type="string"></attribute>
+    			<attribute name="name" type="string"></attribute>
+    			<attribute name="qualifiedName" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="FunctionNodeType">
+    	<complexContent>
+    		<extension base="tns:NodeType"></extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="FunctionCallType">
+    	<complexContent>
+    		<extension base="tns:NodeType">
+    			<sequence>
+    				<element ref="tns:ArgumentNode" minOccurs="0" maxOccurs="unbounded"></element>
+    			</sequence>
+    			<attribute name="name" type="string"></attribute>
+    			<attribute name="isConstructorCall" type="boolean"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+    
+</schema>
