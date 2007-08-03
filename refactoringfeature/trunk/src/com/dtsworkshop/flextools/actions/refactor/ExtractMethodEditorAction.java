@@ -47,7 +47,6 @@ public class ExtractMethodEditorAction implements IEditorActionDelegate {
 				logger.info(node.getNodeStackTrace());
 				logger.info(String.format("Got node [%s]", new Object[]{doc.getIFile().getName()}));
 				visitedChildren = new ArrayList<IASNode>();
-				depth = 0;
 				StringBuilder builder = new StringBuilder();
 				dumpNodes(doc, node, builder);
 				System.out.println(builder.toString());
@@ -65,8 +64,8 @@ public class ExtractMethodEditorAction implements IEditorActionDelegate {
 	}
 	
 	private ArrayList<IASNode> visitedChildren;
-	private int depth = 0;
-	private void dumpNodes(IDocument document, IASNode startNode, StringBuilder builder) {
+	
+	public static void dumpNodes(IDocument document, IASNode startNode, StringBuilder builder) {
 		builder.append(String.format(
 			"<%s startPos='%d' endPos='%d' className='%s'>", 
 			startNode.getNodeType(),
@@ -83,7 +82,6 @@ public class ExtractMethodEditorAction implements IEditorActionDelegate {
 		builder.append(String.format("<contents><![CDATA[%s]]></contents>", nodeText));
 		
 		IASNode [] children = startNode.getChildren();
-		depth++;
 		builder.append("<children>");
 		for(IASNode child : children) {
 			try {
@@ -94,7 +92,6 @@ public class ExtractMethodEditorAction implements IEditorActionDelegate {
 			}			
 		}
 		builder.append("</children>");
-		depth--;
 		builder.append(String.format("</%s>", startNode.getNodeType()));
 	}
 	
