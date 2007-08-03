@@ -5,6 +5,7 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.IEditorMatchAdapter;
 import org.eclipse.search.ui.text.IFileMatchAdapter;
+import org.eclipse.search2.internal.ui.SearchView;
 
 public class ClassSearchResult extends AbstractTextSearchResult {
 	protected SearchQuery query;

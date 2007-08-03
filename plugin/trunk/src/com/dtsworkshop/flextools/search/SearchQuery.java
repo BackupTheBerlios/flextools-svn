@@ -12,6 +12,10 @@ import com.dtsworkshop.flextools.codemodel.CodeModelManager;
 
 public class SearchQuery implements ISearchQuery {
 	
+	public SearchQuery() {
+		result = new ClassSearchResult(this);
+	}
+	
 	public boolean canRerun() {
 		return false;
 	}
@@ -50,7 +54,7 @@ public class SearchQuery implements ISearchQuery {
 				ref.getProject().getName()
 			));
 		}
-		result = new ClassSearchResult(this);
+		
 		return new Status(Status.OK, "com.dtsworkshop.flextools", Status.OK, "Success", null);
 	}
 
