@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<mosinstall type="template">
+	<name>Flex Tools Project Template</name>
+	<creationDate>02/08/2007</creationDate>
+	<author>The Flex Tools Project - Oliver Tupman</author>
+	<copyright>Copyrighted (c) Oliver Tupman</copyright>
+	<authorEmail>oliver.tupman@dts-workshop.com</authorEmail>
+	<authorUrl>www.dts-workshop.com</authorUrl>
+	<version>0.2</version>
+	<description></description>
+	<files>
+		<filename>index.php</filename>
+		<filename>template_thumbnail.png</filename>
+	</files>
+	<images>
+		<filename>images/dots.gif</filename>
+		<filename>images/footer_l.gif</filename>
+		<filename>images/footer_r.gif</filename>
+		<filename>images/line_bg.gif</filename>
+		<filename>images/nav_hover.gif</filename>
+		<filename>images/sample-cactus.jpg</filename>
+		<filename>images/site-strike.jpg</filename>
+	</images>
+	<css>
+		<filename>css/style.php</filename>		
+	</css>
+</mosinstall>

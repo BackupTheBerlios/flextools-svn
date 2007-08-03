@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     2 Aug 2007 15:27:49                                                        
+
+     project    
+     description
+                   
+     otupman                                                                
+     ====================================================================== -->
+<project name="project" default="default">
+    <description>
+            description
+    </description>
+
+    <!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="default" depends="depends" description="--> description">
+    	<buildnumber/>
+        <zip destfile="c:\flextools-website.zip">
+			<fileset dir="template/"></fileset>
+		</zip>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: depends                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="depends">
+    </target>
+
+</project>
