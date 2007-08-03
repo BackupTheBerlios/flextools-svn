@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +36,26 @@ public class CodeModelManager {
 		return manager;
 	}
 	
-	
 	private Map<String, Map<String, BuildStateDocument>> projectStates;
+	
+	public void acceptVisitor(IBuildStateVisitor visitor) {
+		Collection<Map<String, BuildStateDocument>> states = projectStates.values();
+		List<BuildStateDocument> buildStates = new ArrayList<BuildStateDocument>(100); 
+		
+		for(Map<String, BuildStateDocument> projectState : states) {
+			buildStates.addAll(projectState.values());
+		}
+		
+		for(BuildStateDocument currentDoc : buildStates) {
+			boolean carryOn = visitor.visit(currentDoc);
+			if(!carryOn) {
+				break; // Stop!
+			}
+			else {
+				// Carry on! (Mark & Lard from Radio 1 reference :D)
+			}
+		}
+	}
 	
 	public CodeModelManager() {
 		projectStates = new HashMap<String, Map<String,BuildStateDocument>>(5);

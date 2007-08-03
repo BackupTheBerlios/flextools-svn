@@ -19,8 +19,8 @@
     <element name="PackageNode" type="tns:NodeType"></element>
     <element name="BlockNode" type="tns:NodeType"></element>
     <element name="ModifiersNode" type="tns:NodeType"></element>
-    <element name="IdentifierNode" type="tns:NodeType"></element>
-    <element name="FunctionNode" type="tns:NodeType"></element>
+    <element name="IdentifierNode" type="tns:IdentifierNodeType"></element>
+    <element name="FunctionNode" type="tns:FunctionNodeType"></element>
     <element name="KeywordNode" type="tns:NodeType"></element>
     <element name="ContainerNode" type="tns:NodeType"></element>
     <element name="ImportNode" type="tns:NodeType"></element>
@@ -62,6 +62,7 @@
     		<element ref="tns:SetterNode"></element>
     		<element ref="tns:PackageNode"></element>
     		<element ref="tns:ArgumentNode"></element>
+    		<element ref="tns:OperatorExpressionNode"></element>
     	</sequence>
     </group>
 
@@ -97,7 +98,17 @@
 
     <complexType name="FunctionNodeType">
     	<complexContent>
-    		<extension base="tns:NodeType"></extension>
+    		<extension base="tns:NodeType">
+    			<sequence>
+    				<element name="argument"
+    					type="tns:SimpleVariableType" minOccurs="0" maxOccurs="unbounded">
+    				</element>
+    			</sequence>
+    			<attribute name="returnType" type="string"></attribute>
+    			<attribute name="shortName" type="string"></attribute>
+    			<attribute name="qualifiedName" type="string"></attribute>
+    			<attribute name="classificationTypeName" type="string"></attribute>
+    		</extension>
     	</complexContent>
     </complexType>
 
@@ -113,4 +124,21 @@
     	</complexContent>
     </complexType>
     
+
+    <element name="OperatorExpressionNode" type="tns:NodeType"></element>
+
+    <complexType name="IdentifierNodeType">
+    	<complexContent>
+    		<extension base="tns:NodeType">
+    			<attribute name="name" type="string"></attribute>
+    			<attribute name="qualifiedName" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="SimpleVariableType">
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="typeName" type="string"></attribute>
+    	<attribute name="classification" type="string"></attribute>
+    </complexType>
 </schema>

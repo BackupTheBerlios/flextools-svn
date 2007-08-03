@@ -22,6 +22,7 @@ public class ClassProcessor extends DefaultNodeProcessor {
 	public NodeType getNode(NodeBase node, NodeType parentType) {
 		// TODO Auto-generated method stub
 		ClassStateType type = (ClassStateType) super.getNode(node, parentType);
+		
 		ClassNode classNode = (ClassNode)node;
 		type.setBaseClassName(classNode.getBaseClassName());
 		type.setName(classNode.getName());

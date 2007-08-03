@@ -15,5 +15,4 @@ public class FileInformation {
 	protected List<ClassNode> classes;
 	protected List<ImportNode> imports;
 	protected List<VariableNode> variables;
-	protected List<ClassMethodCall> methodCalls;
 }

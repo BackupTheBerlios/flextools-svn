@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 
 import sun.reflect.generics.tree.ClassTypeSignature;
 
+import com.adobe.flexbuilder.codemodel.definitions.IDefinition;
 import com.adobe.flexbuilder.codemodel.internal.tree.*;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
@@ -21,6 +22,7 @@ import com.dtsworkshop.flextools.model.BuildStateDocument;
 import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.ClassStateType;
 import com.dtsworkshop.flextools.model.FunctionCallType;
+import com.dtsworkshop.flextools.model.FunctionNodeType;
 import com.dtsworkshop.flextools.model.NodeType;
 import com.dtsworkshop.flextools.utils.ResourceHelper;
 
@@ -79,7 +81,7 @@ public class ModelProcessor {
 		if(start == -1 || end == -1) {
 			return "";
 		}
-		else if(end > start) {
+		else if(start > end) {
 			int tempEnd = end;
 			end = start;
 			start = tempEnd;
@@ -122,6 +124,8 @@ public class ModelProcessor {
 		processors = new ArrayList<NodeProcessor>(20);
 		processors.add(new ClassProcessor(ClassNode.class, ClassStateType.class));
 		processors.add(new FunctionCallTypeProcessor(FunctionCallNode.class, FunctionCallType.class));
+		processors.add(new IdentifierProcessor(IdentifierNode.class, NodeType.class));
+		processors.add(new FunctionProcessor(FunctionNode.class, FunctionNodeType.class));
 		defaultProcessor = new DefaultNodeProcessor(NodeBase.class, NodeType.class);
 		
 		

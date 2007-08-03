@@ -6,7 +6,7 @@
       <editor
             class="com.dtsworkshop.flextools.sampleEditors.XMLEditor"
             extensions="as"
-            icon="icons/sample.gif"
+            icon="icons/standard small icon.png"
             id="com.dtsworkshop.flextools.sampleEditors.XMLEditor"
             name="Sample XML Editor"/>
       <editor
@@ -48,11 +48,12 @@
             nameFilter="*"
             id="launcher.contribution1">
          <action
-               label="Add/Remove Sample Nature"
                class="com.dtsworkshop.flextools.builder.ToggleNatureAction"
-               menubarPath="additions"
                enablesFor="+"
-               id="launcher.addRemoveNatureAction">
+               icon="icons/standard small icon.png"
+               id="launcher.addRemoveNatureAction"
+               label="Add/Remove Sample Nature"
+               menubarPath="additions">
          </action>
       </objectContribution>
    </extension>
@@ -137,6 +138,7 @@
             targetID="com.dtsworkshop.flextools.sampleEditors.XMLEditor">
          <action
                class="com.dtsworkshop.flextools.actions.refactor.ExtractMethodEditorAction"
+               icon="icons/standard small icon.png"
                id="com.dtsworkshop.flextools.actions.refactor.extractMethod"
                label="Extract method..."
                menubarPath="refactorMenu/tools"
@@ -152,8 +154,9 @@
          point="org.eclipse.search.searchPages">
       <page
             canSearchEnclosingProjects="true"
-            class="com.dtsworkshop.flextools.search.ui.MainSearcPage"
+            class="com.dtsworkshop.flextools.search.ui.MainSearchPage"
             enabled="true"
+            icon="icons/standard small icon.png"
             id="com.dtsworkshop.flextools.search.ui.searchWindow"
             label="ActionScript Searcher"/>
    </extension>

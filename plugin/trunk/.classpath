@@ -4,7 +4,13 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Adobe Extracted"/>
-	<classpathentry exported="true" kind="lib" path="libs/xbean.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/xbean.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Documents and Settings/otupman/My Documents/Eclipse Dev Workspace/Flex Tools Project/libs/xmlbeans-2.3.0/docs/reference/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="libs/xmlbeans-flextoolsmodel.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/xmlbeans-2.3.0/lib/xbean_xpath.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/saxon8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -15,6 +15,7 @@ public class DefaultNodeProcessor extends NodeProcessor {
 	@Override
 	public NodeType getNode(NodeBase node, NodeType parentType) {
 		String nodeName = node.getNodeType();
+		
 		nodeName = nodeName.substring(0, 1).toUpperCase() + nodeName.substring(1, nodeName.length());
 		String methodName = "addNew" + nodeName;
 		NodeType newInstance = createNode(parentType, methodName);

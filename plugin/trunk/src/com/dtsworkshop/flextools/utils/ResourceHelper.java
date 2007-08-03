@@ -14,7 +14,7 @@ public class ResourceHelper {
 		String input = "";
 		while((input = reader.readLine()) != null) {
 			builder.append(input);
-			builder.append("\n");
+			builder.append("\n\r");
 		}
 		reader.close();
 		return builder.toString();
