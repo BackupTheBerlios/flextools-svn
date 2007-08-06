@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IWorkspace;
 
 import com.dtsworkshop.flextools.codemodel.IBuildStateVisitor;
 import com.dtsworkshop.flextools.codemodel.ModelConstants;
+import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 import com.dtsworkshop.flextools.model.NodeType;
 
@@ -47,7 +48,7 @@ public abstract class AbstractSearcher implements IBuildStateVisitor {
 		return containingFile;
 	}
 	
-	protected SearchReference referenceFromNodeType(IProject project, IFile containingFile, NodeType type) {
+	protected SearchReference referenceFromNodeType(IProject project, IFile containingFile, BuildReference type) {
 		SearchReference newRef = new SearchReference();
 		newRef.setFrom(type.getStartPos());
 		newRef.setTo(type.getEndPos());

@@ -4,9 +4,9 @@ import com.adobe.flexbuilder.codemodel.definitions.IFunction;
 import com.adobe.flexbuilder.codemodel.definitions.IVariable;
 import com.adobe.flexbuilder.codemodel.definitions.IFunction.FunctionClassification;
 import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
+import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.FunctionNodeType;
-import com.dtsworkshop.flextools.model.NodeType;
 import com.dtsworkshop.flextools.model.SimpleVariableType;
 
 public class FunctionProcessor extends DefaultNodeProcessor {
@@ -17,7 +17,7 @@ public class FunctionProcessor extends DefaultNodeProcessor {
 	}
 
 	@Override
-	public NodeType getNode(NodeBase node, NodeType parentType, BuildStateType buildState) {
+	public BuildReference getNode(NodeBase node, BuildReference parentType, BuildStateType buildState) {
 		// TODO Auto-generated method stub
 		IFunction functionNode = (IFunction)node;
 		IVariable [] args =functionNode.getArguments();

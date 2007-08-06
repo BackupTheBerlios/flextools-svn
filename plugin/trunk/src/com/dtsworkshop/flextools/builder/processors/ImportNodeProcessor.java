@@ -6,8 +6,9 @@ import com.adobe.flexbuilder.codemodel.internal.tree.ExpressionNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.ImportNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.InterfaceNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
+import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateType;
-import com.dtsworkshop.flextools.model.NodeType;
+import com.dtsworkshop.flextools.model.ImportNodeType;
 
 public class ImportNodeProcessor extends DefaultNodeProcessor {
 
@@ -16,8 +17,8 @@ public class ImportNodeProcessor extends DefaultNodeProcessor {
 	}
 
 	@Override
-	public NodeType getNode(NodeBase node, NodeType parentType, BuildStateType buildState) {
-		NodeType createdNode = super.getNode(node, parentType, buildState);
+	public BuildReference getNode(NodeBase node, BuildReference parentType, BuildStateType buildState) {
+		ImportNodeType createdNode = (ImportNodeType)super.getNode(node, parentType, buildState);
 		
 		ImportNode importNode = (ImportNode)node;
 		String packageName = importNode.getPackageName();
@@ -33,11 +34,15 @@ public class ImportNodeProcessor extends DefaultNodeProcessor {
 		if(defs.length == 1) {
 			if(defs[0] instanceof ClassNode) {
 			ClassNode importedClass = (ClassNode)defs[0];
-			String qualifiedName = importedClass.getQualifiedName();
+				String qualifiedName = importedClass.getQualifiedName();
+				ProcessorHelper.addImport(buildState, qualifiedName);
+				createdNode.setLocalName(ProcessorHelper.getLocalName(qualifiedName));
+				createdNode.setQualifiedName(qualifiedName);
 			}
 			else if(defs[0] instanceof InterfaceNode) {
 				InterfaceNode intNode = (InterfaceNode)defs[0];
-				
+				ProcessorHelper.addImport(buildState, intNode.getQualifiedName());
+				createdNode.setLocalName("unknown - need to implement interface handling!");
 			}
 		}
 		return createdNode;

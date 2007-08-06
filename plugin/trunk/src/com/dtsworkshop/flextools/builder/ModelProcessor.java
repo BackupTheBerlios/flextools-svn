@@ -18,11 +18,14 @@ import com.adobe.flexbuilder.codemodel.internal.tree.*;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.dtsworkshop.flextools.builder.processors.*;
+import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.ClassStateType;
 import com.dtsworkshop.flextools.model.FunctionCallType;
 import com.dtsworkshop.flextools.model.FunctionNodeType;
+import com.dtsworkshop.flextools.model.IdentifierNodeType;
+import com.dtsworkshop.flextools.model.ImportNodeType;
 import com.dtsworkshop.flextools.model.NodeType;
 import com.dtsworkshop.flextools.utils.ResourceHelper;
 
@@ -96,12 +99,12 @@ public class ModelProcessor {
 		return contents;
 	}
 	
-	private void processNode(IASNode node, NodeType parentXmlNode, String textData, BuildStateType buildState) {
+	private void processNode(IASNode node, BuildReference parentXmlNode, String textData, BuildStateType buildState) {
 		IASNode [] children = node.getChildren();
 		for(IASNode child : children) {
 			NodeProcessor processor = getProcessor(child.getClass());
-			NodeType newXmlChild = processor.getNode((NodeBase)child, parentXmlNode, buildState);
-			newXmlChild.setContents(getNodeContents(textData, child));
+			BuildReference newXmlChild = processor.getNode((NodeBase)child, parentXmlNode, buildState);
+			//newXmlChild.setContents(getNodeContents(textData, child));
 			if(child.getChildCount() > 0) {
 				processNode(child, newXmlChild, textData, buildState);
 				
@@ -124,11 +127,11 @@ public class ModelProcessor {
 		processors = new ArrayList<NodeProcessor>(20);
 		processors.add(new ClassProcessor(ClassNode.class, ClassStateType.class));
 		processors.add(new FunctionCallTypeProcessor(FunctionCallNode.class, FunctionCallType.class));
-		processors.add(new IdentifierProcessor(IdentifierNode.class, NodeType.class));
+		processors.add(new IdentifierProcessor(IdentifierNode.class, IdentifierNodeType.class));
 		processors.add(new FunctionProcessor(FunctionNode.class, FunctionNodeType.class));
 		processors.add(new VariableProcessor(VariableNode.class, NodeType.class));
 		processors.add(new FullNameNodeProcessor(FullNameNode.class, NodeType.class));
-		processors.add(new ImportNodeProcessor(ImportNode.class, NodeType.class));
+		processors.add(new ImportNodeProcessor(ImportNode.class, ImportNodeType.class));
 		processors.add(new MemberAccessExpressionNodeProcessor(MemberAccessExpressionNode.class, NodeType.class));
 		
 		defaultProcessor = new DefaultNodeProcessor(NodeBase.class, NodeType.class);

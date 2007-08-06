@@ -2,17 +2,23 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.dtsworkshop.com/flextools/model" elementFormDefault="qualified" targetNamespace="http://www.dtsworkshop.com/flextools/model">
 
     <complexType name="NodeType">
-    	<sequence>
-    		<element name="contents" type="string"/>
-    		<sequence maxOccurs="unbounded" minOccurs="0">
+    	<complexContent>
+    		<extension base="tns:BuildReference">
+    			<sequence>
+    				<element name="contents" type="string" />
+    				<sequence maxOccurs="unbounded" minOccurs="0">
 
-    			    		<group ref="tns:treeNodeElements"/>
-      </sequence>
+    					<group ref="tns:treeNodeElements" />
+    				</sequence>
 
-    	</sequence>
-    	<attribute name="startPos" type="int"/>
-    	<attribute name="endPos" type="int"/>
-    	<attribute name="className" type="string"/>
+    			</sequence>
+
+
+
+    			<attribute name="className" type="string" />
+
+    		</extension>
+    	</complexContent>
     </complexType>
 
 
@@ -26,7 +32,7 @@
     <element name="FunctionNode" type="tns:FunctionNodeType"/>
     <element name="KeywordNode" type="tns:NodeType"/>
     <element name="ContainerNode" type="tns:NodeType"/>
-    <element name="ImportNode" type="tns:NodeType"/>
+    <element name="ImportNode" type="tns:ImportNodeType" />
     <element name="FullNameNode" type="tns:NodeType"/>
     <element name="VariableNode" type="tns:NodeType"/>
     <element name="FunctionCallNode" type="tns:FunctionCallType"/>
@@ -72,11 +78,10 @@
     <element name="buildState" type="tns:BuildStateType"/>
     
     <complexType name="BuildStateType">
-    	<sequence>
-			<sequence>
-				<element name="importReference" type="string"/>
-			</sequence>    	
-    		<element maxOccurs="1" minOccurs="1" ref="tns:FileNode"/>
+    	<sequence>    		<element maxOccurs="1" minOccurs="1" ref="tns:FileNode" />
+    		<sequence>
+    			<element name="importReference" type="tns:TypeReference"></element>
+    		</sequence>
     	</sequence>
     	<attribute name="file" type="string"/>
     	<attribute name="project" type="string"/>
@@ -144,5 +149,30 @@
     	<attribute name="name" type="string"/>
     	<attribute name="typeName" type="string"/>
     	<attribute name="classification" type="string"/>
+    </complexType>
+
+    <complexType name="TypeReference">
+    	<attribute name="shortName" type="string"></attribute>
+    	<attribute name="qualifiedName" type="string"></attribute>
+    </complexType>
+
+    <complexType name="ImportNodeType">
+    	<complexContent>
+    		<extension base="tns:BuildReference">
+    			<sequence>
+    				<element ref="tns:FullNameNode" maxOccurs="1"
+    					minOccurs="1">
+    				</element>
+    				<element ref="tns:IdentifierNode"></element>
+    			</sequence>
+    			<attribute name="localName" type="string"></attribute>
+    			<attribute name="qualifiedName" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="BuildReference">
+    	<attribute name="startPos" type="int"></attribute>
+    	<attribute name="endPos" type="int"></attribute>
     </complexType>
 </schema>

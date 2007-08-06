@@ -2,22 +2,29 @@ package com.dtsworkshop.flextools.search.ui;
 
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.search.internal.ui.text.EditorOpener;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PartInitException;
 
+import com.adobe.flexbuilder.editors.common.editor.IFlexEditor;
 import com.dtsworkshop.flextools.search.ClassSearchResult;
 import com.dtsworkshop.flextools.search.SearchReference;
 
@@ -128,8 +135,31 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 		});
 	}
 	
+	//TODO: Either reimplement or borrow the EditorOpener
+	private EditorOpener opener = new EditorOpener();
+	
 	private void handleDoubleClick(DoubleClickEvent event) {
 		//TODO: Handle search result double click - show result in viewer
+		Assert.isTrue(event.getSelection() instanceof StructuredSelection);
+		StructuredSelection selection = (StructuredSelection)event.getSelection();
+		if(selection.getFirstElement() instanceof SearchReference) {
+			showReferenceInEditor((SearchReference)selection.getFirstElement());
+		}
+		else {
+			//TODO: Throw exception on invalid double click selection
+		}
+	}
+	
+	private void showReferenceInEditor(SearchReference referenceToShow) {
+		try {
+			IEditorPart part = opener.open(referenceToShow.getFilePath(), true);
+			Assert.isTrue(part instanceof IFlexEditor, "Editor is not a flex/FB editor");
+			IFlexEditor editor = (IFlexEditor)part;
+			editor.selectAndRevealInCodeView(referenceToShow.getFrom(), referenceToShow.getTo());
+		} catch (PartInitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override

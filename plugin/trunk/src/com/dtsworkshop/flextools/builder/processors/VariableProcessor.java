@@ -7,15 +7,16 @@ import com.adobe.flexbuilder.codemodel.internal.tree.FullNameNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.IdentifierNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
 import com.adobe.flexbuilder.codemodel.internal.tree.VariableNode;
+import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.NodeType;
 
 public class VariableProcessor extends DefaultNodeProcessor {
 
 	@Override
-	public NodeType getNode(NodeBase node, NodeType parentType, BuildStateType buildState) {
+	public BuildReference getNode(NodeBase node, BuildReference parentType, BuildStateType buildState) {
 		// TODO Auto-generated method stub
-		NodeType type= super.getNode(node, parentType, buildState);
+		NodeType type= (NodeType)super.getNode(node, parentType, buildState);
 		IVariable variable = (IVariable)node;
 		String content = type.getContents();
 		content += String.format(

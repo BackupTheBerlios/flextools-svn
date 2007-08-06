@@ -13,8 +13,9 @@ import com.adobe.flexbuilder.codemodel.internal.tree.IdentifierNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IScopedNode;
+import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateType;
-import com.dtsworkshop.flextools.model.NodeType;
+import com.dtsworkshop.flextools.model.IdentifierNodeType;
 
 public class IdentifierProcessor extends DefaultNodeProcessor {
 
@@ -24,11 +25,11 @@ public class IdentifierProcessor extends DefaultNodeProcessor {
 	}
 
 	@Override
-	public NodeType getNode(NodeBase node, NodeType parentType, BuildStateType buildState) {
+	public BuildReference getNode(NodeBase node, BuildReference parentType, BuildStateType buildState) {
 		// TODO Auto-generated method stub
 		IdentifierNode identNode = (IdentifierNode)node;
 		
-		NodeType identifierType = super.getNode(node, parentType, buildState);
+		IdentifierNodeType identifierType = (IdentifierNodeType)super.getNode(node, parentType, buildState);
 		String qualifiedName = ProcessorHelper.getQualifiedName(identNode);
 		
 		String content = "";
@@ -39,6 +40,8 @@ public class IdentifierProcessor extends DefaultNodeProcessor {
 		);
 		
 		identifierType.setContents(content);
+		identifierType.setQualifiedName(qualifiedName);
+		identifierType.setName(ProcessorHelper.getLocalName(qualifiedName));
 		return identifierType;
 	}
 

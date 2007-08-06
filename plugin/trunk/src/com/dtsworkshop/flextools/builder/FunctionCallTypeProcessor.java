@@ -8,9 +8,9 @@ import com.adobe.flexbuilder.codemodel.internal.tree.KeywordNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
 import com.dtsworkshop.flextools.builder.processors.DefaultNodeProcessor;
 import com.dtsworkshop.flextools.builder.processors.ProcessorHelper;
+import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.FunctionCallType;
-import com.dtsworkshop.flextools.model.NodeType;
 
 
 public class FunctionCallTypeProcessor extends DefaultNodeProcessor {
@@ -21,7 +21,7 @@ public class FunctionCallTypeProcessor extends DefaultNodeProcessor {
 	}
 
 	@Override
-	public NodeType getNode(NodeBase node, NodeType parentType, BuildStateType buildState) {
+	public BuildReference getNode(NodeBase node, BuildReference parentType, BuildStateType buildState) {
 		// TODO Auto-generated method stub
 		FunctionCallType type = (FunctionCallType)super.getNode(node, parentType, buildState);
 		FunctionCallNode callNode = (FunctionCallNode)node;

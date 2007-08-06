@@ -8,6 +8,8 @@ import com.adobe.flexbuilder.codemodel.internal.tree.ExpressionNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.IdentifierNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.MemberedNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
+import com.dtsworkshop.flextools.model.BuildStateType;
+import com.dtsworkshop.flextools.model.TypeReference;
 
 public class ProcessorHelper {
 
@@ -19,6 +21,22 @@ public class ProcessorHelper {
 			
 		}
 		return qualifiedName;
+	}
+
+	public static void addImport(BuildStateType buildState, String qualifiedName) {
+		TypeReference newImport = buildState.addNewImportReference();
+		newImport.setQualifiedName(qualifiedName);
+		String localName = getLocalName(qualifiedName);
+		newImport.setShortName(localName);
+	}
+
+	public static String getLocalName(String qualifiedName) {
+		String localName = "";
+		int lastDot = qualifiedName.lastIndexOf(".");
+		if(lastDot != -1) {
+			localName = qualifiedName.substring(lastDot + 1);
+		}
+		return localName;
 	}
 	
 //	public static String getReferenceClassName(MemberedNode clazzNode) {

@@ -28,7 +28,7 @@ import com.dtsworkshop.flextools.utils.ResourceHelper;
 
 public class CodeModelManager {
 	private static CodeModelManager manager;
-	public static final String stateDirectoryRoot = "c:\\builder state";
+	public static final String stateDirectoryRoot = "d:\\builder state";
 	static {
 		manager = new CodeModelManager();
 		manager.initialise(new File(stateDirectoryRoot));

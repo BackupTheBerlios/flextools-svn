@@ -5,6 +5,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 
 import com.adobe.flexbuilder.codemodel.internal.tree.TypeNode;
+import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.NodeType;
 
 public class SearchReference {
@@ -13,7 +14,7 @@ public class SearchReference {
 	protected int from;
 	protected int to;
 	protected String description;
-	protected NodeType nodeType;
+	protected BuildReference nodeType;
 	
 	public String getDescription() {
 		return description;
@@ -45,10 +46,10 @@ public class SearchReference {
 	public void setTo(int to) {
 		this.to = to;
 	}
-	public NodeType getNodeType() {
+	public BuildReference getNodeType() {
 		return nodeType;
 	}
-	public void setNodeType(NodeType nodeType) {
+	public void setNodeType(BuildReference nodeType) {
 		this.nodeType = nodeType;
 	}
 	
