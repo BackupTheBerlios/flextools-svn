@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.Assert;
 
 import com.dtsworkshop.flextools.codemodel.IBuildStateVisitor;
 import com.dtsworkshop.flextools.codemodel.ModelConstants;
@@ -21,6 +22,7 @@ public abstract class AbstractSearcher implements IBuildStateVisitor {
 	protected IWorkspace workspace;
 
 	public AbstractSearcher(IWorkspace workspace) {
+		Assert.isNotNull(workspace);
 		this.workspace = workspace;
 		query = initialiseQuery();
 		matches = new ArrayList<SearchReference>(100);

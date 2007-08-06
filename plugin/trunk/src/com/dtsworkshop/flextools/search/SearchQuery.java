@@ -49,20 +49,26 @@ public class SearchQuery implements ISearchQuery {
 		this();
 		this.className = className;
 		listener = result;
+		searcher = new ClassSearcher(
+				className,
+				ResourcesPlugin.getWorkspace()
+			);
+	}
+	
+	public ClassSearcher getSearcher() {
+		return this.searcher;
 	}
 	
 	public interface ISearchQueryResultListener {
 		void newResult(SearchReference reference);
 	}
 	
+	
+	
 	private ISearchQueryResultListener listener;
 
 	public IStatus run(IProgressMonitor monitor)
 			throws OperationCanceledException {
-		ClassSearcher searcher = new ClassSearcher(
-				className,
-				ResourcesPlugin.getWorkspace()
-			);
 		
 		CodeModelManager manager = CodeModelManager.getManager();
 		manager.acceptVisitor(searcher, monitor);
@@ -80,4 +86,5 @@ public class SearchQuery implements ISearchQuery {
 		return new Status(Status.INFO, "com.dtsworkshop.flextools", Status.OK, "Success", null);
 	}
 	public static final String SEARCHING = "searching";
+	private ClassSearcher searcher;
 }
