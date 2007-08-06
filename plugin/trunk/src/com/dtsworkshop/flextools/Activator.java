@@ -4,6 +4,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.dtsworkshop.flextools.codemodel.CodeModelManager;
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -19,6 +21,8 @@ public class Activator extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public Activator() {
+		// Force initialisation of the model manager
+		CodeModelManager.getManager();
 	}
 
 	/*

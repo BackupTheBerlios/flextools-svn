@@ -1,36 +1,9 @@
 package com.dtsworkshop.flextools.sampleEditors;
 
-import org.eclipse.core.commands.operations.OperationHistoryEvent;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.revisions.RevisionInformation;
-import org.eclipse.jface.text.source.Annotation;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.INavigationLocation;
-import org.eclipse.ui.IPropertyListener;
-import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.IStatusField;
-import org.eclipse.ui.texteditor.ITextEditorExtension3.InsertMode;
 
 import com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor;
-import com.adobe.flexbuilder.editors.common.document.IFlexDocument;
-import com.adobe.flexbuilder.editors.common.editor.IDoneTypingListener;
-import com.adobe.flexbuilder.editors.common.ui.folding.IFoldingType;
 
 public class XMLEditor extends ActionScriptEditor {
 	

@@ -1,97 +1,102 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<schema targetNamespace="http://www.dtsworkshop.com/flextools/model" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.dtsworkshop.com/flextools/model">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.dtsworkshop.com/flextools/model" elementFormDefault="qualified" targetNamespace="http://www.dtsworkshop.com/flextools/model">
 
     <complexType name="NodeType">
     	<sequence>
-    		<element name="contents" type="string"></element>
-    		<sequence maxOccurs="unbounded" minOccurs="0">    			    		<group ref="tns:treeNodeElements"></group></sequence>
+    		<element name="contents" type="string"/>
+    		<sequence maxOccurs="unbounded" minOccurs="0">
+
+    			    		<group ref="tns:treeNodeElements"/>
+      </sequence>
 
     	</sequence>
-    	<attribute name="startPos" type="int"></attribute>
-    	<attribute name="endPos" type="int"></attribute>
-    	<attribute name="className" type="string"></attribute>
+    	<attribute name="startPos" type="int"/>
+    	<attribute name="endPos" type="int"/>
+    	<attribute name="className" type="string"/>
     </complexType>
 
 
 
-    <element name="FileNode" type="tns:NodeType"></element>
+    <element name="FileNode" type="tns:NodeType"/>
 
-    <element name="PackageNode" type="tns:NodeType"></element>
-    <element name="BlockNode" type="tns:NodeType"></element>
-    <element name="ModifiersNode" type="tns:NodeType"></element>
-    <element name="IdentifierNode" type="tns:IdentifierNodeType"></element>
-    <element name="FunctionNode" type="tns:FunctionNodeType"></element>
-    <element name="KeywordNode" type="tns:NodeType"></element>
-    <element name="ContainerNode" type="tns:NodeType"></element>
-    <element name="ImportNode" type="tns:NodeType"></element>
-    <element name="FullNameNode" type="tns:NodeType"></element>
-    <element name="VariableNode" type="tns:NodeType"></element>
-    <element name="FunctionCallNode" type="tns:FunctionCallType"></element>
-    <element name="MemberAccessExpressionNode" type="tns:NodeType"></element>
-    <element name="StopNode" type="tns:NodeType"></element>    
-    <element name="AssignmentExpressionNode" type="tns:NodeType"></element>    
-    <element name="LiteralNode" type="tns:NodeType"></element>    
-    <element name="ClassNode" type="tns:ClassStateType"></element>    
-    <element name="InterfaceNode" type="tns:NodeType"></element>    
-    <element name="TransparentContainerNode" type="tns:NodeType"></element>    
-    <element name="GetterNode" type="tns:NodeType"></element>    
-    <element name="SetterNode" type="tns:NodeType"></element>    
+    <element name="PackageNode" type="tns:NodeType"/>
+    <element name="BlockNode" type="tns:NodeType"/>
+    <element name="ModifiersNode" type="tns:NodeType"/>
+    <element name="IdentifierNode" type="tns:IdentifierNodeType"/>
+    <element name="FunctionNode" type="tns:FunctionNodeType"/>
+    <element name="KeywordNode" type="tns:NodeType"/>
+    <element name="ContainerNode" type="tns:NodeType"/>
+    <element name="ImportNode" type="tns:NodeType"/>
+    <element name="FullNameNode" type="tns:NodeType"/>
+    <element name="VariableNode" type="tns:NodeType"/>
+    <element name="FunctionCallNode" type="tns:FunctionCallType"/>
+    <element name="MemberAccessExpressionNode" type="tns:NodeType"/>
+    <element name="StopNode" type="tns:NodeType"/>    
+    <element name="AssignmentExpressionNode" type="tns:NodeType"/>    
+    <element name="LiteralNode" type="tns:NodeType"/>    
+    <element name="ClassNode" type="tns:ClassStateType"/>    
+    <element name="InterfaceNode" type="tns:NodeType"/>    
+    <element name="TransparentContainerNode" type="tns:NodeType"/>    
+    <element name="GetterNode" type="tns:NodeType"/>    
+    <element name="SetterNode" type="tns:NodeType"/>    
 
 
     <group name="treeNodeElements">
     	<sequence>
-    		<element ref="tns:AssignmentExpressionNode"></element>
-    		<element ref="tns:BlockNode"></element>
-    		<element ref="tns:ModifiersNode"></element>
-    		<element ref="tns:IdentifierNode"></element>
-    		<element ref="tns:FunctionNode"></element>
-    		<element ref="tns:KeywordNode"></element>
-    		<element ref="tns:ContainerNode"></element>
-    		<element ref="tns:ImportNode"></element>
-    		<element ref="tns:FullNameNode"></element>
-    		<element ref="tns:VariableNode"></element>
-    		<element ref="tns:FunctionCallNode"></element>
-    		<element ref="tns:MemberAccessExpressionNode"></element>
-    		<element ref="tns:StopNode"></element>
-    		<element ref="tns:AssignmentExpressionNode"></element>
-    		<element ref="tns:LiteralNode"></element>
-    		<element ref="tns:ClassNode"></element>
-    		<element ref="tns:InterfaceNode"></element>
-    		<element ref="tns:TransparentContainerNode"></element>
-    		<element ref="tns:GetterNode"></element>
-    		<element ref="tns:SetterNode"></element>
-    		<element ref="tns:PackageNode"></element>
-    		<element ref="tns:ArgumentNode"></element>
-    		<element ref="tns:OperatorExpressionNode"></element>
+    		<element ref="tns:AssignmentExpressionNode"/>
+    		<element ref="tns:BlockNode"/>
+    		<element ref="tns:ModifiersNode"/>
+    		<element ref="tns:IdentifierNode"/>
+    		<element ref="tns:FunctionNode"/>
+    		<element ref="tns:KeywordNode"/>
+    		<element ref="tns:ContainerNode"/>
+    		<element ref="tns:ImportNode"/>
+    		<element ref="tns:FullNameNode"/>
+    		<element ref="tns:VariableNode"/>
+    		<element ref="tns:FunctionCallNode"/>
+    		<element ref="tns:MemberAccessExpressionNode"/>
+    		<element ref="tns:StopNode"/>
+    		<element ref="tns:AssignmentExpressionNode"/>
+    		<element ref="tns:LiteralNode"/>
+    		<element ref="tns:ClassNode"/>
+    		<element ref="tns:InterfaceNode"/>
+    		<element ref="tns:TransparentContainerNode"/>
+    		<element ref="tns:GetterNode"/>
+    		<element ref="tns:SetterNode"/>
+    		<element ref="tns:PackageNode"/>
+    		<element ref="tns:ArgumentNode"/>
+    		<element ref="tns:OperatorExpressionNode"/>
     	</sequence>
     </group>
 
-    <element name="buildState" type="tns:BuildStateType"></element>
+    <element name="buildState" type="tns:BuildStateType"/>
     
     <complexType name="BuildStateType">
     	<sequence>
-    		<element ref="tns:FileNode" minOccurs="1" maxOccurs="1"></element>
+			<sequence>
+				<element name="importReference" type="string"/>
+			</sequence>    	
+    		<element maxOccurs="1" minOccurs="1" ref="tns:FileNode"/>
     	</sequence>
-    	<attribute name="file" type="string"></attribute>
-    	<attribute name="project" type="string"></attribute>
+    	<attribute name="file" type="string"/>
+    	<attribute name="project" type="string"/>
     </complexType>
 
-    <element name="ArgumentNode" type="tns:NodeType"></element>
+    <element name="ArgumentNode" type="tns:NodeType"/>
 
     <complexType name="ClassStateType">
     	<complexContent>
     		<extension base="tns:NodeType">
     			<sequence>
-    				<element name="constructor"
-    					type="tns:FunctionNodeType">
+    				<element name="constructor" type="tns:FunctionNodeType">
     				</element>
     				<sequence>
-    					<element name="implements" type="string"></element>
+    					<element name="implements" type="string"/>
     				</sequence>
     			</sequence>
-    			<attribute name="baseClassName" type="string"></attribute>
-    			<attribute name="name" type="string"></attribute>
-    			<attribute name="qualifiedName" type="string"></attribute>
+    			<attribute name="baseClassName" type="string"/>
+    			<attribute name="name" type="string"/>
+    			<attribute name="qualifiedName" type="string"/>
     		</extension>
     	</complexContent>
     </complexType>
@@ -100,14 +105,13 @@
     	<complexContent>
     		<extension base="tns:NodeType">
     			<sequence>
-    				<element name="argument"
-    					type="tns:SimpleVariableType" minOccurs="0" maxOccurs="unbounded">
+    				<element maxOccurs="unbounded" minOccurs="0" name="argument" type="tns:SimpleVariableType">
     				</element>
     			</sequence>
-    			<attribute name="returnType" type="string"></attribute>
-    			<attribute name="shortName" type="string"></attribute>
-    			<attribute name="qualifiedName" type="string"></attribute>
-    			<attribute name="classificationTypeName" type="string"></attribute>
+    			<attribute name="returnType" type="string"/>
+    			<attribute name="shortName" type="string"/>
+    			<attribute name="qualifiedName" type="string"/>
+    			<attribute name="classificationTypeName" type="string"/>
     		</extension>
     	</complexContent>
     </complexType>
@@ -116,29 +120,29 @@
     	<complexContent>
     		<extension base="tns:NodeType">
     			<sequence>
-    				<element ref="tns:ArgumentNode" minOccurs="0" maxOccurs="unbounded"></element>
+    				<element maxOccurs="unbounded" minOccurs="0" ref="tns:ArgumentNode"/>
     			</sequence>
-    			<attribute name="name" type="string"></attribute>
-    			<attribute name="isConstructorCall" type="boolean"></attribute>
+    			<attribute name="name" type="string"/>
+    			<attribute name="isConstructorCall" type="boolean"/>
     		</extension>
     	</complexContent>
     </complexType>
     
 
-    <element name="OperatorExpressionNode" type="tns:NodeType"></element>
+    <element name="OperatorExpressionNode" type="tns:NodeType"/>
 
     <complexType name="IdentifierNodeType">
     	<complexContent>
     		<extension base="tns:NodeType">
-    			<attribute name="name" type="string"></attribute>
-    			<attribute name="qualifiedName" type="string"></attribute>
+    			<attribute name="name" type="string"/>
+    			<attribute name="qualifiedName" type="string"/>
     		</extension>
     	</complexContent>
     </complexType>
 
     <complexType name="SimpleVariableType">
-    	<attribute name="name" type="string"></attribute>
-    	<attribute name="typeName" type="string"></attribute>
-    	<attribute name="classification" type="string"></attribute>
+    	<attribute name="name" type="string"/>
+    	<attribute name="typeName" type="string"/>
+    	<attribute name="classification" type="string"/>
     </complexType>
 </schema>

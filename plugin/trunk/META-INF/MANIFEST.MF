@@ -49,17 +49,20 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ltk.ui.refactoring
 Eclipse-LazyStart: true
 Bundle-Vendor: DTS Workshop
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.dtsworkshop.flextools,
  com.dtsworkshop.flextools.actions,
  com.dtsworkshop.flextools.builder,
  com.dtsworkshop.flextools.builder.processors,
+ com.dtsworkshop.flextools.codemodel,
  com.dtsworkshop.flextools.editor,
  com.dtsworkshop.flextools.launch,
  com.dtsworkshop.flextools.model,
  com.dtsworkshop.flextools.model.impl,
  com.dtsworkshop.flextools.sampleEditors,
+ com.dtsworkshop.flextools.search,
  com.dtsworkshop.flextools.search.ui,
+ com.dtsworkshop.flextools.utils,
  org.apache.xmlbeans,
  org.apache.xmlbeans.impl.common,
  org.apache.xmlbeans.impl.config,
@@ -106,6 +109,8 @@ Export-Package: com.dtsworkshop.flextools,
  org.apache.xmlbeans.xml.stream,
  org.apache.xmlbeans.xml.stream.events,
  org.apache.xmlbeans.xml.stream.utils
-Bundle-ClassPath: libs/xbean.jar,
+Bundle-ClassPath: .,
+ libs/saxon8.jar,
  libs/xmlbeans-flextoolsmodel.jar,
- .
+ libs/xmlbeans-2.3.0/lib/xbean.jar,
+ libs/xmlbeans-2.3.0/lib/xbean_xpath.jar

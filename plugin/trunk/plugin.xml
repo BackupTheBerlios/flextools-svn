@@ -10,7 +10,7 @@
             id="com.dtsworkshop.flextools.sampleEditors.XMLEditor"
             name="Sample XML Editor"/>
       <editor
-            class="com.dtsworkshop.flextools.editor.AsEditor2"
+            class="TestEditor"
             default="false"
             extensions="test"
             id="Flex Tools Project.editor1"
@@ -159,6 +159,14 @@
             icon="icons/standard small icon.png"
             id="com.dtsworkshop.flextools.search.ui.searchWindow"
             label="ActionScript Searcher"/>
+   </extension>
+   <extension
+         point="org.eclipse.search.searchResultViewPages">
+      <viewPage
+            class="com.dtsworkshop.flextools.search.ui.SearchResultPage"
+            icon="icons/standard small icon.png"
+            id="com.dtsworkshop.flextools.search.ui.searchResult"
+            searchResultClass="com.dtsworkshop.flextools.search.ClassSearchResult"/>
    </extension>
    <!--
    <extension

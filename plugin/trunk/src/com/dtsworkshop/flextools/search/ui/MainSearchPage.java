@@ -39,7 +39,9 @@ public class MainSearchPage extends DialogPage implements ISearchPage {
 	public boolean performAction() {
 		Assert.isNotNull(classSearchBox);
 		
-		NewSearchUI.runQuery(new SearchQuery(classSearchBox.getText()));
+		SearchQuery searchQuery = new SearchQuery(classSearchBox.getText());
+		//NewSearchUI.runQuery(new SearchQuery(classSearchBox.getText()));
+		NewSearchUI.runQueryInBackground(searchQuery);
 		return true;
 	}
 

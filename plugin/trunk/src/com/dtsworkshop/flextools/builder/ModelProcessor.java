@@ -70,7 +70,7 @@ public class ModelProcessor {
 		buildType.setProject(sourceFile.getProject().getName());
 		NodeType fileNode = buildType.addNewFileNode();
 		String fileData = getFileContents(sourceFile);
-		processNode(startNode, fileNode, fileData);
+		processNode(startNode, fileNode, fileData, buildType);
 	}
 	
 	private String getNodeContents(String data, IASNode node) {
@@ -96,14 +96,14 @@ public class ModelProcessor {
 		return contents;
 	}
 	
-	private void processNode(IASNode node, NodeType parentXmlNode, String textData) {
+	private void processNode(IASNode node, NodeType parentXmlNode, String textData, BuildStateType buildState) {
 		IASNode [] children = node.getChildren();
 		for(IASNode child : children) {
 			NodeProcessor processor = getProcessor(child.getClass());
-			NodeType newXmlChild = processor.getNode((NodeBase)child, parentXmlNode);
+			NodeType newXmlChild = processor.getNode((NodeBase)child, parentXmlNode, buildState);
 			newXmlChild.setContents(getNodeContents(textData, child));
 			if(child.getChildCount() > 0) {
-				processNode(child, newXmlChild, textData);
+				processNode(child, newXmlChild, textData, buildState);
 				
 			}
 		}
@@ -126,6 +126,11 @@ public class ModelProcessor {
 		processors.add(new FunctionCallTypeProcessor(FunctionCallNode.class, FunctionCallType.class));
 		processors.add(new IdentifierProcessor(IdentifierNode.class, NodeType.class));
 		processors.add(new FunctionProcessor(FunctionNode.class, FunctionNodeType.class));
+		processors.add(new VariableProcessor(VariableNode.class, NodeType.class));
+		processors.add(new FullNameNodeProcessor(FullNameNode.class, NodeType.class));
+		processors.add(new ImportNodeProcessor(ImportNode.class, NodeType.class));
+		processors.add(new MemberAccessExpressionNodeProcessor(MemberAccessExpressionNode.class, NodeType.class));
+		
 		defaultProcessor = new DefaultNodeProcessor(NodeBase.class, NodeType.class);
 		
 		

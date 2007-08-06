@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
+import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.NodeType;
 
 public class DefaultNodeProcessor extends NodeProcessor {
@@ -13,7 +14,7 @@ public class DefaultNodeProcessor extends NodeProcessor {
 	}
 
 	@Override
-	public NodeType getNode(NodeBase node, NodeType parentType) {
+	public NodeType getNode(NodeBase node, NodeType parentType, BuildStateType buildState) {
 		String nodeName = node.getNodeType();
 		
 		nodeName = nodeName.substring(0, 1).toUpperCase() + nodeName.substring(1, nodeName.length());

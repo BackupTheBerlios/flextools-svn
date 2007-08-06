@@ -97,7 +97,7 @@ public class LocalLaunchConfigTab extends AbstractLaunchConfigurationTab impleme
 		return projectFiles.get(fileIndex);
 	}
 	
-	@Override
+	
 	public void createControl(Composite parent) {
 		
 	
@@ -297,7 +297,7 @@ public class LocalLaunchConfigTab extends AbstractLaunchConfigurationTab impleme
 		return selectedProject;
 	}
 
-	@Override
+	
 	public String getName() {
 		
 		return "Local Launch";
@@ -308,7 +308,7 @@ public class LocalLaunchConfigTab extends AbstractLaunchConfigurationTab impleme
 	public static final String ATTR_DEBUG_URL = "com.dtsworkshop.flextools.ATTR_DEBUG_URL";
 	public static final String ATTR_RUN_URL = "com.dtsworkshop.flextools.ATTR_RUN_URL";
 	
-	@Override
+	
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		
 		logger.log(Level.INFO, "Form initialised");
@@ -393,7 +393,7 @@ public class LocalLaunchConfigTab extends AbstractLaunchConfigurationTab impleme
 //		return flexProjects;
 //	}
 
-	@Override
+	
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		
 		logger.log(Level.INFO, "Apply performed");
@@ -418,13 +418,13 @@ public class LocalLaunchConfigTab extends AbstractLaunchConfigurationTab impleme
 
 	
 	
-	@Override
+	
 	protected void setDirty(boolean dirty) {
 		isValid(null);
 		super.setDirty(dirty);
 	}
 
-	@Override
+	
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		setErrorMessage(null);
 		setMessage(null);
@@ -450,27 +450,27 @@ public class LocalLaunchConfigTab extends AbstractLaunchConfigurationTab impleme
 	
 	
 
-	@Override
+	
 	public void activated(ILaunchConfigurationWorkingCopy workingCopy) {
 		isValid(workingCopy);
 		super.activated(workingCopy);
 	}
 
-	@Override
+	
 	public void deactivated(ILaunchConfigurationWorkingCopy workingCopy) {
 		isValid(workingCopy);
 		
 		super.deactivated(workingCopy);
 	}
 
-	@Override
+	
 	public String getErrorMessage() {
 		isValid(null);
 		String errorMessage = super.getErrorMessage();
 		return errorMessage;
 	}
 
-	@Override
+	
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 		
 		logger.log(Level.INFO, "Defaults set");

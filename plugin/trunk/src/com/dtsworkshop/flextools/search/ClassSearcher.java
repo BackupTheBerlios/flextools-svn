@@ -18,44 +18,27 @@ import com.dtsworkshop.flextools.model.BuildStateDocument;
 import com.dtsworkshop.flextools.model.ClassStateType;
 import com.dtsworkshop.flextools.model.NodeType;
 
-public class ClassSearcher implements IBuildStateVisitor {
-
-	protected List<SearchReference> matches;
+public class ClassSearcher extends AbstractSearcher implements IBuildStateVisitor {
 	protected String className;
-	protected String namespace = ModelConstants.xmlNamespace;
-	protected String query;
-	protected IWorkspace workspace;
 	
-	public void setNamespace(String newNamespace) {
-		this.namespace = newNamespace;
-	}
 	
 	public ClassSearcher(String className, IWorkspace workspace) {
+		super(workspace);
 		this.className = className;
-		this.workspace = workspace;
-		query = initialiseQuery();
-		matches = new ArrayList<SearchReference>(100);
 	}
-	/*
-	 String queryExpression =
-    "declare namespace xq='http://xmlbeans.apache.org/samples/xquery/employees';" +
-    "$this/xq:employees/xq:employee/xq:phone[contains(., '(206)')]";
-	 */
 	
 	protected String initialiseQuery() {
 		String query = String.format(
-			"declare namespace mod='%s';" +
+			"%s" +
 			"$this//mod:ClassNode",
+			getNamespaceDecl(),
 			namespace,
 			className
 		);
 		return query;
 	}
 	
-	public List<SearchReference> getMatches() {
-		return matches;
-	}
-	
+
 	public boolean visit(BuildStateDocument document) {
 		String projectName = document.getBuildState().getProject();
 		IProject project = null;
@@ -81,24 +64,19 @@ public class ClassSearcher implements IBuildStateVisitor {
 				continue;
 			}
 			ClassStateType type = (ClassStateType)xmlResult;
+			Object test = type.getDomNode().getOwnerDocument();
 			boolean isMatch = className.equals(type.getName());
 			if(!isMatch) {
-				continue;
+				//continue;
 			}
-			SearchReference newRef = new SearchReference();
-			newRef.setFrom(type.getStartPos());
-			newRef.setTo(type.getEndPos());
+			SearchReference newRef = referenceFromNodeType(project, containingFile, type);
 			newRef.setDescription(type.getName());
-			newRef.setProject(project);
-			newRef.setFilePath(containingFile);
 			matches.add(newRef);
 		}
 		return true;
 	}
 
-	private IFile getBuildStateFile(BuildStateDocument document, IProject project) {
-		IFile containingFile = project.getFile(document.getBuildState().getFile());
-		return containingFile;
-	}
+	
+
 
 }

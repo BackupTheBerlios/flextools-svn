@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 import com.dtsworkshop.flextools.model.BuildStateDocument;
@@ -27,7 +28,7 @@ import com.dtsworkshop.flextools.utils.ResourceHelper;
 
 public class CodeModelManager {
 	private static CodeModelManager manager;
-	public static final String stateDirectoryRoot = "d:\\builder state";
+	public static final String stateDirectoryRoot = "c:\\builder state";
 	static {
 		manager = new CodeModelManager();
 		manager.initialise(new File(stateDirectoryRoot));
@@ -38,15 +39,41 @@ public class CodeModelManager {
 	
 	private Map<String, Map<String, BuildStateDocument>> projectStates;
 	
-	public void acceptVisitor(IBuildStateVisitor visitor) {
-		Collection<Map<String, BuildStateDocument>> states = projectStates.values();
-		List<BuildStateDocument> buildStates = new ArrayList<BuildStateDocument>(100); 
+	public ModelInfo getInfo() {
+		ModelInfo info = new ModelInfo();
+		//TODO: Cache this info if the model hasn't changed.
 		
+		info.numberOfProjects = projectStates.keySet().size();
+		for(String projectName : projectStates.keySet()) {
+			info.numberOfStates+= projectStates.get(projectName).values().size();
+		}
+		
+		return info;
+	}
+	
+	public class ModelInfo {
+		public int numberOfProjects;
+		public int numberOfStates;
+	}
+	
+	public void acceptVisitor(IBuildStateVisitor visitor, IProgressMonitor monitor) {
+		Collection<Map<String, BuildStateDocument>> states = projectStates.values();
+		List<BuildStateDocument> buildStates = new ArrayList<BuildStateDocument>(100);
+		if(monitor != null) {
+			monitor.subTask("Gathering build states.");
+		}
 		for(Map<String, BuildStateDocument> projectState : states) {
 			buildStates.addAll(projectState.values());
 		}
 		
 		for(BuildStateDocument currentDoc : buildStates) {
+			if(monitor.isCanceled()) {
+				return;
+			}
+			monitor.subTask(
+				String.format("Checking %s", currentDoc.getBuildState().getFile())	
+			);
+			monitor.worked(1);
 			boolean carryOn = visitor.visit(currentDoc);
 			if(!carryOn) {
 				break; // Stop!
@@ -55,6 +82,7 @@ public class CodeModelManager {
 				// Carry on! (Mark & Lard from Radio 1 reference :D)
 			}
 		}
+
 	}
 	
 	public CodeModelManager() {

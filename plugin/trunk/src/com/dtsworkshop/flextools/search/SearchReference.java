@@ -4,12 +4,16 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 
+import com.adobe.flexbuilder.codemodel.internal.tree.TypeNode;
+import com.dtsworkshop.flextools.model.NodeType;
+
 public class SearchReference {
 	protected IFile filePath;
 	protected IProject project;
 	protected int from;
 	protected int to;
 	protected String description;
+	protected NodeType nodeType;
 	
 	public String getDescription() {
 		return description;
@@ -40,6 +44,12 @@ public class SearchReference {
 	}
 	public void setTo(int to) {
 		this.to = to;
+	}
+	public NodeType getNodeType() {
+		return nodeType;
+	}
+	public void setNodeType(NodeType nodeType) {
+		this.nodeType = nodeType;
 	}
 	
 	
