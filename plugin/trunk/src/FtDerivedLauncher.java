@@ -1,3 +1,6 @@
+/**
+
+*/
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 

@@ -1,3 +1,9 @@
+/**
+@BoilerplateBegin
+This is the boiler plate license text.
+Copyright (C) Oliver B. Tupman, 2007.
+@BoilerplateEnd
+*/
 package com.dtsworkshop.flextools.builder;
 
 import java.util.Iterator;
