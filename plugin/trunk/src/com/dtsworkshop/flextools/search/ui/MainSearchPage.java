@@ -95,6 +95,7 @@ public class MainSearchPage extends DialogPage implements ISearchPage {
 	
 	private Map<Button, ClassSearcher.LimitTo> limitButtonMap = new HashMap<Button, ClassSearcher.LimitTo>();
 	Button caseSensitiveButton;
+	Button exactMatchButton;
 	
 	public void createControl(Composite parent) {
 		Composite main = new Composite(parent, SWT.NONE);
@@ -109,7 +110,24 @@ public class MainSearchPage extends DialogPage implements ISearchPage {
 		caseSensitiveButton = new Button(main, SWT.CHECK);
 		caseSensitiveButton.setLayoutData(itemGridFactory.create());
 		caseSensitiveButton.setText("Case sensitive");
-		caseSensitiveButton.setEnabled(true); 		
+		caseSensitiveButton.setEnabled(true);
+		
+		exactMatchButton = new Button(main, SWT.CHECK);
+		exactMatchButton.setLayoutData(itemGridFactory.create());
+		exactMatchButton.setText("Exact match");
+		exactMatchButton.setEnabled(true);
+		
+		exactMatchButton.addSelectionListener(new SelectionListener() {
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				caseSensitiveButton.setEnabled(!exactMatchButton.getSelection());
+			}
+			
+		});
+		exactMatchButton.setSelection(false);
 		//TODO: Need to implement restoring of these settings from preferences?
 		caseSensitiveButton.setSelection(false);
 		
