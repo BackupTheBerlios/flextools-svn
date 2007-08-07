@@ -20,6 +20,7 @@ package com.dtsworkshop.flextools.builder;
 
 import com.adobe.flexbuilder.codemodel.definitions.IDefinition;
 import com.adobe.flexbuilder.codemodel.definitions.IFunction;
+import com.adobe.flexbuilder.codemodel.internal.tree.ClassNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.ExpressionNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.FunctionCallNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.KeywordNode;
@@ -43,9 +44,8 @@ public class FunctionCallTypeProcessor extends DefaultNodeProcessor {
 		// TODO Auto-generated method stub
 		FunctionCallType type = (FunctionCallType)super.getNode(node, parentType, buildState);
 		FunctionCallNode callNode = (FunctionCallNode)node;
-		KeywordNode newKeyword = callNode.getNewKeywordNode();
-		
-		type.setIsConstructorCall(newKeyword != null);
+		boolean isConstructorCall = callNode.getNewKeywordNode() != null;
+		type.setIsConstructorCall(isConstructorCall);
 		//IFunction functionDef = (IFunction)callNode.getNameNode();
 		
 		type.setName(ProcessorHelper.getQualifiedName(callNode.getNameNode()));
@@ -56,10 +56,49 @@ public class FunctionCallTypeProcessor extends DefaultNodeProcessor {
 			System.out.println(def.getClass().getCanonicalName());
 		}
 		else {
-			
+			System.out.println("No def");
 		}
+		CallType typeOfCall = CallType.Normal;
+		
+		if(def instanceof ClassNode) {
+			
+			boolean isMethodSameAsClassName = def.getName().equals(ProcessorHelper.getLocalName(type.getName()));
+			if(isConstructorCall) {
+				typeOfCall = CallType.Constructor;
+				type.setType(FunctionCallType.Type.CONSTRUCTOR);
+			}
+			else if(isMethodSameAsClassName && !isConstructorCall) {
+				typeOfCall = CallType.Cast;
+				type.setType(FunctionCallType.Type.CAST);
+			}
+			else {
+				typeOfCall = CallType.Static;
+				type.setType(FunctionCallType.Type.STATIC);
+			}
+		}
+		else {
+			type.setType(FunctionCallType.Type.NORMAL);
+		}
+		
+		//type.setType(FunctionCallType.Type.CAST)
 			
 		return type;
+	}
+	
+	private enum CallType {
+			Static (1)
+			,Constructor(2) 
+			,Normal(4)
+			,Cast(3);
+			
+		private final int callValue;
+		private CallType(int value) {
+			this.callValue = value;
+		}
+		public int getCallValue() {
+			return this.callValue;
+		}
+		
 	}
 
 }

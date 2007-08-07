@@ -93,10 +93,14 @@
     	<complexContent>
     		<extension base="tns:NodeType">
     			<sequence>
-    				<element name="constructor" type="tns:FunctionNodeType">
+                    <element name="extends" type="tns:ClassInterfaceReference" minOccurs="0" maxOccurs="1"></element>
+                    <element name="constructor"
+    					type="tns:FunctionNodeType">
     				</element>
     				<sequence>
-    					<element name="implements" type="string"/>
+                        <element name="implements"
+    						type="tns:ClassInterfaceReference" minOccurs="0"
+    						maxOccurs="unbounded" />
     				</sequence>
     			</sequence>
     			<attribute name="baseClassName" type="string"/>
@@ -125,14 +129,25 @@
     	<complexContent>
     		<extension base="tns:NodeType">
     			<sequence>
-    				<element maxOccurs="unbounded" minOccurs="0" ref="tns:ArgumentNode"/>
+    				<element maxOccurs="unbounded" minOccurs="0"
+    					ref="tns:ArgumentNode" />
     			</sequence>
-    			<attribute name="name" type="string"/>
-    			<attribute name="isConstructorCall" type="boolean"/>
+    			<attribute name="name" type="string" />
+    			<attribute name="isConstructorCall" type="boolean" />
+    			<attribute name="type">
+    				<simpleType>
+    					<restriction base="string">
+    						<enumeration value="static"></enumeration>
+    						<enumeration value="constructor"></enumeration>
+    						<enumeration value="cast"></enumeration>
+    						<enumeration value="normal"></enumeration>
+    					</restriction>
+    				</simpleType>
+    			</attribute>
     		</extension>
     	</complexContent>
     </complexType>
-    
+
 
     <element name="OperatorExpressionNode" type="tns:NodeType"/>
 
@@ -174,5 +189,14 @@
     <complexType name="BuildReference">
     	<attribute name="startPos" type="int"></attribute>
     	<attribute name="endPos" type="int"></attribute>
+    </complexType>
+
+    <complexType name="ClassInterfaceReference">
+    	<complexContent>
+    		<extension base="tns:BuildReference">
+    			<attribute name="shortName" type="string"></attribute>
+    			<attribute name="qualifiedName" type="string"></attribute>
+    		</extension>
+    	</complexContent>
     </complexType>
 </schema>

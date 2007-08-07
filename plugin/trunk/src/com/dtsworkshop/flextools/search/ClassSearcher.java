@@ -19,7 +19,9 @@
 package com.dtsworkshop.flextools.search;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.xmlbeans.XmlObject;
@@ -35,7 +37,9 @@ import com.dtsworkshop.flextools.codemodel.IBuildStateVisitor;
 import com.dtsworkshop.flextools.codemodel.ModelConstants;
 import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
+import com.dtsworkshop.flextools.model.ClassInterfaceReference;
 import com.dtsworkshop.flextools.model.ClassStateType;
+import com.dtsworkshop.flextools.model.IdentifierNodeType;
 import com.dtsworkshop.flextools.model.ImportNodeType;
 import com.dtsworkshop.flextools.model.NodeType;
 
@@ -74,6 +78,7 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		, /** Search for a field on a class */ Field
 		, /** Search for a package */ Package
 		, /** Search for a constructor */Constructor
+		
 	}
 	
 	/**
@@ -88,6 +93,7 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		, /** Limit to implementation of interfaces or classes */ Implementations
 		, /** Limit to references to the class, rather than declarations */ References
 		, /** Look for all occurences of the search text (i.e. no limiting) */ AllOccurences
+		, /** Search for files that FB is not compiling */ Unreferenced
 	}
 	
 	public ClassSearcher(String className, IWorkspace workspace) {
@@ -116,18 +122,16 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		info.containingFile = getBuildStateFile(document, info.project);
 		info.document = document;
 		info.isCaseSensitive = isCaseSensitive;
-		 
-		//searchForClassDeclaration(info);
+		info.isSearchExact = this.exactMatch;
 		
-		//searchForImports(info);
-		
-		//searchForDeriving(info);
 		ISearchCommand [] commands = new ISearchCommand[0];
 		if(limit == LimitTo.AllOccurences) {
 			commands = new ISearchCommand[] { 
 				new DerivingSearchCommand()
 				, new ImportSearchCommand()
-				, new ClassDelcarationSearchCommand()
+				//, new ClassDelcarationSearchCommand()
+				, new ImplementationSearchCommand()
+				, new ReferenceSearchCommand()
 			};
 		}
 		else if(limit == LimitTo.Declarations) {
@@ -139,11 +143,19 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 				};
 		}
 		else if(limit == LimitTo.Implementations) {
-			commands = new ISearchCommand[0];
+			commands = new ISearchCommand[] {
+					new ImplementationSearchCommand()
+			};
 		}
 		else if(limit == LimitTo.References) {
-			commands = new ISearchCommand[0];
+			commands = new ISearchCommand[] {
+				//new ReferenceSearchCommand()
+			};
 		}
+		else if(limit == LimitTo.Unreferenced) {
+			
+		}
+		
 		for(ISearchCommand command : commands) {
 			XmlObject [] results = performSearch(document, command.getSearchText(info));
 			for(XmlObject result : results) {
@@ -151,6 +163,10 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 			}
 		}
 		
+		Set<SearchReference> searchMatches = info.getMatches();
+		for(SearchReference ref : searchMatches) {
+			matches.add(ref);
+		}
 		return true;
 	}
 
@@ -161,7 +177,6 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		try {
 			results = document.selectPath(searchQuery);
 		} catch (RuntimeException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return results;
@@ -192,28 +207,43 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		void processResult(SearchInfo info, XmlObject result);
 	}
 	
+	private class UnreferencedSearchCommand implements ISearchCommand {
+
+		public String getSearchText(SearchInfo info) {
+			return String.format(
+				"%s " +
+				"$this//*"
+			);
+		}
+
+		public void processResult(SearchInfo info, XmlObject result) {
+			Assert.isTrue(result instanceof BuildReference);
+			BuildReference ref = (BuildReference)result;
+			boolean isUnreferenced = ref.getStartPos() == -1 || ref.getEndPos() == -1;
+			
+		}
+		
+	}
+	
 	private class DerivingSearchCommand implements ISearchCommand {
 
 		public String getSearchText(SearchInfo info) {
-			// TODO Auto-generated method stub
 			return String.format("%s" +
-					"$this//mod:ClassNode",
+					"$this//mod:extends",
 					info.searcher.getNamespaceDecl()
 			);
 		}
 
 		public void processResult(SearchInfo info, XmlObject result) {
-			Assert.isTrue(result instanceof ClassStateType);
-			ClassStateType classType = (ClassStateType)result;
-			String extendsName = classType.getBaseClassName();
-			if(extendsName == null) {
-				return;
-			}
+			Assert.isTrue(result instanceof ClassInterfaceReference);
+			ClassInterfaceReference classType = (ClassInterfaceReference)result;
+			String extendsName = classType.getShortName();
+			
 			//boolean isMatch = searchText.equals(extendsName);
-			if(info.isExactMatch(extendsName)) {
-				SearchReference newRef = info.createReference(classType);
-				newRef.setDescription(classType.getQualifiedName());
-				matches.add(newRef);
+			if(info.isMatch(extendsName)) {
+				info.addReference(classType, 
+					String.format("Extends %s", extendsName)
+				);
 			}			
 		}		
 	}
@@ -238,8 +268,55 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 			Object test = type.getDomNode().getOwnerDocument();
 			if(info.isExactMatch(type.getName())) {
 				SearchReference newRef = info.createReference(type);
-				newRef.setDescription(type.getName());
+				newRef.setDescription("Class delcaration " + type.getName());
 				matches.add(newRef);
+			}
+		}
+		
+	}
+	
+	private class ImplementationSearchCommand implements ISearchCommand {
+
+		public String getSearchText(SearchInfo info) {
+			return String.format(
+				"%s " +
+				"$this//mod:implements",
+				getNamespaceDecl()
+			);
+		}
+
+		public void processResult(SearchInfo info, XmlObject result) {
+			Assert.isTrue(result instanceof ClassInterfaceReference);
+			ClassInterfaceReference ref = (ClassInterfaceReference)result;
+			if(info.isMatch(ref.getShortName())) {
+				info.addReference(ref,
+					String.format(
+						"Implements %s", ref.getShortName()
+				));
+			}
+		}
+		
+	}
+	
+	public class ReferenceSearchCommand implements ISearchCommand {
+
+		public String getSearchText(SearchInfo info) {
+			return String.format(
+				"%s " +
+				"$this//mod:IdentifierNode",
+				getNamespaceDecl()
+			);
+		}
+
+		public void processResult(SearchInfo info, XmlObject result) {
+			Assert.isTrue(result instanceof IdentifierNodeType);
+			IdentifierNodeType node = (IdentifierNodeType)result;
+			String comparisonText = (info.isSearchExact) ? node.getQualifiedName() : node.getName();
+			if(info.isMatch(comparisonText)) {
+				info.addReference(
+						node, 
+						"Identifier reference " + comparisonText
+				);
 			}
 		}
 		
@@ -269,7 +346,7 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 			}
 			if(info.isExactMatch(localName)) {
 				SearchReference newRef = info.createReference(importType);
-				newRef.setDescription(importType.getQualifiedName());
+				newRef.setDescription("Import ref " + importType.getQualifiedName());
 				matches.add(newRef);
 			}
 		}
@@ -289,6 +366,13 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		public IProject project;
 		public IFile containingFile;
 		public boolean isCaseSensitive;
+		public boolean isSearchExact = false;
+		
+		private Set<SearchReference> matches = new HashSet<SearchReference>(100);
+		
+		public Set<SearchReference> getMatches() {
+			return matches;
+		}
 		
 		/**
 		 * Convenience method to create a reference from the supplied build
@@ -299,6 +383,16 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		 */
 		public SearchReference createReference(BuildReference sourceRef) {
 			return referenceFromNodeType(project, containingFile, sourceRef);
+		}
+		
+		public SearchReference addReference(BuildReference sourceRef, String description) {
+			SearchReference newRef = createReference(sourceRef);
+			newRef.setDescription(description);
+			//matches.add(newRef);
+			if(!this.matches.contains(newRef)) {
+				this.matches.add(newRef);
+			}
+			return newRef;
 		}
 		
 		/**
@@ -332,10 +426,10 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 				return false;
 			}
 			if(isCaseSensitive) {
-				return searchText.contains(textToMatch);
+				return textToMatch.contains(searchText);
 			}
 			else {
-				return searchText.toLowerCase().contains(textToMatch.toLowerCase());
+				return textToMatch.toLowerCase().contains(searchText.toLowerCase());
 			}
 		}
 

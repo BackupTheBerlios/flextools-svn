@@ -50,14 +50,14 @@ public class IdentifierProcessor extends DefaultNodeProcessor {
 		IdentifierNodeType identifierType = (IdentifierNodeType)super.getNode(node, parentType, buildState);
 		String qualifiedName = ProcessorHelper.getQualifiedName(identNode);
 		
-		String content = "";
-		
-		content = String.format(
-			"qualified name: %s, package name: %s",
-			qualifiedName, identNode.getPackageName()
-		);
-		
-		identifierType.setContents(content);
+//		String content = "";
+//		
+//		content = String.format(
+//			"qualified name: %s, package name: %s",
+//			qualifiedName, identNode.getPackageName()
+//		);
+//		
+//		identifierType.setContents(content);
 		identifierType.setQualifiedName(qualifiedName);
 		identifierType.setName(ProcessorHelper.getLocalName(qualifiedName));
 		return identifierType;

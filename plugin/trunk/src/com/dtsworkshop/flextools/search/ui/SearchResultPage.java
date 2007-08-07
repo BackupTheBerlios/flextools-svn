@@ -18,38 +18,62 @@
 */
 package com.dtsworkshop.flextools.search.ui;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.print.attribute.HashAttributeSet;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.search.internal.ui.text.EditorOpener;
+import org.eclipse.search.internal.ui.text.FileLabelProvider;
+import org.eclipse.search.internal.ui.text.FileTreeContentProvider;
+import org.eclipse.search.internal.ui.text.IFileSearchContentProvider;
+import org.eclipse.search.internal.ui.text.FileSearchPage.DecoratorIgnoringViewerSorter;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE.SharedImages;
+import org.eclipse.ui.internal.navigator.NavigatorContentService;
 
 import com.adobe.flexbuilder.editors.common.editor.IFlexEditor;
+import com.adobe.flexbuilder.editors.common.ui.ObjectLabelProvider;
+import com.adobe.flexbuilder.editors.derived.images.DerivedImages;
+
+import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.search.ClassSearchResult;
 import com.dtsworkshop.flextools.search.SearchReference;
 
 public class SearchResultPage extends AbstractTextSearchViewPage {
 
 	public SearchResultPage() {
-		super(FLAG_LAYOUT_FLAT);
+		super(FLAG_LAYOUT_TREE);
 	}
 
 	@Override
@@ -72,7 +96,7 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 		public Object[] getElements(Object inputElement) {
 			// inputElement is the ClassSearchResult
 			// return matches?
-			log.info("getElements()");
+//			log.info("getElements()");
 			if(result == null) {
 				return new Object[0]; 
 			}
@@ -93,6 +117,64 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 		
 	}
 	
+	
+
+	//TODO: Either reimplement or borrow the EditorOpener
+	private EditorOpener opener = new EditorOpener();
+	
+	private void handleDoubleClick(DoubleClickEvent event) {
+		//TODO: Handle search result double click - show result in viewer
+		Assert.isTrue(event.getSelection() instanceof StructuredSelection);
+		StructuredSelection selection = (StructuredSelection)event.getSelection();
+		if(selection.getFirstElement() instanceof SearchReference) {
+			showReferenceInEditor((SearchReference)selection.getFirstElement());
+		}
+		else if(selection.getFirstElement() instanceof IFile) {
+			try {
+				opener.open((IFile)selection.getFirstElement(), true);
+			} catch (PartInitException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			//TODO: Throw exception on invalid double click selection
+		}
+	}
+	
+	private void showReferenceInEditor(SearchReference referenceToShow) {
+		if(referenceToShow.getFrom() == -1 || referenceToShow.getTo() == -1) {
+			System.out.println("Either the from or to of the reference just double clicked is -1");
+		}
+		try {
+			IEditorPart part = opener.open(referenceToShow.getFilePath(), true);
+			Assert.isTrue(part instanceof IFlexEditor, "Editor is not a flex/FB editor");
+			IFlexEditor editor = (IFlexEditor)part;
+			TextSelection selection = new TextSelection(
+				referenceToShow.getFrom(), referenceToShow.getTo() - referenceToShow.getFrom()	
+			);
+			part.getEditorSite().getSelectionProvider().setSelection(selection);
+			//editor.selectAndRevealInCodeView(referenceToShow.getFrom(), referenceToShow.getTo());
+		} catch (PartInitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void configureTableViewer(TableViewer viewer) {
+		viewer.setUseHashlookup(true); //TODO: What does setUseHashlookup do?
+		viewer.setContentProvider(new ClassContentProvider());
+		viewer.setLabelProvider(new ClassLabelProvider());
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+
+			public void doubleClick(DoubleClickEvent event) {
+				handleDoubleClick(event);
+			}
+			
+		});
+	}
+	
+
 	/**
 	 * Label provider, not implemented yet.
 	 * 
@@ -105,7 +187,7 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 		public Image getColumnImage(Object element, int columnIndex) {
 			// TODO: Need to work out how to obtain images
 			// TODO: What images are required? Mebbe stuff from the default Eclipse?
-			log.info("getColumnImage()");
+			SearchReference ref = (SearchReference)element;
 			return null;
 		}
 
@@ -139,11 +221,82 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 		
 	}
 	
+	private class FlexTreeContentProvider implements ITreeContentProvider {
+		private Map<IFile, List<SearchReference>> mappedReferences;
+		
+		private void createIndex() {
+			Object [] refs = result.getElements();
+			for(Object currentRef : refs) {
+				if(!(currentRef instanceof SearchReference)) {
+					continue;
+				}
+				SearchReference castRef = (SearchReference)currentRef;
+				IFile file = castRef.getFilePath();
+				List<SearchReference> fileReferences = getFileReferences(file);
+				fileReferences.add(castRef);
+			}
+		}
+
+		private List<SearchReference> getFileReferences(IFile file) {
+			List<SearchReference> fileReferences;
+			
+			if(!mappedReferences.containsKey(file)) {
+				mappedReferences.put(file, new ArrayList<SearchReference>(10));
+			}
+			fileReferences = mappedReferences.get(file);
+			return fileReferences;
+		}
+		
+		public Object[] getElements(Object inputElement) {
+			// first call: inputElement = ClassSearchResult
+			Object [] elements = result.getElements();
+			if(elements.length == 0) {
+				return new Object[0];
+			}
+			createIndex();
+			
+			return (Object[])mappedReferences.keySet().toArray(new Object[mappedReferences.keySet().size()]);
+		}
+
+		public Object[] getChildren(Object parentElement) {
+			// For root items, IFile
+			List<SearchReference> references =getFileReferences((IFile)parentElement); 
+			return (Object[])references.toArray(new Object[references.size()]);
+		}
+
+		public Object getParent(Object element) {
+			
+			return null;
+		}
+
+		public boolean hasChildren(Object element) {
+			if(element instanceof IFile) {
+				return true;
+			}
+			return false;
+		}
+
+		public void dispose() {
+			mappedReferences.clear();
+			result = null;
+		}
+		
+		private void resetWithResult(ClassSearchResult newResult) {
+			result = newResult;
+			mappedReferences = new HashMap<IFile, List<SearchReference>>(100);
+		}
+		
+		ClassSearchResult result;
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			//first call: oldInput - null, newInput - ClassSearchResult
+			resetWithResult((ClassSearchResult)newInput);
+		}
+		
+	}
+	
 	@Override
-	protected void configureTableViewer(TableViewer viewer) {
-		viewer.setUseHashlookup(true); //TODO: What does setUseHashlookup do?
-		viewer.setContentProvider(new ClassContentProvider());
-		viewer.setLabelProvider(new ClassLabelProvider());
+	protected void configureTreeViewer(TreeViewer viewer) {
+		viewer.setUseHashlookup(true);
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 
 			public void doubleClick(DoubleClickEvent event) {
@@ -151,38 +304,43 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 			}
 			
 		});
-	}
-	
-	//TODO: Either reimplement or borrow the EditorOpener
-	private EditorOpener opener = new EditorOpener();
-	
-	private void handleDoubleClick(DoubleClickEvent event) {
-		//TODO: Handle search result double click - show result in viewer
-		Assert.isTrue(event.getSelection() instanceof StructuredSelection);
-		StructuredSelection selection = (StructuredSelection)event.getSelection();
-		if(selection.getFirstElement() instanceof SearchReference) {
-			showReferenceInEditor((SearchReference)selection.getFirstElement());
-		}
-		else {
-			//TODO: Throw exception on invalid double click selection
-		}
-	}
-	
-	private void showReferenceInEditor(SearchReference referenceToShow) {
-		try {
-			IEditorPart part = opener.open(referenceToShow.getFilePath(), true);
-			Assert.isTrue(part instanceof IFlexEditor, "Editor is not a flex/FB editor");
-			IFlexEditor editor = (IFlexEditor)part;
-			editor.selectAndRevealInCodeView(referenceToShow.getFrom(), referenceToShow.getTo());
-		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+		viewer.setLabelProvider(new ILabelProvider() {
+						
+			public Image getImage(Object element) {
+				// TODO: Implement image handling!
+				return null;
+			}
 
-	@Override
-	protected void configureTreeViewer(TreeViewer viewer) {
-		//TODO: Need to implement tree-based search result viewer
+			public String getText(Object element) {
+				if(element instanceof IFile) {
+					return ((IFile)element).getProjectRelativePath().toPortableString().replace("/", ".");
+				}
+				else if(element instanceof SearchReference){
+					SearchReference ref = (SearchReference)element;
+					String description = String.format(
+						"%s [%d - %d]",
+						ref.getDescription(), ref.getFrom(), ref.getTo()
+					);
+					return description;
+				}
+				return element.toString();
+			}
+
+			public void addListener(ILabelProviderListener listener) {
+			}
+
+			public void dispose() {
+			}
+
+			public boolean isLabelProperty(Object element, String property) {
+				return false;
+			}
+
+			public void removeListener(ILabelProviderListener listener) {
+			}
+			
+		});
+		viewer.setContentProvider(new FlexTreeContentProvider());
 	}
 	private Logger log = Logger.getLogger(SearchResultPage.class.getName());
 	@Override

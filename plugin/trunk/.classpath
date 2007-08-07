@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="libs/xmlbeans-2.3.0/lib/xbean.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/saxon8.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/xbean.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/xmlbeans-flextoolsmodel.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Adobe Extracted"/>
-	<classpathentry exported="true" kind="lib" path="libs/xmlbeans-2.3.0/lib/xbean_xpath.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/saxon8.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

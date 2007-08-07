@@ -46,12 +46,14 @@ public class ImportNodeProcessor extends DefaultNodeProcessor {
 		//TODO: Establish caching for above, too
 		//NOTE: No definitions if it's an SWC-imported class
 		//TODO: Add import node stuff to build state
-		System.out.println(String.format(
-			"Got imported package '%s'", packageName
-		));
+//		System.out.println(String.format(
+//			"Got imported package '%s'", packageName
+//		));
+		node.getScopeNode();
 		if(defs.length == 1) {
 			if(defs[0] instanceof ClassNode) {
-			ClassNode importedClass = (ClassNode)defs[0];
+				ClassNode importedClass = (ClassNode)defs[0];
+				importedClass.getScopeNode();
 				String qualifiedName = importedClass.getQualifiedName();
 				ProcessorHelper.addImport(buildState, qualifiedName);
 				createdNode.setLocalName(ProcessorHelper.getLocalName(qualifiedName));
@@ -59,6 +61,7 @@ public class ImportNodeProcessor extends DefaultNodeProcessor {
 			}
 			else if(defs[0] instanceof InterfaceNode) {
 				InterfaceNode intNode = (InterfaceNode)defs[0];
+				intNode.getScopeNode();
 				ProcessorHelper.addImport(buildState, intNode.getQualifiedName());
 				createdNode.setLocalName("unknown - need to implement interface handling!");
 			}

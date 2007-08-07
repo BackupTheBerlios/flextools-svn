@@ -34,6 +34,29 @@ public class SearchReference {
 	protected String description;
 	protected BuildReference nodeType;
 	
+	
+	
+	@Override
+	public int hashCode() {
+		
+		return 0;
+	}
+	
+	
+	
+	@Override
+	public boolean equals(Object arg0) {
+		if(!(arg0 instanceof SearchReference)) {
+			return false;
+		}
+		SearchReference other = (SearchReference)arg0;
+		return other.getFilePath().equals(this.filePath) 
+			&& other.getFrom() == getFrom()
+			&& other.getTo() == getTo();
+	}
+
+
+
 	public String getDescription() {
 		return description;
 	}

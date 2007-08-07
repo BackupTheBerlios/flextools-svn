@@ -41,6 +41,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.adobe.flexbuilder.codemodel.common.CMFactory;
+import com.adobe.flexbuilder.codemodel.definitions.IASScope;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.adobe.flexbuilder.project.FlexProjectManager;
@@ -152,6 +153,7 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 		IPath filePath = file.getLocation();
 		com.adobe.flexbuilder.codemodel.project.IProject flexProject = CMFactory.getManager().getProjectFor(getProject());
 		IFileNode fileNode = flexProject.findFileNodeInProject(filePath);
+		IASScope scopedNode = fileNode.getScope();
 		StringBuilder outputData = new StringBuilder();
 		//outputData = getOutputDataFromHandDump(file, fileNode);
 		ModelProcessor processor = new ModelProcessor();

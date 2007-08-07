@@ -36,33 +36,33 @@ public class VariableProcessor extends DefaultNodeProcessor {
 		// TODO Auto-generated method stub
 		NodeType type= (NodeType)super.getNode(node, parentType, buildState);
 		IVariable variable = (IVariable)node;
-		String content = type.getContents();
-		content += String.format(
-			" and variable type '%s'",
-			variable.getVariableType()
-		);
-		type.setContents(content);
-		type.addNewStopNode().setContents(content);
+//		String content = type.getContents();
+//		content += String.format(
+//			" and variable type '%s'",
+//			variable.getVariableType()
+//		);
+//		type.setContents(content);
+//		type.addNewStopNode().setContents(content);
 		IVariable var = (IVariable)node;
-		System.out.println(String.format(
-			"Variable name %s, type: %s, classification: %s",
-			var.getName(), var.getVariableType(), var.getVariableClassification().toString()
-		));
-		System.out.println(String.format(
-			"Variable package name: %s, qualified name: %s, is implicit? %s",
-			var.getPackageName(), var.getQualifiedName(),
-			(var.isImplicit()) ? "yes" : "no"
-		));
+//		System.out.println(String.format(
+//			"Variable name %s, type: %s, classification: %s",
+//			var.getName(), var.getVariableType(), var.getVariableClassification().toString()
+//		));
+//		System.out.println(String.format(
+//			"Variable package name: %s, qualified name: %s, is implicit? %s",
+//			var.getPackageName(), var.getQualifiedName(),
+//			(var.isImplicit()) ? "yes" : "no"
+//		));
 		VariableNode varNode = (VariableNode)var;
 		ExpressionNode typeNode = (ExpressionNode)varNode.getTypeNode();
 		if(typeNode instanceof IdentifierNode) {
 			IdentifierNode identNode = (IdentifierNode)typeNode;
 			String identText = identNode.getText();
 			String nameString = identNode.getNameString();
-			System.out.println(String.format(
-					"Variable has ident node of %s %s"
-				, identText, nameString
-			));
+//			System.out.println(String.format(
+//					"Variable has ident node of %s %s"
+//				, identText, nameString
+//			));
 		}
 		return type;
 	}
