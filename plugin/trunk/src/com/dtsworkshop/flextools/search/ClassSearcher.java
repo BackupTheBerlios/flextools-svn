@@ -23,10 +23,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.xmlbeans.XmlObject;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Path;
@@ -57,6 +56,8 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 	protected LimitTo limit = LimitTo.AllOccurences;
 	protected boolean isCaseSensitive = false;
 	protected boolean exactMatch = false;
+	
+	List<BuildReference> storedMatches;
 	
 	/**
 	 * Defines what the searcher should be looking for with regards to 
@@ -112,17 +113,20 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		return query;
 	}
 
-
+	private static Logger log = Logger.getLogger("ClassSearcher"); 
+	
 	public boolean visit(BuildStateDocument document) {
 		String projectName = document.getBuildState().getProject();
 
-		SearchInfo info = new SearchInfo();
+		SearchInfo info = new SearchInfo(this);
 		info.searcher = this;
 		info.project = workspace.getRoot().getProject(projectName);
 		info.containingFile = getBuildStateFile(document, info.project);
 		info.document = document;
 		info.isCaseSensitive = isCaseSensitive;
 		info.isSearchExact = this.exactMatch;
+		
+		log.info(String.format("Visiting file %s", info.containingFile.getName()));
 		
 		ISearchCommand [] commands = new ISearchCommand[0];
 		if(limit == LimitTo.AllOccurences) {
@@ -155,18 +159,16 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		else if(limit == LimitTo.Unreferenced) {
 			
 		}
-		
+		storedMatches = new ArrayList<BuildReference>();
 		for(ISearchCommand command : commands) {
+			command.setSearcher(this);
 			XmlObject [] results = performSearch(document, command.getSearchText(info));
 			for(XmlObject result : results) {
 				command.processResult(info, result);
 			}
 		}
 		
-		Set<SearchReference> searchMatches = info.getMatches();
-		for(SearchReference ref : searchMatches) {
-			matches.add(ref);
-		}
+		log.info(String.format("Got %d matches", matches.size()));
 		return true;
 	}
 
@@ -181,280 +183,7 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		}
 		return results;
 	}
-
-	/**
-	 * Defines a command that can take part in the search. Essentially
-	 * an implementor should construct the appropriate xpath query
-	 * and will then be called with the results.
-	 * 
-	 * @author Oliver Tupman
-	 *
-	 */
-	public interface ISearchCommand {
-		/** 
-		 * Gets the XPath command to execute upon the build state.
-		 * 
-		 * @param info The SearchInfo that defines the general parameters
-		 * @return The constructed xpath
-		 */
-		String getSearchText(SearchInfo info);
-		/**
-		 * Process a result from the xpath query
-		 * 
-		 * @param info The search information/parameters
-		 * @param result The result found
-		 */
-		void processResult(SearchInfo info, XmlObject result);
-	}
 	
-	private class UnreferencedSearchCommand implements ISearchCommand {
-
-		public String getSearchText(SearchInfo info) {
-			return String.format(
-				"%s " +
-				"$this//*"
-			);
-		}
-
-		public void processResult(SearchInfo info, XmlObject result) {
-			Assert.isTrue(result instanceof BuildReference);
-			BuildReference ref = (BuildReference)result;
-			boolean isUnreferenced = ref.getStartPos() == -1 || ref.getEndPos() == -1;
-			
-		}
-		
-	}
-	
-	private class DerivingSearchCommand implements ISearchCommand {
-
-		public String getSearchText(SearchInfo info) {
-			return String.format("%s" +
-					"$this//mod:extends",
-					info.searcher.getNamespaceDecl()
-			);
-		}
-
-		public void processResult(SearchInfo info, XmlObject result) {
-			Assert.isTrue(result instanceof ClassInterfaceReference);
-			ClassInterfaceReference classType = (ClassInterfaceReference)result;
-			String extendsName = classType.getShortName();
-			
-			//boolean isMatch = searchText.equals(extendsName);
-			if(info.isMatch(extendsName)) {
-				info.addReference(classType, 
-					String.format("Extends %s", extendsName)
-				);
-			}			
-		}		
-	}
-
-
-	private class ClassDelcarationSearchCommand implements ISearchCommand {
-
-		public String getSearchText(SearchInfo info) {
-			// TODO Auto-generated method stub
-			return String.format(
-					"%s" +
-					"$this//mod:ClassNode",
-					getNamespaceDecl()
-			);
-		}
-
-		public void processResult(SearchInfo info, XmlObject result) {
-			if(!(result instanceof ClassStateType)) {
-				return;
-			}
-			ClassStateType type = (ClassStateType)result;
-			Object test = type.getDomNode().getOwnerDocument();
-			if(info.isExactMatch(type.getName())) {
-				SearchReference newRef = info.createReference(type);
-				newRef.setDescription("Class delcaration " + type.getName());
-				matches.add(newRef);
-			}
-		}
-		
-	}
-	
-	private class ImplementationSearchCommand implements ISearchCommand {
-
-		public String getSearchText(SearchInfo info) {
-			return String.format(
-				"%s " +
-				"$this//mod:implements",
-				getNamespaceDecl()
-			);
-		}
-
-		public void processResult(SearchInfo info, XmlObject result) {
-			Assert.isTrue(result instanceof ClassInterfaceReference);
-			ClassInterfaceReference ref = (ClassInterfaceReference)result;
-			if(info.isMatch(ref.getShortName())) {
-				info.addReference(ref,
-					String.format(
-						"Implements %s", ref.getShortName()
-				));
-			}
-		}
-		
-	}
-	
-	public class ReferenceSearchCommand implements ISearchCommand {
-
-		public String getSearchText(SearchInfo info) {
-			return String.format(
-				"%s " +
-				"$this//mod:IdentifierNode",
-				getNamespaceDecl()
-			);
-		}
-
-		public void processResult(SearchInfo info, XmlObject result) {
-			Assert.isTrue(result instanceof IdentifierNodeType);
-			IdentifierNodeType node = (IdentifierNodeType)result;
-			String comparisonText = (info.isSearchExact) ? node.getQualifiedName() : node.getName();
-			if(info.isMatch(comparisonText)) {
-				info.addReference(
-						node, 
-						"Identifier reference " + comparisonText
-				);
-			}
-		}
-		
-	}
-	
-	private class ImportSearchCommand implements ISearchCommand {
-
-		public String getSearchText(SearchInfo info) {
-			// TODO Auto-generated method stub
-			return String.format(
-					"%s" +
-					"$this//mod:ImportNode",
-					getNamespaceDecl()
-			);
-		}
-
-		public void processResult(SearchInfo info, XmlObject result) {
-			if(!(result instanceof ImportNodeType)) {
-				return;
-			}
-			ImportNodeType importType = (ImportNodeType)result;
-			 
-			String localName = importType.getLocalName();
-			if(localName == null) {
-				//TODO: Work out why the local name might be null.
-				return;
-			}
-			if(info.isExactMatch(localName)) {
-				SearchReference newRef = info.createReference(importType);
-				newRef.setDescription("Import ref " + importType.getQualifiedName());
-				matches.add(newRef);
-			}
-		}
-		
-	}
-	
-	/**
-	 * Defines the search information/parameters.
-	 * 
-	 * 
-	 * @author Oliver Tupman
-	 *
-	 */
-	private class SearchInfo {
-		public ClassSearcher searcher;
-		public BuildStateDocument document;
-		public IProject project;
-		public IFile containingFile;
-		public boolean isCaseSensitive;
-		public boolean isSearchExact = false;
-		
-		private Set<SearchReference> matches = new HashSet<SearchReference>(100);
-		
-		public Set<SearchReference> getMatches() {
-			return matches;
-		}
-		
-		/**
-		 * Convenience method to create a reference from the supplied build
-		 * state match.
-		 * 
-		 * @param sourceRef The build match/reference that should be given to the user
-		 * @return The constructed search reference.
-		 */
-		public SearchReference createReference(BuildReference sourceRef) {
-			return referenceFromNodeType(project, containingFile, sourceRef);
-		}
-		
-		public SearchReference addReference(BuildReference sourceRef, String description) {
-			SearchReference newRef = createReference(sourceRef);
-			newRef.setDescription(description);
-			//matches.add(newRef);
-			if(!this.matches.contains(newRef)) {
-				this.matches.add(newRef);
-			}
-			return newRef;
-		}
-		
-		/**
-		 * Determine whether the text provided is a match against the search text.
-		 * The match will occur exact or in-exact depending on the search options
-		 * provided by the client code.
-		 * 
-		 * 
-		 * @param textToMatch The text to compare with the search text
-		 * @return True - is a match; false otherwise.
-		 */
-		public boolean isMatch(String textToMatch) {
-			if(exactMatch) {
-				return isExactMatch(textToMatch);
-			}
-			else {
-				return containsText(textToMatch);
-			}
-		}
-
-		/**
-		 * Determines whether the text provided contains the text to search for.
-		 * Case sensitivity is determined by the options provided by the client
-		 * code.
-		 * 
-		 * @param textToMatch The text to look for a match
-		 * @return True - the text is contained in the parameter; false otherwise
-		 */
-		public boolean containsText(String textToMatch) {
-			if(textToMatch == null) {
-				return false;
-			}
-			if(isCaseSensitive) {
-				return textToMatch.contains(searchText);
-			}
-			else {
-				return textToMatch.toLowerCase().contains(searchText.toLowerCase());
-			}
-		}
-
-		/**
-		 * Determines whether the text provided is an exact match with the search
-		 * text.
-		 * 
-		 * @param textToMatch The text to try and match with.
-		 * @return True - the text matches the search text; false otherwise
-		 */
-		public boolean isExactMatch(String textToMatch) {
-			if(textToMatch == null) {
-				return false;
-			}
-			if(isCaseSensitive) {
-				return searchText.equals(textToMatch);
-			}
-			else {
-				return searchText.compareToIgnoreCase(textToMatch) == 0;
-			}
-		}
-	}
-	
-	
-
 	public String getSearchText() {
 		return searchText;
 	}

@@ -301,6 +301,7 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 		try {
 			getProject().accept(new SampleResourceVisitor());
 		} catch (CoreException e) {
+			e.printStackTrace();
 		}
 	}
 

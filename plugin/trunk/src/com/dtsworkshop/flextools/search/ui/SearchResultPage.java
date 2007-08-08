@@ -64,10 +64,10 @@ import org.eclipse.ui.internal.navigator.NavigatorContentService;
 
 import com.adobe.flexbuilder.editors.common.editor.IFlexEditor;
 import com.adobe.flexbuilder.editors.common.ui.ObjectLabelProvider;
-import com.adobe.flexbuilder.editors.derived.images.DerivedImages;
 
 import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.search.ClassSearchResult;
+import com.dtsworkshop.flextools.search.SearchQuery;
 import com.dtsworkshop.flextools.search.SearchReference;
 
 public class SearchResultPage extends AbstractTextSearchViewPage {
@@ -79,7 +79,7 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 	@Override
 	protected void clear() {
 		// TODO: Need to clear the search page
-
+		((TreeViewer)getViewer()).setInput(new ClassSearchResult(new SearchQuery()));
 	}
 
 	/**
@@ -259,9 +259,16 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 		}
 
 		public Object[] getChildren(Object parentElement) {
-			// For root items, IFile
-			List<SearchReference> references =getFileReferences((IFile)parentElement); 
-			return (Object[])references.toArray(new Object[references.size()]);
+			System.out.println("Getting children for " + parentElement);
+			Object [] children = null;
+			if(parentElement instanceof IFile) {
+				List<SearchReference> references =getFileReferences((IFile)parentElement); 
+				children = (Object[])references.toArray(new Object[references.size()]);
+			}
+			else {
+				children = new Object[0];
+			}
+			return children;
 		}
 
 		public Object getParent(Object element) {
@@ -289,7 +296,9 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 		ClassSearchResult result;
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			//first call: oldInput - null, newInput - ClassSearchResult
-			resetWithResult((ClassSearchResult)newInput);
+			if(oldInput != newInput) {
+				resetWithResult((ClassSearchResult)newInput);				
+			}			
 		}
 		
 	}
