@@ -10,7 +10,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 public class AsRefactoring extends Refactoring {
 
 	public AsRefactoring() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	@Override
@@ -23,8 +23,8 @@ public class AsRefactoring extends Refactoring {
 	@Override
 	public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
-		// TODO Auto-generated method stub
-		return null;
+		RefactoringStatus status = RefactoringStatus.createWarningStatus("Initial conditions aren't checked yet");
+		return status;
 	}
 
 	@Override

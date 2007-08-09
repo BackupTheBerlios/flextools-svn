@@ -10,14 +10,27 @@
 
 		</viewerContribution>
 	-->
+	<!-- 
+		ActionScript editor menu id: #com.adobe.flexbuilder.editors.actionscript.ContextMenuContext
+		Custom editor id: com.dtsworkshop.flextools.sampleEditors.XMLEditor
+	-->
 		<viewerContribution id="playaround.viewContribution2"
-			targetID="com.dtsworkshop.flextools.sampleEditors.XMLEditor">
-			<action class="com.dtsworkshop.flextools.actions.refactor.ExtractMethodEditorAction"
-				id="com.dtsworkshop.flextools.actions.refactor.extractMethod" label="Extract method..."
-				menubarPath="playaround.menu/group1" />
+			targetID="#com.adobe.flexbuilder.editors.actionscript.ContextMenuContext">
+			<action
+         class="com.dtsworkshop.flextools.actions.refactor.ExtractMethodEditorAction"
+         icon="icons/standard small icon.png"
+         id="com.dtsworkshop.flextools.actions.refactor.extractMethod"
+         label="Extract method..."
+         menubarPath="playaround.menu/group1"/>
 			<menu id="playaround.menu" label="Refactor...">
 				<separator name="group1" />
 			</menu>
+   <action
+         class="com.dtsworkshop.flextools.actions.refactor.RenameClassActionFromEditor"
+         icon="icons/standard small icon.png"
+         id="com.dtsworkshop.flextools.refactoring.actions.RenameClass"
+         label="Rename Class..."
+         menubarPath="playaround.menu/group1"/>
 		</viewerContribution>
 	</extension>
  <extension

@@ -13,7 +13,7 @@ public class RenameClassWizard extends RefactoringWizard {
 	@Override
 	protected void addUserInputPages() {
 		// TODO Auto-generated method stub
-
+		addPage(new TypeNameInputPage("Rename class"));
 	}
 
 }
