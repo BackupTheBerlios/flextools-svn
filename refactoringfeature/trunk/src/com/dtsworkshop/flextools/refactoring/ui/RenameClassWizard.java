@@ -1,7 +1,10 @@
 package com.dtsworkshop.flextools.refactoring.ui;
 
+import org.eclipse.debug.internal.ui.views.memory.SetPaddedStringPreferencePage;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
+
+import com.dtsworkshop.flextools.refactoring.ClassNameRefactoring;
 
 public class RenameClassWizard extends RefactoringWizard {
 
@@ -12,8 +15,9 @@ public class RenameClassWizard extends RefactoringWizard {
 
 	@Override
 	protected void addUserInputPages() {
-		// TODO Auto-generated method stub
-		addPage(new TypeNameInputPage("Rename class"));
+		
+		setDefaultPageTitle("Rename class");
+		addPage(new TypeNameInputPage("Rename class", (ClassNameRefactoring)getRefactoring()));
 	}
 
 }

@@ -9,7 +9,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import com.dtsworkshop.flextools.refactoring.AsRefactoring;
+import com.dtsworkshop.flextools.refactoring.ClassNameRefactoring;
 import com.dtsworkshop.flextools.refactoring.ui.RenameClassWizard;
 
 public class RenameClassAction implements IWorkbenchWindowActionDelegate {
@@ -34,7 +34,7 @@ public class RenameClassAction implements IWorkbenchWindowActionDelegate {
 
 	public void run(IAction action) {
 		// TODO Auto-generated method stub
-		AsRefactoring refactorer = new AsRefactoring();
+		ClassNameRefactoring refactorer = new ClassNameRefactoring();
 		int info = RefactoringWizard.DIALOG_BASED_USER_INTERFACE;
 		RenameClassWizard wizard = new RenameClassWizard(refactorer, info);
 		RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(wizard);
