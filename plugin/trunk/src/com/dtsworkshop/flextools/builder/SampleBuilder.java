@@ -6,23 +6,9 @@ Copyright (C) Oliver B. Tupman, 2007.
 */
 package com.dtsworkshop.flextools.builder;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.eclipse.core.internal.runtime.Log;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -34,19 +20,12 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import com.adobe.flexbuilder.codemodel.common.CMFactory;
 import com.adobe.flexbuilder.codemodel.definitions.IASScope;
+import com.adobe.flexbuilder.codemodel.project.IProjectLoadListener;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
-import com.adobe.flexbuilder.project.FlexProjectManager;
-import com.adobe.flexbuilder.project.IFlexProject;
-import com.dtsworkshop.flextools.actions.ExtractMethodAction;
 import com.dtsworkshop.flextools.codemodel.CodeModelManager;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 
@@ -57,7 +36,7 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 
 	private static final String MARKER_TYPE = "com.dtsworkshop.flextools.xmlProblem";
 	
-	class SampleDeltaVisitor implements IResourceDeltaVisitor {
+	class FlexDeltaVisitor implements IResourceDeltaVisitor {
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -66,10 +45,15 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 		public boolean visit(IResourceDelta delta) throws CoreException {
 			IResource resource = delta.getResource();
 			log.info(String.format("SampleDeltaVisitor:visit() Visiting %s", resource.getName()));
+			boolean isParseableResource = isParseableResource(resource);
 			switch (delta.getKind()) {
+			case IResourceDelta.CHANGED:
+				if(isParseableResource) {
+					CodeModelManager.getManager().removeBuildState(getProject(), (IFile)resource);
+				}
 			case IResourceDelta.ADDED:
 				// handle added resource
-				boolean isParseableResource = isParseableResource(resource);
+				
 				if(isParseableResource) {
 					IFile file = (IFile)resource;
 					log.info(String.format("Visiting resource %s", resource.getName()));
@@ -87,10 +71,10 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 				}
 				break;
 			case IResourceDelta.REMOVED:
-				// handle removed resource
-				break;
-			case IResourceDelta.CHANGED:
-				// handle changed resource
+				if(isParseableResource) {
+					IFile fileResource = (IFile)resource;
+					CodeModelManager.getManager().removeBuildState(getProject(), fileResource);
+				}
 				
 				break;
 			}
@@ -147,8 +131,8 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 		boolean isParseableResource = resource.getName().endsWith(".as") || resource.getName().endsWith(".mxml");
 		return isParseableResource;
 	}
-
-	private boolean runWithFile(IFile file) {
+	
+	private boolean runWithRegisteredFile(IFile file) {
 		
 		IPath filePath = file.getLocation();
 		com.adobe.flexbuilder.codemodel.project.IProject flexProject = CMFactory.getManager().getProjectFor(getProject());
@@ -160,76 +144,85 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 		
 		BuildStateDocument stateDocument = processor.getStateDocument(fileNode, file);
 		CodeModelManager.getManager().storeBuildState(stateDocument);
-		
-//		outputData.append(processor.dumpNodes(fileNode, file));
-//		String fileLocation = getBuildOutputFileLocation(file);
-//		
-//		try {
-//			File targetFile = new File(fileLocation);
-//			if(!targetFile.exists()) {
-//				targetFile.createNewFile();
-//			}
-//			BufferedWriter writer = new BufferedWriter(new FileWriter(fileLocation));
-//			writer.write(outputData.toString());
-//			writer.close();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return false;
-//		}
 		return true;
 	}
 
-
-	private StringBuilder getOutputDataFromHandDump(IFile file, IFileNode fileNode) {
-		StringBuilder outputData = new StringBuilder();
-		String fileData = getFileContents(file);
-		outputData.append(String.format(
-			"<%s:buildState xmlns:%s=\"%s\" file=\"%s\" project=\"%s\">",
-			xmlns,
-			xmlns,
-			xmlDumpNamespace,
-			file.getProjectRelativePath(),
-			file.getProject().getName()
-		));
-		
-		dumpNodes(fileData, fileNode, outputData);
-		outputData.append(String.format("</%s:buildState>", xmlns));
-		return outputData;
+	private boolean runWithFile(IFile file) {
+		//TODO: Implement file registration properly.
+//		CMFactory.getRegistrar().registerProject(getProject(), 
+//				new IProjectLoadListener() {
+//					public boolean isCancelled() {
+//						return false;
+//					}
+//
+//					public void loading(String arg0) {
+//					}
+//
+//					public void phaseEnd(int arg0) {
+//						runWithRegisteredFile(file);
+//					}
+//
+//					public void phaseStart(int arg0) {
+//					}
+//
+//					public void progress(int arg0) {
+//					}		
+//		}
+//		);
+		runWithRegisteredFile(file);
+		return true;
 	}
 
+//
+//	private StringBuilder getOutputDataFromHandDump(IFile file, IFileNode fileNode) {
+//		StringBuilder outputData = new StringBuilder();
+//		String fileData = getFileContents(file);
+//		outputData.append(String.format(
+//			"<%s:buildState xmlns:%s=\"%s\" file=\"%s\" project=\"%s\">",
+//			xmlns,
+//			xmlns,
+//			xmlDumpNamespace,
+//			file.getProjectRelativePath(),
+//			file.getProject().getName()
+//		));
+//		
+//		dumpNodes(fileData, fileNode, outputData);
+//		outputData.append(String.format("</%s:buildState>", xmlns));
+//		return outputData;
+//	}
+//
+//
+//	private String getBuildOutputFileLocation(IFile file) {
+//		String fileLocation = file.getProjectRelativePath().toString();
+//		fileLocation = fileLocation.replaceAll("/", ".");
+//		fileLocation = fileLocation.replaceAll(":", "-");
+//		
+//		fileLocation = dumpLocation + "\\" +  fileLocation + ".xml";
+//		return fileLocation;
+//	}
 
-	private String getBuildOutputFileLocation(IFile file) {
-		String fileLocation = file.getProjectRelativePath().toString();
-		fileLocation = fileLocation.replaceAll("/", ".");
-		fileLocation = fileLocation.replaceAll(":", "-");
-		
-		fileLocation = dumpLocation + "\\" +  fileLocation + ".xml";
-		return fileLocation;
-	}
-
-	private String getFileContents(IFile file) {
-		StringBuilder builder = new StringBuilder();
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
-			
-			String input = "";
-			while((input = reader.readLine()) != null) {
-				builder.append(input);
-				builder.append("\n");
-			}
-			reader.close();
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return builder.toString();
-	}
+//	private String getFileContents(IFile file) {
+//		StringBuilder builder = new StringBuilder();
+//		try {
+//			BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
+//			
+//			String input = "";
+//			while((input = reader.readLine()) != null) {
+//				builder.append(input);
+//				builder.append("\n");
+//			}
+//			reader.close();
+//		} catch (CoreException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return builder.toString();
+//	}
 	
-	class SampleResourceVisitor implements IResourceVisitor {
+	class FlexResourceVisitor implements IResourceVisitor {
 		public boolean visit(IResource resource) {
 
 			boolean isParseableResource = isParseableResource(resource);
@@ -299,7 +292,10 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 	protected void fullBuild(final IProgressMonitor monitor)
 			throws CoreException {
 		try {
-			getProject().accept(new SampleResourceVisitor());
+			monitor.beginTask("Removing project state.", 1);
+			CodeModelManager.getManager().removeProjectState(getProject());
+			monitor.worked(1);
+			getProject().accept(new FlexResourceVisitor());
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -308,7 +304,6 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 
 	protected void incrementalBuild(IResourceDelta delta,
 			IProgressMonitor monitor) throws CoreException {
-		// the visitor does the work.
-		delta.accept(new SampleDeltaVisitor());
+		delta.accept(new FlexDeltaVisitor());
 	}
 }

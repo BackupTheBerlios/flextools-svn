@@ -78,6 +78,7 @@ public class MainSearchPage extends DialogPage implements ISearchPage {
 		searchQuery.getSearcher()
 			.setLimit(searchLimit)
 			.setCaseSensitive(caseSensitiveButton.getSelection())
+			.setExactMatch(exactMatchButton.getSelection())
 			.setSearchText(classSearchBox.getText());
 		
 		//NewSearchUI.runQuery(new SearchQuery(classSearchBox.getText()));

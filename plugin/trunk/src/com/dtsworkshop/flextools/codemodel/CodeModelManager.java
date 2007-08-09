@@ -46,7 +46,7 @@ import com.dtsworkshop.flextools.utils.ResourceHelper;
 
 public class CodeModelManager {
 	private static CodeModelManager manager;
-	public static final String stateDirectoryRoot = "d:\\builder state";
+	public static final String stateDirectoryRoot = "c:\\builder state";
 	static {
 		manager = new CodeModelManager();
 		manager.initialise(new File(stateDirectoryRoot));
@@ -55,6 +55,7 @@ public class CodeModelManager {
 		return manager;
 	}
 	
+		
 	private Map<String, Map<String, BuildStateDocument>> projectStates;
 	
 	public ModelInfo getInfo() {
@@ -137,8 +138,22 @@ public class CodeModelManager {
 		projectStates.put(projectDirectory.getName(), projectStateMap);
 	}
 	
-	public void removeProjectState(IProject project) {
-		projectStates.remove(project.getName());
+	public boolean removeProjectState(IProject project) {
+		if(projectStates.containsKey(project.getName())) {
+			projectStates.remove(project.getName());
+		}
+		
+		return removeStateFiles(project);
+	}
+	
+	private boolean removeStateFiles(IProject project) {
+		String projectPath = getProjectPath(project.getName());
+		File projectDir = new File(projectPath);
+		boolean success = false;
+		if(projectDir.exists()) {
+			 success = projectDir.delete();
+		}
+		return success;
 	}
 	
 	public void removeBuildState(IProject project, IFile resource) {

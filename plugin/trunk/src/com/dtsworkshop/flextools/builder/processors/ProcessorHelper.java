@@ -54,6 +54,9 @@ public class ProcessorHelper {
 		if(lastDot != -1) {
 			localName = qualifiedName.substring(lastDot + 1);
 		}
+		else {
+			return qualifiedName;
+		}
 		return localName;
 	}
 	

@@ -138,7 +138,8 @@ public class SearchInfo {
 			return textToMatch.contains(searcher2.searchText);
 		}
 		else {
-			return textToMatch.toLowerCase().contains(searcher2.searchText.toLowerCase());
+			boolean result = textToMatch.toLowerCase().contains(searcher2.searchText.toLowerCase());
+			return result;
 		}
 	}
 
