@@ -36,6 +36,10 @@ public class SearchQuery implements ISearchQuery {
 	
 	public SearchQuery() {
 		result = new ClassSearchResult(this);
+		searcher = new ClassSearcher(
+				"",
+				ResourcesPlugin.getWorkspace()
+			);
 	}
 	
 	public boolean canRerun() {

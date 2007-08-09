@@ -188,8 +188,9 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		return searchText;
 	}
 
-	public void setSearchText(String className) {
+	public ClassSearcher setSearchText(String className) {
 		this.searchText = className;
+		return this;
 	}
 
 	public LimitTo getLimit() {
