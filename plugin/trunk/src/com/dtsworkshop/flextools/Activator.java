@@ -23,6 +23,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.dtsworkshop.flextools.codemodel.CodeModelManager;
+import com.dtsworkshop.flextools.codemodel.IProjectStateManager;
+import com.dtsworkshop.flextools.codemodel.WorkingSpaceModelStateManager;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -34,13 +36,18 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+	private static IProjectStateManager stateManager = new WorkingSpaceModelStateManager();
+	
+	public static IProjectStateManager getStateManager() {
+		return stateManager;
+	}
 	
 	/**
 	 * The constructor
 	 */
 	public Activator() {
 		// Force initialisation of the model manager
-		CodeModelManager.getManager();
+		//CodeModelManager.getManager();
 	}
 
 	/*
@@ -50,6 +57,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		stateManager.initialise();
 	}
 
 	/*

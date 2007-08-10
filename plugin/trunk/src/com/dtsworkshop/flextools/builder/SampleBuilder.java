@@ -26,6 +26,7 @@ import com.adobe.flexbuilder.codemodel.definitions.IASScope;
 import com.adobe.flexbuilder.codemodel.project.IProjectLoadListener;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
+import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.codemodel.CodeModelManager;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 
@@ -49,7 +50,7 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 			switch (delta.getKind()) {
 			case IResourceDelta.CHANGED:
 				if(isParseableResource) {
-					CodeModelManager.getManager().removeBuildState(getProject(), (IFile)resource);
+					Activator.getStateManager().removeBuildState(getProject(), (IFile)resource);
 				}
 			case IResourceDelta.ADDED:
 				// handle added resource
@@ -143,7 +144,7 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 		ModelProcessor processor = new ModelProcessor();
 		
 		BuildStateDocument stateDocument = processor.getStateDocument(fileNode, file);
-		CodeModelManager.getManager().storeBuildState(stateDocument);
+		Activator.getStateManager().storeBuildState(stateDocument);
 		return true;
 	}
 
@@ -293,7 +294,7 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 			throws CoreException {
 		try {
 			monitor.beginTask("Removing project state.", 1);
-			CodeModelManager.getManager().removeProjectState(getProject());
+			Activator.getStateManager().removeProjectState(getProject());
 			monitor.worked(1);
 			getProject().accept(new FlexResourceVisitor());
 		} catch (CoreException e) {

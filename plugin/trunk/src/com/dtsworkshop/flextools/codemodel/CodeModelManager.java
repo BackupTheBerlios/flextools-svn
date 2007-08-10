@@ -39,42 +39,43 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
+import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.NodeType;
 import com.dtsworkshop.flextools.utils.ResourceHelper;
 
-public class CodeModelManager {
+/**
+ * The CodeModelManager maintains a single point of entry to the build states
+ * that are created when building a file or project.
+ * 
+ * 
+ * @author otupman
+ *
+ */
+public class CodeModelManager extends AbstractStateManager implements IProjectStateManager {
 	private static CodeModelManager manager;
 	public static final String stateDirectoryRoot = "c:\\builder state";
 	static {
 		manager = new CodeModelManager();
 		manager.initialise(new File(stateDirectoryRoot));
 	}
-	public static CodeModelManager getManager() {
+	/**
+	 * Gets the instance of the manager.
+	 * 
+	 * NB: Not guaranteed to be thread safe!
+	 * 
+	 * @return
+	 */
+	public static IProjectStateManager getManager() {
 		return manager;
 	}
 	
 		
-	private Map<String, Map<String, BuildStateDocument>> projectStates;
-	
-	public ModelInfo getInfo() {
-		ModelInfo info = new ModelInfo();
-		//TODO: Cache this info if the model hasn't changed.
-		
-		info.numberOfProjects = projectStates.keySet().size();
-		for(String projectName : projectStates.keySet()) {
-			info.numberOfStates+= projectStates.get(projectName).values().size();
-		}
-		
-		return info;
-	}
-	
-	public class ModelInfo {
-		public int numberOfProjects;
-		public int numberOfStates;
-	}
-	
+	Map<String, Map<String, BuildStateDocument>> projectStates;
+	/* (non-Javadoc)
+	 * @see com.dtsworkshop.flextools.codemodel.IProjectStateManager#acceptVisitor(com.dtsworkshop.flextools.codemodel.IBuildStateVisitor, org.eclipse.core.runtime.IProgressMonitor)
+	 */
 	public void acceptVisitor(IBuildStateVisitor visitor, IProgressMonitor monitor) {
 		Collection<Map<String, BuildStateDocument>> states = projectStates.values();
 		List<BuildStateDocument> buildStates = new ArrayList<BuildStateDocument>(100);
@@ -85,29 +86,14 @@ public class CodeModelManager {
 			buildStates.addAll(projectState.values());
 		}
 		
-		for(BuildStateDocument currentDoc : buildStates) {
-			if(monitor.isCanceled()) {
-				return;
-			}
-			monitor.subTask(
-				String.format("Checking %s", currentDoc.getBuildState().getFile())	
-			);
-			monitor.worked(1);
-			boolean carryOn = visitor.visit(currentDoc);
-			if(!carryOn) {
-				break; // Stop!
-			}
-			else {
-				// Carry on! (Mark & Lard from Radio 1 reference :D)
-			}
-		}
+		processVisitor(visitor, monitor, buildStates);
 
 	}
-	
+
 	public CodeModelManager() {
 		projectStates = new HashMap<String, Map<String,BuildStateDocument>>(5);
 	}
-		
+	
 	public void initialise(File stateDirectory) {
 		File [] subFiles = stateDirectory.listFiles();
 		for(File currentFile : subFiles) {
@@ -117,6 +103,15 @@ public class CodeModelManager {
 		}
 	}
 	
+	public void initialise() {
+		// Do nowt, we need to be called by the initialise(String) method.
+	}
+
+	public boolean isProjectManaged(IProject project) {
+		String projectName = project.getName();
+		return projectStates.containsKey(projectName);
+	}
+
 	private void initialiseProject(File projectDirectory) {
 		File [] buildStates = projectDirectory.listFiles();
 		Map<String, BuildStateDocument> projectStateMap = new HashMap<String, BuildStateDocument>(buildStates.length);
@@ -138,6 +133,17 @@ public class CodeModelManager {
 		projectStates.put(projectDirectory.getName(), projectStateMap);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.dtsworkshop.flextools.codemodel.IProjectStateManager#registerProject(org.eclipse.core.resources.IProject)
+	 */
+	public void registerProject(IProject project) {
+		IPath projectWorkingLocation = project.getWorkingLocation(Activator.PLUGIN_ID);
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.dtsworkshop.flextools.codemodel.IProjectStateManager#removeProjectState(org.eclipse.core.resources.IProject)
+	 */
 	public boolean removeProjectState(IProject project) {
 		if(projectStates.containsKey(project.getName())) {
 			projectStates.remove(project.getName());
@@ -156,7 +162,11 @@ public class CodeModelManager {
 		return success;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.dtsworkshop.flextools.codemodel.IProjectStateManager#removeBuildState(org.eclipse.core.resources.IProject, org.eclipse.core.resources.IFile)
+	 */
 	public void removeBuildState(IProject project, IFile resource) {
+		
 		Map<String, BuildStateDocument> state = getProjectState(project.getName());
 		String fileRef = getStateFilename(resource);
 		state.remove(fileRef);
@@ -173,12 +183,28 @@ public class CodeModelManager {
 		return fileRef;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.dtsworkshop.flextools.codemodel.IProjectStateManager#storeBuildState(com.dtsworkshop.flextools.model.BuildStateDocument)
+	 */
 	public void storeBuildState(BuildStateDocument state) {
 		String path = state.getBuildState().getFile().replaceAll("/", ".");
 		String projectName = state.getBuildState().getProject();
 		Map<String, BuildStateDocument> projectMap = getProjectState(projectName);
 		projectMap.put(path, state);
 		writeBuildState(state);
+	}
+	
+	/** Maps between project (name) and it's state entry */
+	public ModelInfo getInfo() {
+		ModelInfo info = new ModelInfo();
+		//TODO: Cache this info if the model hasn't changed.
+		
+		info.numberOfProjects = projectStates.keySet().size();
+		for(String projectName : projectStates.keySet()) {
+			info.numberOfStates+= projectStates.get(projectName).values().size();
+		}
+		
+		return info;
 	}
 	
 	private String toStateFilename(BuildStateDocument state) {
@@ -203,21 +229,7 @@ public class CodeModelManager {
 			return;
 		}
 		File stateFilename = new File(toStateFilename(state));
-		if(!stateFilename.exists()) {
-			try {
-				stateFilename.createNewFile();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return;
-			}
-		}
-		try {
-			state.save(stateFilename);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		writeBuildState(state, stateFilename);
 	}
 
 	private boolean createProjectDirectory(String projectName) {

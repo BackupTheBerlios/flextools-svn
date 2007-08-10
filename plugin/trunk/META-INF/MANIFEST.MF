@@ -4,7 +4,7 @@ Bundle-Name: The Flex Tools Project : Adding the bits Adobe forgot
 Bundle-SymbolicName: com.dtsworkshop.flextools;singleton:=true
 Bundle-Version: 0.1.1
 Bundle-Activator: com.dtsworkshop.flextools.Activator
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.debug.core,

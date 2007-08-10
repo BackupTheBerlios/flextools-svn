@@ -100,6 +100,7 @@ public class MainSearchPage extends DialogPage implements ISearchPage {
 	
 	public void createControl(Composite parent) {
 		Composite main = new Composite(parent, SWT.NONE);
+		main.setSize(300, 400);
 		GridLayout mainLayout = new GridLayout(2, false);
 		mainLayout.horizontalSpacing = 10;
 		
