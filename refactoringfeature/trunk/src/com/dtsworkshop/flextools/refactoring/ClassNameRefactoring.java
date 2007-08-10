@@ -1,5 +1,6 @@
 package com.dtsworkshop.flextools.refactoring;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.ltk.core.refactoring.Change;
@@ -21,7 +24,9 @@ import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.osgi.baseadaptor.loader.ClasspathEntry;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
+import org.eclipse.ui.internal.editors.text.StatusUtil;
 
+import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.search.ClassSearcher;
 import com.dtsworkshop.flextools.search.SearchQuery;
 import com.dtsworkshop.flextools.search.SearchReference;
@@ -72,8 +77,26 @@ public class ClassNameRefactoring extends Refactoring {
 		
 		query.run(pm);
 		references = query.getSearcher().getMatches();
-		RefactoringStatus status = RefactoringStatus.createWarningStatus("Initial conditions aren't checked yet");
+		List<SearchReference> badReferences = findBadReferences(references);
+		RefactoringStatus status = new RefactoringStatus();
+		for(SearchReference badRef : badReferences) {
+			status.addWarning(String.format(
+					"Reference '%s' in file '%s' has bad positions - is it included in your app?",
+					badRef.getDescription(), badRef.getFilePath().getName()
+			));
+		}
+		
 		return status;
+	}
+	
+	private List<SearchReference> findBadReferences(List<SearchReference> refs) {
+		List<SearchReference> badRefs = new ArrayList<SearchReference>();
+		for(SearchReference ref : refs) {
+			if(ref.getFrom() == -1 || ref.getTo() == -1) {
+				badRefs.add(ref);
+			}
+		}
+		return badRefs;
 	}
 	
 	

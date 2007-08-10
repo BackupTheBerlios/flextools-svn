@@ -28,7 +28,7 @@ public class CodeInfoHelper {
 		IFileNode node = project.findFileNodeInProject(doc.getIFile().getLocation());
 		return node;
 	}
-	
+	 
 	private class SearchInfo {
 		public IASNode node;
 		public int childCount = 0;
