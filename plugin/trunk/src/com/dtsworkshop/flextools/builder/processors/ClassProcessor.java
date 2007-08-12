@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.dtsworkshop.flextools.builder;
+package com.dtsworkshop.flextools.builder.processors;
 
 import java.util.logging.Logger;
 
@@ -21,8 +21,6 @@ import com.adobe.flexbuilder.codemodel.internal.tree.VariableNode;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IExpressionNode;
 import com.adobe.flexbuilder.codemodel.tree.IScopedNode;
-import com.dtsworkshop.flextools.builder.processors.DefaultNodeProcessor;
-import com.dtsworkshop.flextools.builder.processors.MemberedInfo;
 import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.ClassInterfaceReference;

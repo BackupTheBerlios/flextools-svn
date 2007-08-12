@@ -18,10 +18,20 @@
 */
 package com.dtsworkshop.flextools;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPluginRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osgi.framework.internal.core.AbstractBundle;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.dtsworkshop.flextools.builder.IResourceAsDeltaVisitor;
 import com.dtsworkshop.flextools.codemodel.CodeModelManager;
 import com.dtsworkshop.flextools.codemodel.IProjectStateManager;
 import com.dtsworkshop.flextools.codemodel.WorkingSpaceModelStateManager;
@@ -37,7 +47,21 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 	private static IProjectStateManager stateManager = new WorkingSpaceModelStateManager();
+	private List<IResourceAsDeltaVisitor> deltaVisitors = new ArrayList<IResourceAsDeltaVisitor>(2);
 	
+	public void addDeltaVisitor(IResourceAsDeltaVisitor newVisitor) {
+		deltaVisitors.add(newVisitor);
+	}
+	
+	public List<IResourceAsDeltaVisitor> getVisitors() {
+		return deltaVisitors;
+	}
+	
+	/**
+	 * Gets the project build state manager for the plugin.
+	 * 
+	 * @return The build state manager for Flex Tools
+	 */
 	public static IProjectStateManager getStateManager() {
 		return stateManager;
 	}
@@ -58,6 +82,27 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		stateManager.initialise();
+		loadExtensions();
+	}
+	public static final String DELTA_VISITOR_PLUGINID = "com.dtsworkshop.flextools.deltaVisitor";
+	
+	private void loadExtensions() {
+		IExtensionRegistry registry = Platform.getExtensionRegistry();
+		IConfigurationElement [] elements = registry.getConfigurationElementsFor(DELTA_VISITOR_PLUGINID);
+		for(IConfigurationElement currentVisitorElement : elements) {
+			if(!currentVisitorElement.isValid()) {
+				System.err.println("Isn't valid.");
+			}
+			try {
+				IResourceAsDeltaVisitor newVisitor = (IResourceAsDeltaVisitor)currentVisitorElement.createExecutableExtension("class");
+				this.addDeltaVisitor(newVisitor);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			System.out.println(currentVisitorElement.getName());
+		}
 	}
 
 	/*

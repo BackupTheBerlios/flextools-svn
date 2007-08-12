@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+   <extension-point id="deltaVisitor" name="Delta Visitor" schema="schema/deltaVisitor.exsd"/>
 <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -18,18 +19,18 @@
    </extension>
    <extension
          id="sampleBuilder"
-         name="Sample Project Builder"
+         name="Flex Tools Builder"
          point="org.eclipse.core.resources.builders">
       <builder
             hasNature="true">
          <run
-               class="com.dtsworkshop.flextools.builder.SampleBuilder">
+               class="com.dtsworkshop.flextools.builder.FlexToolsBuilder">
          </run>
       </builder>
    </extension>
    <extension
          id="sampleNature"
-         name="Sample Project Nature"
+         name="Flex Tools Nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run

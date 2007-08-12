@@ -99,6 +99,10 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 
 	public boolean removeProjectState(IProject project) {
 		ProjectStateEntry entry = getEntry(project);
+		if(entry == null) {
+			// Somehow we've not got the entry for the project, so we'll just report back that we succeeded in removing it...
+			return true;
+		}
 		File projectDirectory = entry.getWorkingSpace().toFile();
 		boolean success = projectDirectory.delete();
 		if(success) {

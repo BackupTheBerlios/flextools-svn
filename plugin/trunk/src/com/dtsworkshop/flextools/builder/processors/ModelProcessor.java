@@ -16,7 +16,7 @@
 *	You should have received a copy of the GNU General Public License
 *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.dtsworkshop.flextools.builder;
+package com.dtsworkshop.flextools.builder.processors;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +47,15 @@ import com.dtsworkshop.flextools.model.ImportNodeType;
 import com.dtsworkshop.flextools.model.NodeType;
 import com.dtsworkshop.flextools.utils.ResourceHelper;
 
+/**
+ * A processor to process the Flex Builder state model.
+ * Depends on various bits internal to Flex.
+ * 
+ * TODO: Try to remove as many of the internal references as possible
+ * 
+ * @author otupman
+ *
+ */
 public class ModelProcessor {
 
 	private String getFileContents(IFile file) {
@@ -65,17 +74,14 @@ public class ModelProcessor {
 		return "";
 	}
 
-	public String dumpNodes(IFileNode startNode, IFile sourceFile) {
-		//NodeProcessor processor = getProcessor(startNode.class);
-		XmlOptions options = new XmlOptions();
-		options.setSavePrettyPrint();
-		options.setSavePrettyPrintIndent(2);
-		BuildStateDocument doc = BuildStateDocument.Factory.newInstance(options);		
-		
-		buildStateDocument(startNode, sourceFile, doc);	
-		return doc.xmlText(options);
-	}
-
+	/**
+	 * Gets the state document for the source file and it's corresponding
+	 * root node.
+	 * 
+	 * @param startNode Root node for the file
+	 * @param sourceFile The source file 
+	 * @return The constructed state document
+	 */
 	public BuildStateDocument getStateDocument(IFileNode startNode, IFile sourceFile) {
 		XmlOptions options = new XmlOptions();
 		options.setSavePrettyPrint();
@@ -94,28 +100,6 @@ public class ModelProcessor {
 		processNode(startNode, fileNode, fileData, buildType);
 	}
 	
-	private String getNodeContents(String data, IASNode node) {
-		String contents = "";
-		int start = node.getStart();
-		int end = node.getEnd();
-		
-		if(start == -1 || end == -1) {
-			return "";
-		}
-		else if(start > end) {
-			int tempEnd = end;
-			end = start;
-			start = tempEnd;
-		}
-		try {
-			contents = data.substring(start, end);
-		} catch (RuntimeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return contents;
-	}
 	
 	private void processNode(IASNode node, BuildReference parentXmlNode, String textData, BuildStateType buildState) {
 		IASNode [] children = node.getChildren();
@@ -137,12 +121,21 @@ public class ModelProcessor {
 		return defaultProcessor;
 	}
 	
+	/**
+	 * List of processors that will process nodes for us.
+	 */
 	private static List<NodeProcessor> processors;
+	/**
+	 * Map between source class name and the node processor.
+	 * Generated from the processors list.
+	 */
 	private static Map<Class, NodeProcessor> processorMap;
 	
+	/** Default fallback processor for any node types not handled by custom processors */
 	private static NodeProcessor defaultProcessor;
 	static {
 		processors = new ArrayList<NodeProcessor>(20);
+		//TODO: Determine whether the following mappings can use the interfaces
 		processors.add(new ClassProcessor(ClassNode.class, ClassStateType.class));
 		processors.add(new FunctionCallTypeProcessor(FunctionCallNode.class, FunctionCallType.class));
 		processors.add(new IdentifierProcessor(IdentifierNode.class, IdentifierNodeType.class));

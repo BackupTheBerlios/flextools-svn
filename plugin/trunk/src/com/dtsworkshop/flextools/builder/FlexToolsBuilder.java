@@ -6,6 +6,7 @@ Copyright (C) Oliver B. Tupman, 2007.
 */
 package com.dtsworkshop.flextools.builder;
 
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -27,17 +28,24 @@ import com.adobe.flexbuilder.codemodel.project.IProjectLoadListener;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.dtsworkshop.flextools.Activator;
+import com.dtsworkshop.flextools.builder.processors.ModelProcessor;
 import com.dtsworkshop.flextools.codemodel.CodeModelManager;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 
-public class SampleBuilder extends IncrementalProjectBuilder {
+public class FlexToolsBuilder extends IncrementalProjectBuilder {
 
 
 	public static final String BUILDER_ID = "com.dtsworkshop.flextools.sampleBuilder";
 
 	private static final String MARKER_TYPE = "com.dtsworkshop.flextools.xmlProblem";
 	
+	private boolean isParseableResource(IResource resource) {
+		boolean isParseableResource = resource.getName().endsWith(".as") || resource.getName().endsWith(".mxml");
+		return isParseableResource;
+	}
+	
 	class FlexDeltaVisitor implements IResourceDeltaVisitor {
+		
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -84,7 +92,7 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	private static Logger log = Logger.getLogger(SampleBuilder.class.getName());
+	static Logger log = Logger.getLogger(FlexToolsBuilder.class.getName());
 	public static final String dumpLocation = "d:\\builder state";
 	
 	private static final String xmlDumpNamespace = "http://www.dtsworkshop.com/flextools/model";
@@ -128,10 +136,6 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 	}
 	
 
-	private boolean isParseableResource(IResource resource) {
-		boolean isParseableResource = resource.getName().endsWith(".as") || resource.getName().endsWith(".mxml");
-		return isParseableResource;
-	}
 	
 	private boolean runWithRegisteredFile(IFile file) {
 		
@@ -148,81 +152,12 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 		return true;
 	}
 
-	private boolean runWithFile(IFile file) {
+	boolean runWithFile(IFile file) {
 		//TODO: Implement file registration properly.
-//		CMFactory.getRegistrar().registerProject(getProject(), 
-//				new IProjectLoadListener() {
-//					public boolean isCancelled() {
-//						return false;
-//					}
-//
-//					public void loading(String arg0) {
-//					}
-//
-//					public void phaseEnd(int arg0) {
-//						runWithRegisteredFile(file);
-//					}
-//
-//					public void phaseStart(int arg0) {
-//					}
-//
-//					public void progress(int arg0) {
-//					}		
-//		}
-//		);
 		runWithRegisteredFile(file);
 		return true;
 	}
 
-//
-//	private StringBuilder getOutputDataFromHandDump(IFile file, IFileNode fileNode) {
-//		StringBuilder outputData = new StringBuilder();
-//		String fileData = getFileContents(file);
-//		outputData.append(String.format(
-//			"<%s:buildState xmlns:%s=\"%s\" file=\"%s\" project=\"%s\">",
-//			xmlns,
-//			xmlns,
-//			xmlDumpNamespace,
-//			file.getProjectRelativePath(),
-//			file.getProject().getName()
-//		));
-//		
-//		dumpNodes(fileData, fileNode, outputData);
-//		outputData.append(String.format("</%s:buildState>", xmlns));
-//		return outputData;
-//	}
-//
-//
-//	private String getBuildOutputFileLocation(IFile file) {
-//		String fileLocation = file.getProjectRelativePath().toString();
-//		fileLocation = fileLocation.replaceAll("/", ".");
-//		fileLocation = fileLocation.replaceAll(":", "-");
-//		
-//		fileLocation = dumpLocation + "\\" +  fileLocation + ".xml";
-//		return fileLocation;
-//	}
-
-//	private String getFileContents(IFile file) {
-//		StringBuilder builder = new StringBuilder();
-//		try {
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
-//			
-//			String input = "";
-//			while((input = reader.readLine()) != null) {
-//				builder.append(input);
-//				builder.append("\n");
-//			}
-//			reader.close();
-//		} catch (CoreException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return builder.toString();
-//	}
-	
 	class FlexResourceVisitor implements IResourceVisitor {
 		public boolean visit(IResource resource) {
 
@@ -247,19 +182,19 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 
 	}
 
-	private void addMarker(IFile file, String message, int lineNumber,
-			int severity) {
-		try {
-			IMarker marker = file.createMarker(MARKER_TYPE);
-			marker.setAttribute(IMarker.MESSAGE, message);
-			marker.setAttribute(IMarker.SEVERITY, severity);
-			if (lineNumber == -1) {
-				lineNumber = 1;
-			}
-			marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-		} catch (CoreException e) {
-		}
-	}
+//	private void addMarker(IFile file, String message, int lineNumber,
+//			int severity) {
+//		try {
+//			IMarker marker = file.createMarker(MARKER_TYPE);
+//			marker.setAttribute(IMarker.MESSAGE, message);
+//			marker.setAttribute(IMarker.SEVERITY, severity);
+//			if (lineNumber == -1) {
+//				lineNumber = 1;
+//			}
+//			marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+//		} catch (CoreException e) {
+//		}
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -283,12 +218,12 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 	}
 
 
-	private void deleteMarkers(IFile file) {
-		try {
-			file.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_ZERO);
-		} catch (CoreException ce) {
-		}
-	}
+//	private void deleteMarkers(IFile file) {
+//		try {
+//			file.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_ZERO);
+//		} catch (CoreException ce) {
+//		}
+//	}
 
 	protected void fullBuild(final IProgressMonitor monitor)
 			throws CoreException {
@@ -296,7 +231,12 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 			monitor.beginTask("Removing project state.", 1);
 			Activator.getStateManager().removeProjectState(getProject());
 			monitor.worked(1);
-			getProject().accept(new FlexResourceVisitor());
+			//getProject().accept(new FlexResourceVisitor());
+			List<IResourceAsDeltaVisitor> visitors = Activator.getDefault().getVisitors();
+			for(IResourceAsDeltaVisitor visitor : visitors) {
+				visitor.setProject(getProject());
+				getProject().accept(visitor);
+			}
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -305,6 +245,10 @@ public class SampleBuilder extends IncrementalProjectBuilder {
 
 	protected void incrementalBuild(IResourceDelta delta,
 			IProgressMonitor monitor) throws CoreException {
-		delta.accept(new FlexDeltaVisitor());
+		List<IResourceAsDeltaVisitor> visitors = Activator.getDefault().getVisitors();
+		for(IResourceAsDeltaVisitor visitor : visitors) {
+			visitor.setProject(getProject());
+			delta.accept(visitor);
+		}
 	}
 }
