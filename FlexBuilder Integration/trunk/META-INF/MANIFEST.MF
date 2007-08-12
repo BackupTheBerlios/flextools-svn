@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Flex Tools FlexBuilder Integration
+Bundle-SymbolicName: com.dtsworkshop.flextools.flexbuilder;singleton:=true
+Bundle-Version: 0.1.1
+Bundle-Vendor: DTS Workshop
+Fragment-Host: com.dtsworkshop.flextools;bundle-version="0.1.1"
+Bundle-Localization: plugin
