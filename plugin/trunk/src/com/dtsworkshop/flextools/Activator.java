@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPluginRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.framework.internal.core.AbstractBundle;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -35,6 +36,7 @@ import com.dtsworkshop.flextools.builder.IResourceAsDeltaVisitor;
 import com.dtsworkshop.flextools.codemodel.CodeModelManager;
 import com.dtsworkshop.flextools.codemodel.IProjectStateManager;
 import com.dtsworkshop.flextools.codemodel.WorkingSpaceModelStateManager;
+import com.dtsworkshop.flextools.initialisation.FileToucherJob;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -81,9 +83,16 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		initialise();
+	}
+	
+	private void initialise() {
 		stateManager.initialise();
 		loadExtensions();
+		Job initJob = new FileToucherJob("Initialise FlexTools");
+		initJob.schedule();
 	}
+	
 	public static final String DELTA_VISITOR_PLUGINID = "com.dtsworkshop.flextools.deltaVisitor";
 	
 	private void loadExtensions() {

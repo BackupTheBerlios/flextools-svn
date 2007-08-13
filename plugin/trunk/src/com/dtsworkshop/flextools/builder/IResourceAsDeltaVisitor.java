@@ -24,7 +24,7 @@ public interface IResourceAsDeltaVisitor extends IResourceDeltaVisitor, IResourc
 	 * 
 	 * @return True - the visitor can visit the resource, false otherwise
 	 */
-	boolean canVisit(IResourceDelta delta);
+	boolean canVisit(IResource resource);
 	/**
 	 * Process the fact that the supplied resource has changed in some way.
 	 * 

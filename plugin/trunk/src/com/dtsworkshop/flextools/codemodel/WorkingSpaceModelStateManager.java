@@ -3,7 +3,9 @@ package com.dtsworkshop.flextools.codemodel;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.xmlbeans.XmlException;
@@ -28,6 +30,12 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 	
 	public void acceptVisitor(IBuildStateVisitor visitor,
 			IProgressMonitor monitor) {
+		List<BuildStateDocument> states = new ArrayList<BuildStateDocument>(100);
+		
+		for(ProjectStateEntry entry : projectStates.values()) {
+			states.addAll(entry.getStates());
+		}
+		processVisitor(visitor, monitor, states);
 	}
 
 	public void initialise() {

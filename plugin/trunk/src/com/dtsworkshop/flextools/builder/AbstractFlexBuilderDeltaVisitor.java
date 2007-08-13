@@ -1,6 +1,7 @@
 package com.dtsworkshop.flextools.builder;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -28,12 +29,16 @@ public abstract class AbstractFlexBuilderDeltaVisitor  implements IResourceAsDel
 	public AbstractFlexBuilderDeltaVisitor() {
 	}
 	
-	public abstract boolean canVisit(IResourceDelta delta);
+	public abstract boolean canVisit(IResource delta);
 
 	public abstract boolean changed(IResource resource);
 	
 	public boolean visit(IResource resource) {
-		if(resource instanceof IFile) {
+		if(resource instanceof IFolder) {
+			return true;
+		}
+		
+		if(resource instanceof IFile && canVisit(resource)) {
 			changed(resource);
 		}
 		return true;
@@ -41,17 +46,22 @@ public abstract class AbstractFlexBuilderDeltaVisitor  implements IResourceAsDel
 	
 	public boolean visit(IResourceDelta delta) {
 		boolean skipChildren = true;
-		if(canVisit(delta)) {
-			IFile resource = (IFile)delta.getResource();
+		
+		IResource resource = delta.getResource();
+		if(resource instanceof IFolder) {
+			return true;
+		}
+		if(canVisit(resource)) {
+			IFile file = (IFile)resource;
 			
 			switch(delta.getKind()) {
 			case IResourceDelta.CHANGED:
-				removeBuildState(resource);
+				removeBuildState(file);
 			case IResourceDelta.ADDED:
-				skipChildren = changed(resource);
+				skipChildren = changed(file);
 				break;
 			case IResourceDelta.REMOVED:
-				removeBuildState(resource);
+				removeBuildState(file);
 				break;
 			} 
 		//	skipChildren = doVisit(delta);

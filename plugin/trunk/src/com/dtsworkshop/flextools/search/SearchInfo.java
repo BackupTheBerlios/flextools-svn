@@ -35,17 +35,12 @@ import com.dtsworkshop.flextools.model.BuildStateDocument;
  *
  */
 public class SearchInfo {
-	/**
-	 * 
-	 */
-	private final ClassSearcher searcher2;
-
 
 	/**
 	 * @param searcher
 	 */
 	SearchInfo(ClassSearcher searcher) {
-		searcher2 = searcher;
+		this.searcher = searcher;
 	}
 
 	public ClassSearcher searcher;
@@ -66,7 +61,7 @@ public class SearchInfo {
 	 * @return The constructed search reference.
 	 */
 	public SearchReference createReference(BuildReference sourceRef) {
-		return searcher2.referenceFromNodeType(project, containingFile, sourceRef);
+		return searcher.referenceFromNodeType(project, containingFile, sourceRef);
 	}
 	
 	private boolean isPositionInRef(BuildReference ref, int position) {
@@ -74,7 +69,7 @@ public class SearchInfo {
 	}
 	
 	private boolean isContainedInOtherMatch(BuildReference searchRef) {
-		for(BuildReference currentRef : searcher2.storedMatches) {
+		for(BuildReference currentRef : searcher.storedMatches) {
 			if(isPositionInRef(currentRef, searchRef.getStartPos())
 			   || isPositionInRef(currentRef, searchRef.getEndPos())) {
 				return true;
@@ -96,9 +91,9 @@ public class SearchInfo {
 		
 		boolean isContainedMatch = isContainedInOtherMatch(sourceRef);
 		if(!isContainedMatch) {
-			searcher2.matches.add(newRef);
+			searcher.matches.add(newRef);
 			uniques.add(code);
-			searcher2.storedMatches.add(sourceRef);
+			searcher.storedMatches.add(sourceRef);
 		}
 		
 		return newRef;
@@ -114,7 +109,7 @@ public class SearchInfo {
 	 * @return True - is a match; false otherwise.
 	 */
 	public boolean isMatch(String textToMatch) {
-		if(searcher2.exactMatch) {
+		if(searcher.exactMatch) {
 			return isExactMatch(textToMatch);
 		}
 		else {
@@ -135,10 +130,10 @@ public class SearchInfo {
 			return false;
 		}
 		if(isCaseSensitive) {
-			return textToMatch.contains(searcher2.searchText);
+			return textToMatch.contains(searcher.searchText);
 		}
 		else {
-			boolean result = textToMatch.toLowerCase().contains(searcher2.searchText.toLowerCase());
+			boolean result = textToMatch.toLowerCase().contains(searcher.searchText.toLowerCase());
 			return result;
 		}
 	}
@@ -155,10 +150,10 @@ public class SearchInfo {
 			return false;
 		}
 		if(isCaseSensitive) {
-			return searcher2.searchText.equals(textToMatch);
+			return searcher.searchText.equals(textToMatch);
 		}
 		else {
-			return searcher2.searchText.compareToIgnoreCase(textToMatch) == 0;
+			return searcher.searchText.compareToIgnoreCase(textToMatch) == 0;
 		}
 	}
 }
