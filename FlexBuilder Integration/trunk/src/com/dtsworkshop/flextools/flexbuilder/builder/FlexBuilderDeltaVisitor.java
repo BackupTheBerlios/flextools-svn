@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 
 import com.adobe.flexbuilder.codemodel.common.CMFactory;
@@ -46,9 +47,9 @@ public class FlexBuilderDeltaVisitor extends AbstractFlexBuilderDeltaVisitor {
 	}
 	
 	@Override
-	public boolean canVisit(IResourceDelta delta) {
+	public boolean canVisit(IResource resource) {
 		// TODO Auto-generated method stub
-		return isParseableResource(delta.getResource());
+		return isParseableResource(resource);
 	}
 
 	
@@ -57,6 +58,7 @@ public class FlexBuilderDeltaVisitor extends AbstractFlexBuilderDeltaVisitor {
 		IPath filePath = file.getLocation();
 		com.adobe.flexbuilder.codemodel.project.IProject flexProject = CMFactory.getManager().getProjectFor(getProject());
 		IFileNode fileNode = flexProject.findFileNodeInProject(filePath);
+		Assert.isNotNull(fileNode);
 		// Force getting the scope as this appears to trigger processing of some parse items
 		fileNode.getScope(); 
 		ModelProcessor processor = new ModelProcessor();
