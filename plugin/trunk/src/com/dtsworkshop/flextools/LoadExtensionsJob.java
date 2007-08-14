@@ -8,6 +8,13 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import com.dtsworkshop.flextools.builder.IResourceAsDeltaVisitor;
 
+/**
+ * Loads any FT-start extensions that need to be loaded at FT-start
+ * time.
+ * 
+ * @author otupman
+ *
+ */
 public class LoadExtensionsJob extends Job {
 	
 	public LoadExtensionsJob(String name) {
@@ -23,7 +30,7 @@ public class LoadExtensionsJob extends Job {
 			Activator.getDefault().addDeltaVisitor((IResourceAsDeltaVisitor)extension);
 		}
 		
-		loadedExtensions = Activator.loadSimpleExtensions(Activator.PROJECT_LOAD_JOBS_EXTENSIONID);
+	//	loadedExtensions = Activator.loadSimpleExtensions(Activator.PROJECT_LOAD_JOBS_EXTENSIONID);
 		
 		
 		return new Status(Status.OK, Activator.PLUGIN_ID, IStatus.OK, "Flex Tools loaded", null);

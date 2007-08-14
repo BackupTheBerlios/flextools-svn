@@ -10,14 +10,17 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 
 import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.builder.SampleNature;
 import com.dtsworkshop.flextools.codemodel.IProjectStateManager;
+import com.dtsworkshop.flextools.utils.JobHelpers;
 
 /**
  * The project manager sits in the background and ensures that all
@@ -44,6 +47,24 @@ public class ProjectManager {
 				return false;
 			}
 			return true;
+		}
+	}
+	
+	private List<AbstractProjectLoadContributor> loadContributors = null;
+	
+	private List<AbstractProjectLoadContributor> getLoadContributors() {
+		if(loadContributors == null) {
+			loadExtensionPoints();
+		}
+		return loadContributors;
+	}
+	
+	private void loadExtensionPoints() {
+		loadContributors = new ArrayList<AbstractProjectLoadContributor>(10);
+		Object [] loaders = Activator.loadSimpleExtensions(Activator.PROJECT_LOAD_JOBS_EXTENSIONID);
+		for(Object loader : loaders) {
+			Assert.isTrue(loader instanceof AbstractProjectLoadContributor);
+			loadContributors.add((AbstractProjectLoadContributor)loader);
 		}
 	}
 
@@ -92,9 +113,33 @@ public class ProjectManager {
 		loadProject(project);
 	}
 	
+	private void callLoaders(IProject project) {
+		IProgressMonitor monitor = Platform.getJobManager().createProgressGroup();
+		List<AbstractProjectLoadContributor> loaders = getLoadContributors();
+		monitor.beginTask(
+				String.format("Loading project")
+			, loaders.size() * 10
+		);		
+
+		for(AbstractProjectLoadContributor loader : loaders) {
+			loader.setProject(project);
+			loader.setProgressGroup(monitor, 10);
+			loader.schedule();
+		}
+		
+		for(AbstractProjectLoadContributor loader : loaders) {
+			try {
+				loader.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	private void loadProject(IProject project) {
 		if(!openProjects.contains(project)) {
-			openProjects.add(project);			
+			openProjects.add(project);
+			callLoaders(project);
 		}		
 	}
 	

@@ -6,6 +6,13 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import com.dtsworkshop.flextools.project.ProjectManager;
 
+/**
+ * Starts up the project manager and intialises it, ready for Flex
+ * Tools to be used.
+ * 
+ * @author otupman
+ *
+ */
 public class ProjectManagerStartupJob extends Job {
 
 	public ProjectManagerStartupJob(String name) {

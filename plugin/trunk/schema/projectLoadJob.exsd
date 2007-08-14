@@ -59,10 +59,10 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  Class that extends the Job class and will perform some initialisation task.
+                  Class that extends the AbstractProjectLoadContributor class and will perform some initialisation task for each project loaded.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.core.runtime.jobs.Job"/>
+                  <meta.attribute kind="java" basedOn="com.dtsworkshop.flextools.project.AbstractProjectLoadContributor"/>
                </appInfo>
             </annotation>
          </attribute>
