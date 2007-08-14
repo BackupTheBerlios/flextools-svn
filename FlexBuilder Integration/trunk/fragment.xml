@@ -7,5 +7,11 @@
             class="com.dtsworkshop.flextools.flexbuilder.builder.FlexBuilderDeltaVisitor"
             name="FlexBuilder Project Builder"/>
    </extension>
+   <extension
+         point="com.dtsworkshop.flextools.projectLoadJob">
+      <projectLoader
+            class="com.dtsworkshop.flextools.flexbuilder.initialisation.FileToucherJob"
+            name="Flex Builder Project Loading Initialisation"/>
+   </extension>
 
 </fragment>
