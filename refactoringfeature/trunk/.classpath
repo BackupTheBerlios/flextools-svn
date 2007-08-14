@@ -4,6 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Adobe Extracted"/>
-	<classpathentry kind="lib" path="C:/Program Files/Adobe/Flex Builder 2/plugins/com.adobe.flexbuilder.editors.derived_2.0.155577/derived.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
