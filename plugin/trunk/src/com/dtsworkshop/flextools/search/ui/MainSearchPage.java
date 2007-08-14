@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ide.ResourceUtil;
 
-import com.dtsworkshop.flextools.codemodel.CodeModelManager;
 import com.dtsworkshop.flextools.search.ClassSearcher;
 import com.dtsworkshop.flextools.search.SearchQuery;
 import com.dtsworkshop.flextools.search.SearchReference;

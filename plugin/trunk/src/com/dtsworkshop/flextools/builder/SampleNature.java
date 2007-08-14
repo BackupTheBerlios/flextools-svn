@@ -12,6 +12,8 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
+import com.dtsworkshop.flextools.Activator;
+
 public class SampleNature implements IProjectNature {
 
 	/**
@@ -43,6 +45,7 @@ public class SampleNature implements IProjectNature {
 		newCommands[newCommands.length - 1] = command;
 		desc.setBuildSpec(newCommands);
 		project.setDescription(desc, null);
+		Activator.getDefault().getProjectManager().registerProject(project);
 	}
 
 	/*

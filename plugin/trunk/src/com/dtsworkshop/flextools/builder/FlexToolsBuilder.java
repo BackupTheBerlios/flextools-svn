@@ -29,7 +29,6 @@ import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.builder.processors.ModelProcessor;
-import com.dtsworkshop.flextools.codemodel.CodeModelManager;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 
 public class FlexToolsBuilder extends IncrementalProjectBuilder {

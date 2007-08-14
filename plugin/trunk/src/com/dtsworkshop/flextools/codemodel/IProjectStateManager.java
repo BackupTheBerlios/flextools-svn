@@ -28,9 +28,17 @@ public interface IProjectStateManager {
 	 * Tells the state manager to perform any initialisation required.
 	 * This is guaranteed to be called once the plugin is loading (i.e.
 	 * so the workspace is ready).
-	 *
+	 * @deprecated Pleas use initialiseProject(IProject project, IProgressMonitor monitor)
 	 */
-	public abstract void initialise();
+	public abstract void initialise(IProgressMonitor monitor);
+	
+	/**
+	 * Initialises an individual project.
+	 * 
+	 * @param project The project to initialise
+	 * @param monitor Monitor to report progress to the user
+	 */
+	public abstract void initialiseProject(IProject project, IProgressMonitor monitor);
 	
 	/**
 	 * Gets some information about the model

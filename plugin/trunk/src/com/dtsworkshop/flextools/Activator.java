@@ -21,6 +21,9 @@ package com.dtsworkshop.flextools;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -33,10 +36,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.dtsworkshop.flextools.builder.IResourceAsDeltaVisitor;
-import com.dtsworkshop.flextools.codemodel.CodeModelManager;
 import com.dtsworkshop.flextools.codemodel.IProjectStateManager;
 import com.dtsworkshop.flextools.codemodel.WorkingSpaceModelStateManager;
-import com.dtsworkshop.flextools.initialisation.FileToucherJob;
+import com.dtsworkshop.flextools.project.ProjectManager;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -50,6 +52,13 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	private static IProjectStateManager stateManager = new WorkingSpaceModelStateManager();
 	private List<IResourceAsDeltaVisitor> deltaVisitors = new ArrayList<IResourceAsDeltaVisitor>(2);
+	
+	private ProjectManager projectManager = new ProjectManager();
+	
+	public ProjectManager getProjectManager() {
+		return projectManager;
+	}
+	
 	
 	public void addDeltaVisitor(IResourceAsDeltaVisitor newVisitor) {
 		deltaVisitors.add(newVisitor);
@@ -84,27 +93,37 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		initialise();
+		FlexToolsStartup.doStartup();
 	}
 	
 	private void initialise() {
-		stateManager.initialise();
-		loadExtensions();
-		Job initJob = new FileToucherJob("Initialise FlexTools");
-		initJob.schedule();
+//		stateManager.initialise();
+//		loadExtensions();
+		
 	}
 	
-	public static final String DELTA_VISITOR_PLUGINID = "com.dtsworkshop.flextools.deltaVisitor";
+	public static final String DELTA_VISITOR_EXTENSIONID = "com.dtsworkshop.flextools.deltaVisitor";
+	public static final String PROJECT_LOAD_JOBS_EXTENSIONID = "com.dtsworkshop.flextools.projectLoadJob";
 	
 	private void loadExtensions() {
+		Object [] loadedExtensions = loadSimpleExtensions(DELTA_VISITOR_EXTENSIONID);
+		for(Object extension : loadedExtensions) {
+			addDeltaVisitor((IResourceAsDeltaVisitor)extension);
+		}
+
+	}
+
+	public static Object [] loadSimpleExtensions(String extensionId) {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
-		IConfigurationElement [] elements = registry.getConfigurationElementsFor(DELTA_VISITOR_PLUGINID);
+		List<Object> loadedExtensions = new ArrayList<Object>(20);
+		IConfigurationElement [] elements = registry.getConfigurationElementsFor(extensionId);
 		for(IConfigurationElement currentVisitorElement : elements) {
 			if(!currentVisitorElement.isValid()) {
 				System.err.println("Isn't valid.");
 			}
 			try {
-				IResourceAsDeltaVisitor newVisitor = (IResourceAsDeltaVisitor)currentVisitorElement.createExecutableExtension("class");
-				this.addDeltaVisitor(newVisitor);
+				loadedExtensions.add(currentVisitorElement.createExecutableExtension("class"));
+				
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -112,6 +131,7 @@ public class Activator extends AbstractUIPlugin {
 
 			System.out.println(currentVisitorElement.getName());
 		}
+		return (Object[])loadedExtensions.toArray(new Object[loadedExtensions.size()]);
 	}
 
 	/*

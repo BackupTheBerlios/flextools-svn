@@ -38,7 +38,11 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 		processVisitor(visitor, monitor, states);
 	}
 
-	public void initialise() {
+	/**
+	 * @deprecated
+	 * @param monitor
+	 */
+	public void initialise(IProgressMonitor monitor) {
 		try {
 		IProject [] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for(IProject project : projects) {
@@ -48,7 +52,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 					continue; // project isn't open, we can't do nowt right now
 				}
 				if(project.hasNature(SampleNature.NATURE_ID)) {
-					initialiseProject(project);
+					initialiseProject(project, monitor);
 				}
 			} catch (CoreException e) {
 				e.printStackTrace();
@@ -61,7 +65,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 		}
 	}
 
-	private void initialiseProject(IProject project) {
+	public void initialiseProject(IProject project, IProgressMonitor monitor) {
 		//TODO: Reads project state from the cache.
 		ProjectStateEntry newEntry = new ProjectStateEntry();
 		newEntry.setProject(project);

@@ -31,7 +31,6 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 
 import com.dtsworkshop.flextools.Activator;
-import com.dtsworkshop.flextools.codemodel.CodeModelManager;
 import com.dtsworkshop.flextools.codemodel.IProjectStateManager;
 
 public class SearchQuery implements ISearchQuery {

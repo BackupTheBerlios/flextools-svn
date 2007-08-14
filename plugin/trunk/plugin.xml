@@ -170,6 +170,10 @@
             id="com.dtsworkshop.flextools.search.ui.searchResult"
             searchResultClass="com.dtsworkshop.flextools.search.ClassSearchResult"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup class="com.dtsworkshop.flextools.FlexToolsStartup"/>
+   </extension>
    <!--
    <extension
          id="com.dtsworkshop.launcConfigTab"
