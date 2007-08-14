@@ -10,7 +10,7 @@
    <extension
          point="com.dtsworkshop.flextools.projectLoadJob">
       <projectLoader
-            class="com.dtsworkshop.flextools.flexbuilder.initialisation.FileToucherJob"
+            class="com.dtsworkshop.flextools.flexbuilder.initialisation.FbProjectLoader"
             name="Flex Builder Project Loading Initialisation"/>
    </extension>
 
