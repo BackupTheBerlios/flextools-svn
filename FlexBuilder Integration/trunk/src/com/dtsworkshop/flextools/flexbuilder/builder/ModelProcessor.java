@@ -35,6 +35,7 @@ import com.adobe.flexbuilder.codemodel.definitions.IDefinition;
 import com.adobe.flexbuilder.codemodel.internal.tree.*;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.builder.processors.*;
 import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
@@ -65,11 +66,11 @@ public class ModelProcessor {
 
 			return ResourceHelper.streamToString(fileInputStream);
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			FlexToolsLog.logError(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			FlexToolsLog.logError(e);
 		}
 		return "";
 	}

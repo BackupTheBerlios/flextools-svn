@@ -16,6 +16,7 @@ import com.adobe.flexbuilder.codemodel.common.CMFactory;
 import com.adobe.flexbuilder.codemodel.project.IProjectLoadListener;
 import com.adobe.flexbuilder.codemodel.project.IRegistrar;
 import com.dtsworkshop.flextools.Activator;
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.builder.SampleNature;
 
 /**
@@ -115,7 +116,7 @@ public class FileToucherJob extends Job {
 					managedProjects.add(currentProject);
 				}
 			} catch (CoreException e) {
-				//TODO: Warn the user about missing this project.
+				FlexToolsLog.logError(e);
 			}
 		}
 		return managedProjects;

@@ -29,6 +29,7 @@ import com.adobe.flexbuilder.codemodel.common.CMFactory;
 import com.adobe.flexbuilder.codemodel.definitions.IASScope;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.dtsworkshop.flextools.Activator;
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.builder.AbstractFlexBuilderDeltaVisitor;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 
@@ -87,6 +88,7 @@ public class FlexBuilderDeltaVisitor extends AbstractFlexBuilderDeltaVisitor {
 				}
 			} catch (RuntimeException e) {
 				e.printStackTrace();
+				FlexToolsLog.logError(e);
 				return false;
 			}
         }
