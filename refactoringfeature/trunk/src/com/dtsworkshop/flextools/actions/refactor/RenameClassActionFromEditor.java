@@ -25,6 +25,7 @@ import com.adobe.flexbuilder.codemodel.tree.IScopedNode;
 import com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor;
 import com.adobe.flexbuilder.editors.common.document.IFlexDocument;
 import com.adobe.flexbuilder.editors.common.editor.AbstractFlexEditor;
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.builder.processors.ProcessorHelper;
 import com.dtsworkshop.flextools.refactoring.ClassNameRefactoring;
 import com.dtsworkshop.flextools.refactoring.ui.RenameClassWizard;
@@ -75,6 +76,7 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 
 	public void run(IAction action) {
 		if(!(lastSelected instanceof TextSelection)) {
+			FlexToolsLog.logWarning("Text selection isn't instance of TextSelection.");
 			return;
 		}
 		TextSelection castedSelection = (TextSelection)lastSelected;
@@ -82,6 +84,11 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 		if(classQualifiedName == null) {
 			//TODO: output useful error message to the user!
 			System.out.println("The user hadn't selected any text... I think...");
+			FlexToolsLog.logWarning(
+				String.format(
+					"No text selected so cannot perform rename." +
+					"Offset is: %d", castedSelection.getOffset()					
+			));
 			return;
 		}
 		IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
@@ -98,8 +105,8 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 			Shell shell = window.getShell();
 			op.run(shell, titleForFailedChecks);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			FlexToolsLog.logError(String.format("Error running the class rename refactorer"), e);
 		}
 	}
 	private ISelection lastSelected = null;

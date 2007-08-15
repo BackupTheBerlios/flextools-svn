@@ -21,6 +21,7 @@ import com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor;
 import com.adobe.flexbuilder.editors.common.document.IFlexDocument;
 import com.adobe.flexbuilder.project.FlexProjectManager;
 import com.adobe.flexbuilder.project.IFlexProject;
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.refactoring.CodeInfoHelper;
 
 public class ExtractMethodEditorAction implements IEditorActionDelegate {
@@ -121,8 +122,8 @@ public class ExtractMethodEditorAction implements IEditorActionDelegate {
 				logger.info(String.format("Node type is: %s", currentNode.getNodeType()));
 				logger.info("Dump complete.");
 			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				FlexToolsLog.logError(String.format("Error playing with document ranges"), e);
 			}
 		}
 		logger.info(selection.toString());

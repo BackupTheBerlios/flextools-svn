@@ -9,6 +9,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.refactoring.ClassNameRefactoring;
 import com.dtsworkshop.flextools.refactoring.ui.RenameClassWizard;
 
@@ -24,16 +25,12 @@ public class RenameClassAction implements IWorkbenchWindowActionDelegate {
 	}
 
 	public RenameClassAction() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void run(IAction action) {
-		// TODO Auto-generated method stub
 		ClassNameRefactoring refactorer = new ClassNameRefactoring();
 		int info = RefactoringWizard.DIALOG_BASED_USER_INTERFACE;
 		RenameClassWizard wizard = new RenameClassWizard(refactorer, info);
@@ -42,15 +39,13 @@ public class RenameClassAction implements IWorkbenchWindowActionDelegate {
 		try {
 			op.run(window.getShell(), titleForFailedChecks);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			FlexToolsLog.logError(String.format("Error running the class name refactorer"), e);
 		}
 		
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
