@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 
 import com.dtsworkshop.flextools.Activator;
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.builder.SampleNature;
 import com.dtsworkshop.flextools.codemodel.IProjectStateManager;
 import com.dtsworkshop.flextools.utils.JobHelpers;
@@ -103,6 +104,7 @@ public class ProjectManager {
 				
 			} catch (CoreException e) {
 				e.printStackTrace();
+				FlexToolsLog.logError(String.format("Error occurred while trying to access the project %s", project.getName()), e);
 			}
 		}
 		
@@ -132,6 +134,7 @@ public class ProjectManager {
 				loader.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				FlexToolsLog.logError(String.format("Error occurred while waiting for a project loader to rejoin"), e);
 			}
 		}
 	}
@@ -156,6 +159,7 @@ public class ProjectManager {
 				event.getDelta().accept(new ProjectOpenDetectingVisitor());
 			} catch (CoreException e) {
 				e.printStackTrace();
+				FlexToolsLog.logError(String.format("Error getting delta"), e);
 			}
 			break;
 		case IResourceChangeEvent.PRE_CLOSE:

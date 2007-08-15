@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.core.internal.utils.WrappedRuntimeException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 
 public class AbstractStateManager {
@@ -52,16 +54,21 @@ public class AbstractStateManager {
 			try {
 				stateFilename.createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				FlexToolsLog.logError(
+					String.format("An exception occurred while trying to create the file %s", stateFilename.getName()), 
+				e);
 				return;
 			}
 		}
 		try {
 			state.save(stateFilename);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			FlexToolsLog.logError(
+				String.format("Error occurred while writing state file for %s", stateFilename.getName())
+				, e
+			);
 		}
 	}
 

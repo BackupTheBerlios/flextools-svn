@@ -8,6 +8,7 @@ import org.eclipse.ui.IStartup;
 public class FlexToolsStartup implements IStartup {
 
 	public static void doStartup() {
+		FlexToolsLog.logInfo("Running startup jobs...");
 		IProgressMonitor initMonitor = Platform.getJobManager().createProgressGroup();
 		Job [] initJobs = new Job[] {
 			new LoadExtensionsJob("Loading extensions")
@@ -15,6 +16,7 @@ public class FlexToolsStartup implements IStartup {
 		};
 		try {
 			for(Job currentJob : initJobs) {
+				
 				currentJob.setProgressGroup(initMonitor, IProgressMonitor.UNKNOWN);
 				currentJob.schedule();
 			}
@@ -24,6 +26,7 @@ public class FlexToolsStartup implements IStartup {
 		}
 		catch(InterruptedException ex) {
 			ex.printStackTrace();
+			FlexToolsLog.logError("Error occurred when running statup jobs", ex);
 		}
 		finally {
 			initMonitor.done();

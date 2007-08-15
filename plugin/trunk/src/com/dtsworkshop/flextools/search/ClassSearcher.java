@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.Path;
 
 import sun.reflect.generics.tree.ClassTypeSignature;
 
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.codemodel.IBuildStateVisitor;
 import com.dtsworkshop.flextools.codemodel.ModelConstants;
 import com.dtsworkshop.flextools.model.BuildReference;
@@ -180,6 +181,7 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 			results = document.selectPath(searchQuery);
 		} catch (RuntimeException e) {
 			e.printStackTrace();
+			FlexToolsLog.logError(String.format("Error occurred while performing xpath search with query '%s'", searchQuery), e);
 		}
 		return results;
 	}

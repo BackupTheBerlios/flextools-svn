@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.jobs.Job;
 
+import com.dtsworkshop.flextools.FlexToolsLog;
+
 public class JobHelpers {
 	/**
 	 * Joins all of the jobs supplied.
@@ -20,6 +22,7 @@ public class JobHelpers {
 				currentJob.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				FlexToolsLog.logError(String.format("Error while waiting for a job to rejoin"), e);
 			}
 		}
 	}

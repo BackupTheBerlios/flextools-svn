@@ -76,6 +76,7 @@ import com.adobe.flexbuilder.project.internal.FlexNature;
 
 import com.adobe.flexbuilder.codemodel.project.IProject;
 import com.adobe.flexbuilder.codemodel.tree.IProjectRootNode;
+import com.dtsworkshop.flextools.FlexToolsLog;
 
 public class LocalLaunchConfigTab extends AbstractLaunchConfigurationTab implements
 		ILaunchConfigurationTab {
@@ -350,8 +351,8 @@ public class LocalLaunchConfigTab extends AbstractLaunchConfigurationTab impleme
 		try {
 			performApply(configuration.getWorkingCopy());
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			FlexToolsLog.logError(String.format("Error occurred when trying to apply the launch config"), e);
 		}
 		setDirty(false);
 	}

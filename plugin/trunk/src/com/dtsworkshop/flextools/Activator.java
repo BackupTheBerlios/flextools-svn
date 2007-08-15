@@ -94,6 +94,7 @@ public class Activator extends AbstractUIPlugin {
 		plugin = this;
 		initialise();
 		FlexToolsStartup.doStartup();
+		FlexToolsLog.logInfo("FlexTools Core has started.");
 	}
 	
 	private void initialise() {
@@ -125,8 +126,8 @@ public class Activator extends AbstractUIPlugin {
 				loadedExtensions.add(currentVisitorElement.createExecutableExtension("class"));
 				
 			} catch (CoreException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				FlexToolsLog.logError("Error occurred while loading extensions", e);
 			}
 
 			System.out.println(currentVisitorElement.getName());

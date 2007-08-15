@@ -28,6 +28,7 @@ import com.adobe.flexbuilder.codemodel.project.IProjectLoadListener;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.dtsworkshop.flextools.Activator;
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.builder.processors.ModelProcessor;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 
@@ -238,6 +239,7 @@ public class FlexToolsBuilder extends IncrementalProjectBuilder {
 			}
 		} catch (CoreException e) {
 			e.printStackTrace();
+			FlexToolsLog.logError("Error occurred during build.", e);
 		}
 	}
 

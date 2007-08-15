@@ -66,6 +66,7 @@ import com.adobe.flexbuilder.editors.common.editor.IFlexEditor;
 import com.adobe.flexbuilder.editors.common.ui.ObjectLabelProvider;
 
 import com.dtsworkshop.flextools.Activator;
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.search.ClassSearchResult;
 import com.dtsworkshop.flextools.search.SearchQuery;
 import com.dtsworkshop.flextools.search.SearchReference;
@@ -130,10 +131,13 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 			showReferenceInEditor((SearchReference)selection.getFirstElement());
 		}
 		else if(selection.getFirstElement() instanceof IFile) {
+			IFile selectedFile = (IFile)selection.getFirstElement();
 			try {
-				opener.open((IFile)selection.getFirstElement(), true);
+				
+				opener.open(selectedFile, true);
 			} catch (PartInitException e) {
 				e.printStackTrace();
+				FlexToolsLog.logError(String.format("Error initialising editor for file %s", selectedFile.getName()), e);
 			}
 		}
 		else {
@@ -155,8 +159,11 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 			part.getEditorSite().getSelectionProvider().setSelection(selection);
 			//editor.selectAndRevealInCodeView(referenceToShow.getFrom(), referenceToShow.getTo());
 		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			FlexToolsLog.logError(String.format("Error initialising part to show file %s", referenceToShow.getFilePath().getName()), e);
+		}
+		finally {
+			
 		}
 	}
 

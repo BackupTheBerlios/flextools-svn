@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 
+import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.builder.SampleNature;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 
@@ -56,7 +57,6 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 				}
 			} catch (CoreException e) {
 				e.printStackTrace();
-				//TODO: Report to user error on looking at the project
 			}
 		}
 		}
@@ -81,8 +81,10 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 				newEntry.getStates().add(parsedDoc);
 			} catch (XmlException e) {
 				e.printStackTrace();
+				FlexToolsLog.logError(String.format("Error occurred while initialising project %s from state", project.getName()), e);
 			} catch (IOException e) {
 				e.printStackTrace();
+				FlexToolsLog.logError(String.format("Error occurred while initialising project %s from state", project.getName()), e);
 			}
 		}
 		projectStates.put(project.getName(), newEntry);	

@@ -37,6 +37,7 @@ import com.adobe.flexbuilder.debug.launching.FlexLaunchDelegate;
 import com.adobe.flexbuilder.debug.ui.launching.AbstractFlexLaunchTab;
 import com.adobe.flexbuilder.debug.ui.launching.FlexLaunchTab;
 import com.adobe.flexbuilder.project.internal.FlexBasedProject;
+import com.dtsworkshop.flextools.FlexToolsLog;
 
 public class LocalFlexLauncher extends LaunchConfigurationDelegate{
 	private FlexLaunchDelegate flexLaunch;
@@ -62,6 +63,7 @@ public class LocalFlexLauncher extends LaunchConfigurationDelegate{
 		}
 		catch(CoreException ex) {
 			ex.printStackTrace();
+			FlexToolsLog.logError(String.format("Exception occurred while parsing variable string '%s'", variableExpression), ex);
 		}
 		return resolvedExpression;
 	}

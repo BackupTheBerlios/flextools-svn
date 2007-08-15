@@ -18,6 +18,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
+import com.dtsworkshop.flextools.FlexToolsLog;
+
 public class ToggleNatureAction implements IObjectActionDelegate {
 
 	private ISelection selection;
@@ -96,6 +98,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 			description.setNatureIds(newNatures);
 			project.setDescription(description, null);
 		} catch (CoreException e) {
+			FlexToolsLog.logError("An error occurred while trying to apply the Flex Tools nature to a project.", e);
 		}
 	}
 
