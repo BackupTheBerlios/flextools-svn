@@ -12,6 +12,7 @@ import org.apache.xmlbeans.XmlException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -66,7 +67,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 	}
 
 	public void initialiseProject(IProject project, IProgressMonitor monitor) {
-		//TODO: Reads project state from the cache.
+		
 		ProjectStateEntry newEntry = new ProjectStateEntry();
 		newEntry.setProject(project);
 		File projectDirectory = newEntry.getWorkingSpace().toFile();
@@ -75,6 +76,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 				return arg0.getName().endsWith(".xml");
 			}			
 		});
+		monitor.beginTask(String.format("Loading project %s", project.getName()), stateFiles.length);
 		for(File stateFile : stateFiles) {
 			try {
 				BuildStateDocument parsedDoc = BuildStateDocument.Factory.parse(stateFile);
@@ -86,8 +88,10 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 				e.printStackTrace();
 				FlexToolsLog.logError(String.format("Error occurred while initialising project %s from state", project.getName()), e);
 			}
+			monitor.worked(1);
 		}
-		projectStates.put(project.getName(), newEntry);	
+		projectStates.put(project.getName(), newEntry);
+		monitor.done();
 	}
 	
 	public boolean isProjectManaged(IProject project) {
@@ -140,6 +144,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 
 	public void removeBuildState(IProject project, IPath sourceFilePath) {
 		ProjectStateEntry entry = projectStates.get(project);
+		Assert.isNotNull(entry, "Project state entry for " + project.getName() + " is null.");
 		BuildStateDocument document = entry.findStateForPath(sourceFilePath);
 		File stateFile = getStateFile(document, entry);
 		if(stateFile.exists()) {

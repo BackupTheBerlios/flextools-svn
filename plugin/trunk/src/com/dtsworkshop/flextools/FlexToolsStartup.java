@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.IStartup;
 
 public class FlexToolsStartup implements IStartup {
-
+	
 	public static void doStartup() {
 		FlexToolsLog.logInfo("Running startup jobs...");
 		IProgressMonitor initMonitor = Platform.getJobManager().createProgressGroup();
@@ -16,12 +16,13 @@ public class FlexToolsStartup implements IStartup {
 		};
 		try {
 			for(Job currentJob : initJobs) {
-				
+				FlexToolsLog.logInfo(String.format("Running project %s", currentJob.getName()));
 				currentJob.setProgressGroup(initMonitor, IProgressMonitor.UNKNOWN);
-				currentJob.schedule();
+				currentJob.schedule(Job.LONG);
 			}
 			for(Job currentJob : initJobs) {
 				currentJob.join();
+				FlexToolsLog.logInfo(String.format("Job %s has finished.", currentJob.getName()));
 			}
 		}
 		catch(InterruptedException ex) {
