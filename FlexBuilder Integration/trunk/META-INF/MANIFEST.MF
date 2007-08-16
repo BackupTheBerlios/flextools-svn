@@ -6,3 +6,5 @@ Bundle-Version: 0.1.1
 Bundle-Vendor: DTS Workshop
 Fragment-Host: com.dtsworkshop.flextools;bundle-version="0.1.1"
 Bundle-Localization: plugin
+Export-Package: com.dtsworkshop.flextools.flexbuilder.builder,
+ com.dtsworkshop.flextools.flexbuilder.initialisation
