@@ -49,7 +49,7 @@ public class IdentifierProcessor extends DefaultNodeProcessor {
 		IdentifierNode identNode = (IdentifierNode)node;
 		
 		IdentifierNodeType identifierType = (IdentifierNodeType)super.getNode(node, parentType, buildState);
-		String qualifiedName = ProcessorHelper.getQualifiedName(identNode);
+		String qualifiedName = FbCodeModelHelper.getQualifiedName(identNode);
 		
 //		String content = "";
 //		

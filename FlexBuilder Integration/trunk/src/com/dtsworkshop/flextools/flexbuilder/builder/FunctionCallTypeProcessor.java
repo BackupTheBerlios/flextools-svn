@@ -47,7 +47,7 @@ public class FunctionCallTypeProcessor extends DefaultNodeProcessor {
 		type.setIsConstructorCall(isConstructorCall);
 		//IFunction functionDef = (IFunction)callNode.getNameNode();
 		
-		type.setName(ProcessorHelper.getQualifiedName(callNode.getNameNode()));
+		type.setName(FbCodeModelHelper.getQualifiedName(callNode.getNameNode()));
 		IDefinition def = callNode.getDefinition();
 		
 		if(def != null) {
