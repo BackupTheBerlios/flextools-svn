@@ -23,8 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlObject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.Assert;
@@ -98,9 +98,12 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		, /** Search for files that FB is not compiling */ Unreferenced
 	}
 	
+	private Logger log = Logger.getLogger(ClassSearcher.class); 
+	
 	public ClassSearcher(String className, IWorkspace workspace) {
 		super(workspace);
 		this.searchText = className;
+		log.debug(String.format("Initialised for class name %s", className));
 	}
 	
 	protected String initialiseQuery() {
@@ -113,11 +116,10 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		);
 		return query;
 	}
-
-	private static Logger log = Logger.getLogger("ClassSearcher"); 
 	
 	public boolean visit(BuildStateDocument document) {
 		String projectName = document.getBuildState().getProject();
+		log.debug(String.format("Visiting project %s", projectName));
 
 		SearchInfo info = new SearchInfo(this);
 		info.searcher = this;

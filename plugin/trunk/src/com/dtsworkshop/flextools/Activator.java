@@ -1,18 +1,18 @@
 /**
 *	Copyright (C) Oliver B. Tupman, 2007.
-*	
+*
 *	This file is part of the Flex Tools Project.
-*	
+*
 *	The Flex Tools Project is free software; you can redistribute it and/or modify
 *	it under the terms of the GNU General Public License as published by
 *	the Free Software Foundation; either version 3 of the License, or
 *	(at your option) any later version.
-*	
+*
 *	The Flex Tools Project is distributed in the hope that it will be useful,
 *	but WITHOUT ANY WARRANTY; without even the implied warranty of
 *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 *	GNU General Public License for more details.
-*	
+*
 *	You should have received a copy of the GNU General Public License
 *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -52,31 +52,42 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	private static IProjectStateManager stateManager = new WorkingSpaceModelStateManager();
 	private List<IResourceAsDeltaVisitor> deltaVisitors = new ArrayList<IResourceAsDeltaVisitor>(2);
-	
+
 	private ProjectManager projectManager = new ProjectManager();
-	
+
+	/**
+	 * Gets the project manager for Flex Tools. Can be used to register
+	 * new projects, get state, etc.
+	 *
+	 * @returns The project manager
+	 */
 	public ProjectManager getProjectManager() {
 		return projectManager;
 	}
-	
-	
+
+
+	/**
+	 * Adds a new visitor that will participate in the build process.
+	 *
+	 * @param newVisitor The visitor to add
+	 */
 	public void addDeltaVisitor(IResourceAsDeltaVisitor newVisitor) {
 		deltaVisitors.add(newVisitor);
 	}
-	
+
 	public List<IResourceAsDeltaVisitor> getVisitors() {
 		return deltaVisitors;
 	}
-	
+
 	/**
 	 * Gets the project build state manager for the plugin.
-	 * 
+	 *
 	 * @return The build state manager for Flex Tools
 	 */
 	public static IProjectStateManager getStateManager() {
 		return stateManager;
 	}
-	
+
 	/**
 	 * The constructor
 	 */
@@ -96,16 +107,16 @@ public class Activator extends AbstractUIPlugin {
 		FlexToolsStartup.doStartup();
 		FlexToolsLog.logInfo("FlexTools Core has started.");
 	}
-	
+
 	private void initialise() {
 //		stateManager.initialise();
 //		loadExtensions();
-		
+
 	}
-	
+
 	public static final String DELTA_VISITOR_EXTENSIONID = "com.dtsworkshop.flextools.deltaVisitor";
 	public static final String PROJECT_LOAD_JOBS_EXTENSIONID = "com.dtsworkshop.flextools.projectLoadJob";
-	
+
 	private void loadExtensions() {
 		Object [] loadedExtensions = loadSimpleExtensions(DELTA_VISITOR_EXTENSIONID);
 		for(Object extension : loadedExtensions) {
@@ -124,7 +135,7 @@ public class Activator extends AbstractUIPlugin {
 			}
 			try {
 				loadedExtensions.add(currentVisitorElement.createExecutableExtension("class"));
-				
+
 			} catch (CoreException e) {
 				e.printStackTrace();
 				FlexToolsLog.logError("Error occurred while loading extensions", e);

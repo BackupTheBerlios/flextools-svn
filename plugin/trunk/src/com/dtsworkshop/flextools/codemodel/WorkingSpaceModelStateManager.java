@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -24,14 +25,18 @@ import com.dtsworkshop.flextools.model.BuildStateDocument;
 
 public class WorkingSpaceModelStateManager extends AbstractStateManager implements IProjectStateManager {
 
+	private static Logger log = Logger.getLogger(WorkingSpaceModelStateManager.class);
+	
 	private Map<String, ProjectStateEntry> projectStates;
 	
 	public WorkingSpaceModelStateManager() {
+		log.info("Initialising");
 		projectStates = new HashMap<String, ProjectStateEntry>(10);
 	}
 	
 	public void acceptVisitor(IBuildStateVisitor visitor,
 			IProgressMonitor monitor) {
+		log.debug("Accepting visitor.");
 		List<BuildStateDocument> states = new ArrayList<BuildStateDocument>(100);
 		
 		for(ProjectStateEntry entry : projectStates.values()) {
@@ -45,6 +50,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 	 * @param monitor
 	 */
 	public void initialise(IProgressMonitor monitor) {
+		log.warn("Global initialise method is deprecated. Please use per-project initialisaiton.");
 		try {
 		IProject [] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for(IProject project : projects) {
@@ -67,7 +73,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 	}
 
 	public void initialiseProject(IProject project, IProgressMonitor monitor) {
-		
+		log.debug(String.format("Initialising project %s", project.getName()));
 		ProjectStateEntry newEntry = new ProjectStateEntry();
 		newEntry.setProject(project);
 		File projectDirectory = newEntry.getWorkingSpace().toFile();
@@ -76,17 +82,21 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 				return arg0.getName().endsWith(".xml");
 			}			
 		});
+		log.debug(String.format("Project %s has %d state files", project.getName(), stateFiles.length));
 		monitor.beginTask(String.format("Loading project %s", project.getName()), stateFiles.length);
 		for(File stateFile : stateFiles) {
+			log.debug(String.format("Project %s: Loading %s", project.getName(), stateFile.toString() ));
 			try {
 				BuildStateDocument parsedDoc = BuildStateDocument.Factory.parse(stateFile);
 				newEntry.getStates().add(parsedDoc);
 			} catch (XmlException e) {
 				e.printStackTrace();
 				FlexToolsLog.logError(String.format("Error occurred while initialising project %s from state", project.getName()), e);
+				log.error("Error loading file", e);
 			} catch (IOException e) {
 				e.printStackTrace();
 				FlexToolsLog.logError(String.format("Error occurred while initialising project %s from state", project.getName()), e);
+				log.error("Error loading file", e);
 			}
 			monitor.worked(1);
 		}
@@ -109,6 +119,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 	}
 	
 	public void registerProject(IProject project) {
+		log.debug(String.format("Loading project %s", project.getName()));
 		ProjectStateEntry entry = new ProjectStateEntry();
 		entry.setProject(project);
 		storeEntry(entry);
@@ -116,8 +127,10 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 	
 
 	public boolean removeProjectState(IProject project) {
+		log.debug(String.format("Removing state files for project %s", project.getName()));
 		ProjectStateEntry entry = getEntry(project);
 		if(entry == null) {
+			log.debug(String.format("No state..."));
 			// Somehow we've not got the entry for the project, so we'll just report back that we succeeded in removing it...
 			return true;
 		}
@@ -126,11 +139,15 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 		if(success) {
 			projectStates.remove(project.getName());
 		}
+		else {
+			log.warn("Failed deleting state directory.");
+		}
 		return success;
 	}
 	
 	public void storeBuildState(BuildStateDocument state) {
 		IProject project = getProjectForState(state);
+		log.debug(String.format("[Project: %s] Storing state for file %s", project.getName(), state.getBuildState().getFile()));
 		if(!isProjectManaged(project)) {
 			registerProject(project);
 		}
@@ -145,6 +162,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 	public void removeBuildState(IProject project, IPath sourceFilePath) {
 		ProjectStateEntry entry = projectStates.get(project);
 		Assert.isNotNull(entry, "Project state entry for " + project.getName() + " is null.");
+		log.debug(String.format("[Project: %s] Removing state file for %s", project.getName(), sourceFilePath.toOSString()));
 		BuildStateDocument document = entry.findStateForPath(sourceFilePath);
 		File stateFile = getStateFile(document, entry);
 		if(stateFile.exists()) {

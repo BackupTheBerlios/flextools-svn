@@ -20,6 +20,7 @@ package com.dtsworkshop.flextools.search;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -37,11 +38,12 @@ import com.dtsworkshop.flextools.model.NodeType;
 public class ClassSearchResult extends AbstractTextSearchResult implements SearchQuery.ISearchQueryResultListener {
 	protected SearchQuery query;
 	
-	
+	private Logger log = Logger.getLogger(ClassSearchResult.class);
 	
 	public void newResult(SearchReference reference) {
 		Match newMatch = new Match(reference, reference.getFrom(), reference.getTo() - reference.getFrom());
 		addMatch(newMatch);
+		log.debug("New reference added");
 	}
 
 	public ClassSearchResult(SearchQuery query) {

@@ -69,3 +69,4 @@ Bundle-ClassPath: .,
  libs/saxon8.jar,
  libs/xbean.jar,
  libs/xmlbeans-flextoolsmodel.jar
+Import-Package: org.apache.log4j

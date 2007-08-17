@@ -104,6 +104,7 @@
             type="com.dtsworkshop.flextools.localLaunch">
       </launchConfigurationTabGroup>
    </extension>
+   <!--
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -130,6 +131,7 @@
                style="push"/>
       </actionSet>
    </extension>
+
    <extension
          point="org.eclipse.ui.editorActions">
       <editorContribution
@@ -152,6 +154,7 @@
          </menu>
       </editorContribution>
    </extension>
+   -->
    <extension
          point="org.eclipse.search.searchPages">
       <page

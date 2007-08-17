@@ -20,6 +20,7 @@ package com.dtsworkshop.flextools.search;
 
 import java.awt.event.ItemListener;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -34,13 +35,15 @@ import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.codemodel.IProjectStateManager;
 
 public class SearchQuery implements ISearchQuery {
+	private Logger log = Logger.getLogger(SearchQuery.class);
 	
 	public SearchQuery() {
 		result = new ClassSearchResult(this);
 		searcher = new ClassSearcher(
-				"",
-				ResourcesPlugin.getWorkspace()
-			);
+			"",
+			ResourcesPlugin.getWorkspace()
+		);
+		log.debug("Created search query");
 	}
 	
 	public boolean canRerun() {
@@ -92,15 +95,15 @@ public class SearchQuery implements ISearchQuery {
 
 	public IStatus run(IProgressMonitor monitor)
 			throws OperationCanceledException {
-		
+		log.debug(String.format("Running search for %s", this.className));
 		IProjectStateManager manager = Activator.getStateManager();
 		manager.acceptVisitor(searcher, monitor);
-		System.out.println(String.format("Searcher found %d matches.", searcher.getMatches().size()));
+		log.debug(String.format("Searcher found %d matches.", searcher.getMatches().size()));
 		for(SearchReference ref : searcher.getMatches()) {
 			if(listener != null) {
 				listener.newResult(ref);
 			}
-			System.out.println(String.format(
+			log.debug(String.format(
 				"Match in file %s in project %s", ref.getFilePath().getName(),
 				ref.getProject().getName()
 			));

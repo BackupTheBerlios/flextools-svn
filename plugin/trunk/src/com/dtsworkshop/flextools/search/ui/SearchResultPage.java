@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.print.attribute.HashAttributeSet;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -46,10 +46,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.search.internal.ui.text.EditorOpener;
-import org.eclipse.search.internal.ui.text.FileLabelProvider;
-import org.eclipse.search.internal.ui.text.FileTreeContentProvider;
-import org.eclipse.search.internal.ui.text.IFileSearchContentProvider;
-import org.eclipse.search.internal.ui.text.FileSearchPage.DecoratorIgnoringViewerSorter;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
@@ -60,7 +56,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE.SharedImages;
-import org.eclipse.ui.internal.navigator.NavigatorContentService;
 
 import com.adobe.flexbuilder.editors.common.editor.IFlexEditor;
 import com.adobe.flexbuilder.editors.common.ui.ObjectLabelProvider;
@@ -72,9 +67,11 @@ import com.dtsworkshop.flextools.search.SearchQuery;
 import com.dtsworkshop.flextools.search.SearchReference;
 
 public class SearchResultPage extends AbstractTextSearchViewPage {
-
+	private static Logger log = Logger.getLogger(SearchResultPage.class);
+	
 	public SearchResultPage() {
 		super(FLAG_LAYOUT_TREE);
+		log.debug("Created.");
 	}
 
 	@Override
@@ -147,7 +144,7 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 	
 	private void showReferenceInEditor(SearchReference referenceToShow) {
 		if(referenceToShow.getFrom() == -1 || referenceToShow.getTo() == -1) {
-			System.out.println("Either the from or to of the reference just double clicked is -1");
+			log.warn("Either the from or to of the reference just double clicked is -1");
 		}
 		try {
 			IEditorPart part = opener.open(referenceToShow.getFilePath(), true);
@@ -266,7 +263,7 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 		}
 
 		public Object[] getChildren(Object parentElement) {
-			System.out.println("Getting children for " + parentElement);
+			//System.out.println("Getting children for " + parentElement);
 			Object [] children = null;
 			if(parentElement instanceof IFile) {
 				List<SearchReference> references =getFileReferences((IFile)parentElement); 
@@ -358,7 +355,7 @@ public class SearchResultPage extends AbstractTextSearchViewPage {
 		});
 		viewer.setContentProvider(new FlexTreeContentProvider());
 	}
-	private Logger log = Logger.getLogger(SearchResultPage.class.getName());
+	
 	@Override
 	protected void elementsChanged(Object[] objects) {
 		//TODO: Don't think this should refresh - should add a new item
