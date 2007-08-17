@@ -49,12 +49,11 @@ public class FunctionCallTypeProcessor extends DefaultNodeProcessor {
 		type.setName(ProcessorHelper.getQualifiedName(callNode.getNameNode()));
 		IDefinition def = callNode.getDefinition();
 		
-		System.out.println(String.format("Def for function call %s", type.getName()));
 		if(def != null) {
 			System.out.println(def.getClass().getCanonicalName());
 		}
 		else {
-			System.out.println("No def");
+			//System.out.println("No def");
 		}
 		CallType typeOfCall = CallType.Normal;
 		
