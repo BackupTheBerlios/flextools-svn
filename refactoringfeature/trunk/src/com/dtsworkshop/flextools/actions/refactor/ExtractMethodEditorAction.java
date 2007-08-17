@@ -98,18 +98,18 @@ public class ExtractMethodEditorAction implements IEditorActionDelegate {
 	
 	public void selectionChanged(IAction action, ISelection selection) {
 		// TODO Auto-generated method stub
-		logger.info("selectionChanged()");
+		//logger.info("selectionChanged()");
 		action.setEnabled(true);
 		if(selection instanceof TextSelection) {
 			TextSelection sel = (TextSelection)selection;
-			logger.info(String.format("Selection: [%s] offset: %d", 
-				sel.getText(), sel.getOffset()
-			));
+//			logger.info(String.format("Selection: [%s] offset: %d", 
+//				sel.getText(), sel.getOffset()
+//			));
 			IASNode currentNode = CodeInfoHelper.getInstance().findNode(
 				editor.getCurrentActiveDocument(),
 				sel.getOffset()
 			);
-			logger.info(String.format("Current node: %s", currentNode.toString()));
+//			logger.info(String.format("Current node: %s", currentNode.toString()));
 			try {
 				int fromLine = editor.getCurrentActiveDocument().getLineOfOffset(currentNode.getStart());
 				int toLine = editor.getCurrentActiveDocument().getLineOfOffset(currentNode.getStart());
@@ -117,16 +117,16 @@ public class ExtractMethodEditorAction implements IEditorActionDelegate {
 						currentNode.getStart(), 
 						currentNode.getEnd() - currentNode.getStart()
 				);
-				logger.info(String.format("Node is from lines %d to %d", fromLine, toLine));
-				logger.info(String.format("Node's text is: \"%s\"", nodeData));
-				logger.info(String.format("Node type is: %s", currentNode.getNodeType()));
-				logger.info("Dump complete.");
+//				logger.info(String.format("Node is from lines %d to %d", fromLine, toLine));
+//				logger.info(String.format("Node's text is: \"%s\"", nodeData));
+//				logger.info(String.format("Node type is: %s", currentNode.getNodeType()));
+//				logger.info("Dump complete.");
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 				FlexToolsLog.logError(String.format("Error playing with document ranges"), e);
 			}
 		}
-		logger.info(selection.toString());
+//		logger.info(selection.toString());
 	}
 
 }
