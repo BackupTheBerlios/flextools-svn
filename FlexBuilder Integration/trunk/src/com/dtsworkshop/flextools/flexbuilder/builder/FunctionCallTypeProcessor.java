@@ -25,6 +25,7 @@ import com.adobe.flexbuilder.codemodel.internal.tree.ExpressionNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.FunctionCallNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.KeywordNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
+import com.dtsworkshop.flextools.builder.processors.ProcessorHelper;
 import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.FunctionCallType;

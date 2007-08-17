@@ -27,6 +27,7 @@ import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
 import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.ImportNodeType;
+import com.dtsworkshop.flextools.builder.processors.ProcessorHelper;
 
 public class ImportNodeProcessor extends DefaultNodeProcessor {
 
