@@ -51,7 +51,7 @@ public class FunctionCallTypeProcessor extends DefaultNodeProcessor {
 		IDefinition def = callNode.getDefinition();
 		
 		if(def != null) {
-			System.out.println(def.getClass().getCanonicalName());
+			//System.out.println(def.getClass().getCanonicalName());
 		}
 		else {
 			//System.out.println("No def");

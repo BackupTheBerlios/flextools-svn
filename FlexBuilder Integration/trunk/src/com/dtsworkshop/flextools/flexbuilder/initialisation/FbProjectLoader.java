@@ -2,21 +2,27 @@ package com.dtsworkshop.flextools.flexbuilder.initialisation;
 
 import java.util.Stack;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.text.IDocument;
 
 import com.adobe.flexbuilder.codemodel.common.CMFactory;
 import com.adobe.flexbuilder.codemodel.indices.IClassNameIndex;
 import com.adobe.flexbuilder.codemodel.indices.IIndex;
 import com.adobe.flexbuilder.codemodel.project.IProjectLoadListener;
 import com.adobe.flexbuilder.codemodel.project.IRegistrar;
+import com.adobe.flexbuilder.editors.common.document.IFlexDocument;
 import com.adobe.flexbuilder.project.IFlexProject;
 import com.dtsworkshop.flextools.project.AbstractProjectLoadContributor;
 
 public class FbProjectLoader extends AbstractProjectLoadContributor  {
+	private static Logger log = Logger.getLogger(FbProjectLoader.class);
 	
 	public FbProjectLoader() {
 		super("Loading FlexBuilder project");
@@ -35,6 +41,14 @@ public class FbProjectLoader extends AbstractProjectLoadContributor  {
 
 		public void loading(String arg0) {
 			//System.out.println("loading() - " + arg0);
+			IPath filePath = new Path(arg0);
+			IDocument doc = CMFactory.getManager().getDocumentForPath(filePath);
+			if(doc instanceof IFlexDocument) {
+				int referenceCount = ((IFlexDocument)doc).getReferenceCount();
+				log.debug(String.format("References to %s = %d", arg0, referenceCount));
+				
+			}
+			log.debug(String.format("Loading %s", arg0));
 		}
 
 		public void phaseEnd(int arg0) {
@@ -66,7 +80,7 @@ public class FbProjectLoader extends AbstractProjectLoadContributor  {
 				com.adobe.flexbuilder.codemodel.project.IProject flexProject = CMFactory.getManager().getProjectFor(getProject());
 				IIndex retrievedIndex = flexProject.getIndex(IClassNameIndex.ID);
 				IClassNameIndex classIndex = (IClassNameIndex)retrievedIndex;
-				System.out.println("adsf");
+				//System.out.println("adsf");
 			}
 			monitor.done();
 		}

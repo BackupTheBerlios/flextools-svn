@@ -47,22 +47,22 @@ public class FileToucherJob extends Job {
 		}
 
 		public void loading(String arg0) {
-			System.out.println("loading() - " + arg0);
+			//System.out.println("loading() - " + arg0);
 		}
 
 		public void phaseEnd(int arg0) {
 			//TODO: This actually reports the end of the phase begun in phaseStart(), should handle this properly
 			monitor.worked(1);
-			System.out.println("phaseEnd() - Finished loading");
+			//System.out.println("phaseEnd() - Finished loading");
 			nextProject();
 		}
 
 		public void phaseStart(int arg0) {
-			System.out.println("Starting... " + arg0);
+			//System.out.println("Starting... " + arg0);
 		}
 
 		public void progress(int arg0) {
-			System.out.println("Progress..." + arg0);
+			//System.out.println("Progress..." + arg0);
 		}
 		
 		public void start(IProgressMonitor monitor) {

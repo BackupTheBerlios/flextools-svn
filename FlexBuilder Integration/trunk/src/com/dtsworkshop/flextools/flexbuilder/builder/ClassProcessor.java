@@ -109,7 +109,7 @@ public class ClassProcessor extends DefaultNodeProcessor {
 				addClassInterfaceRef(ref, expNode, expNode.getDefinition());
 			}
 		}
-		System.out.println("Extends node");
+		//System.out.println("Extends node");
 	}
 	
 	private void addInterfaces(ClassStateType typeNode, IASNode sourceNode) {
