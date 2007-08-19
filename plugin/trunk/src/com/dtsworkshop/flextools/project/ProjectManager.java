@@ -3,6 +3,7 @@ package com.dtsworkshop.flextools.project;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -32,6 +33,7 @@ import com.dtsworkshop.flextools.utils.JobHelpers;
  *
  */
 public class ProjectManager {
+	private static Logger log = Logger.getLogger(ProjectManager.class);
 	/**
 	 * Scans the delta looking to see whether any projects have been opened.
 	 * If they've been opened, the opened project is registered with the
@@ -42,8 +44,11 @@ public class ProjectManager {
 	 */
 	private final class ProjectOpenDetectingVisitor implements IResourceDeltaVisitor {
 		public boolean visit(IResourceDelta delta) throws CoreException {
+			
 			IResource resource = delta.getResource();
+			log.debug(String.format("Visiting %s", resource.getName()));
 			if(resource instanceof IProject) {
+				log.debug("Is project, opening...");
 				loadProject((IProject)resource);
 				return false;
 			}
@@ -55,6 +60,7 @@ public class ProjectManager {
 	
 	private List<AbstractProjectLoadContributor> getLoadContributors() {
 		if(loadContributors == null) {
+			log.debug("Load contributors not loaded. Loading...");
 			loadExtensionPoints();
 		}
 		return loadContributors;
@@ -75,6 +81,7 @@ public class ProjectManager {
 	public ProjectManager() {
 		openProjects = new ArrayList<IProject>(10);
 		stateManager = Activator.getStateManager();
+		log.debug("Project manager started.");
 	}
 	
 	/**
@@ -85,6 +92,7 @@ public class ProjectManager {
 	 * @param monitor The progress monitor to report progress
 	 */
 	public IStatus initialise(IProgressMonitor monitor) {
+		log.debug("Initialising...");
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
 
 			public void resourceChanged(IResourceChangeEvent event) {
@@ -101,6 +109,9 @@ public class ProjectManager {
 						loadProject(project);
 					}	
 				}
+				else {
+					log.debug(String.format("Project %s is not open, ignoring.", project.getName()));
+				}
 				
 			} catch (CoreException e) {
 				e.printStackTrace();
@@ -112,10 +123,12 @@ public class ProjectManager {
 	}
 	
 	public void registerProject(IProject project) {
+		log.info(String.format("Registering project %s", project.getName()));
 		loadProject(project);
 	}
 	
 	private void callLoaders(IProject project) {
+		log.debug("Calling the loader list");
 		IProgressMonitor monitor = Platform.getJobManager().createProgressGroup();
 		List<AbstractProjectLoadContributor> loaders = getLoadContributors();
 		monitor.beginTask(
@@ -127,34 +140,47 @@ public class ProjectManager {
 			loader.setProject(project);
 			loader.setProgressGroup(monitor, 10);
 			loader.schedule();
-		}
-		
-		for(AbstractProjectLoadContributor loader : loaders) {
 			try {
 				loader.join();
 			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 				FlexToolsLog.logError(String.format("Error occurred while waiting for a project loader to rejoin"), e);
 			}
 		}
+//		
+//		for(AbstractProjectLoadContributor loader : loaders) {
+//			try {
+//				loader.join();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//				FlexToolsLog.logError(String.format("Error occurred while waiting for a project loader to rejoin"), e);
+//			}
+//		}
 	}
 	
 	private void loadProject(IProject project) {
 		if(!openProjects.contains(project)) {
+			log.debug(String.format("Project not loaded, loading project %s", project.getName()));
 			openProjects.add(project);
 			callLoaders(project);
-		}		
+		}
+		else {
+			log.debug(String.format("Project %s already loaded", project.getName()));
+		}
 	}
 	
 	private void closeProject(IProject project) {
+		log.debug(String.format("Project %s closed", project.getName()));
 		openProjects.remove(project);
 	}
 
 	private void handleResourceChanged(IResourceChangeEvent event) {
 		IProject project;
-
+		
 		switch(event.getType()) {
 		case IResourceChangeEvent.POST_CHANGE:
+			log.debug("Resources have changed. Processing...");
 			try {
 				event.getDelta().accept(new ProjectOpenDetectingVisitor());
 			} catch (CoreException e) {
@@ -164,11 +190,13 @@ public class ProjectManager {
 			break;
 		case IResourceChangeEvent.PRE_CLOSE:
 			project = (IProject)event.getResource();
+			log.debug(String.format("Resources have changed. Project %s closing...", project.getName()));
 			closeProject(project);
 			break;
 		case IResourceChangeEvent.PRE_DELETE:
 			//TODO: Remove all project information stored and finalise the clearup
 			project = (IProject)event.getResource();
+			log.debug(String.format("Project %s is being deleted.", project.getName()));
 			closeProject(project);
 			break;
 		}

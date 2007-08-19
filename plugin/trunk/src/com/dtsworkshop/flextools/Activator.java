@@ -21,6 +21,8 @@ package com.dtsworkshop.flextools;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -44,7 +46,7 @@ import com.dtsworkshop.flextools.project.ProjectManager;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-
+	private static Logger log = Logger.getLogger(Activator.class);
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.dtsworkshop.flextools";
 
@@ -94,6 +96,7 @@ public class Activator extends AbstractUIPlugin {
 	public Activator() {
 		// Force initialisation of the model manager
 		//CodeModelManager.getManager();
+		PropertyConfigurator.configure("C:\\Documents and Settings\\Ollie\\My Documents\\Personal Eclipse Workspace\\Flex Tools Project\\src\\log4j.properties");
 	}
 
 	/*
@@ -106,6 +109,7 @@ public class Activator extends AbstractUIPlugin {
 		initialise();
 		FlexToolsStartup.doStartup();
 		FlexToolsLog.logInfo("FlexTools Core has started.");
+		log.info("Flex Tools has started.");
 	}
 
 	private void initialise() {
@@ -126,22 +130,29 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public static Object [] loadSimpleExtensions(String extensionId) {
+		log.debug(String.format("Loading extensions for point %s", extensionId));
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		List<Object> loadedExtensions = new ArrayList<Object>(20);
 		IConfigurationElement [] elements = registry.getConfigurationElementsFor(extensionId);
 		for(IConfigurationElement currentVisitorElement : elements) {
+			String extendingName = currentVisitorElement.getAttribute("name");
 			if(!currentVisitorElement.isValid()) {
-				System.err.println("Isn't valid.");
+				log.warn(String.format(
+					"Extension %s is not valid.", 
+					extendingName
+				));
+				//System.err.println("Isn't valid.");
 			}
 			try {
+				log.debug(String.format("Creating extension %s (%s)", extendingName, currentVisitorElement.getAttribute("class")));
 				loadedExtensions.add(currentVisitorElement.createExecutableExtension("class"));
-
+				log.debug(String.format("Extension %s loaded", extendingName));
 			} catch (CoreException e) {
 				e.printStackTrace();
 				FlexToolsLog.logError("Error occurred while loading extensions", e);
 			}
 
-			System.out.println(currentVisitorElement.getName());
+			//System.out.println(currentVisitorElement.getName());
 		}
 		return (Object[])loadedExtensions.toArray(new Object[loadedExtensions.size()]);
 	}
