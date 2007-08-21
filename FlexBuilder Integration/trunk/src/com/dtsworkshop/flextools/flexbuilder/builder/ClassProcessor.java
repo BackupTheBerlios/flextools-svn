@@ -3,7 +3,7 @@
  */
 package com.dtsworkshop.flextools.flexbuilder.builder;
 
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 import com.adobe.flexbuilder.codemodel.definitions.IASScope;
 import com.adobe.flexbuilder.codemodel.definitions.IDefinition;
@@ -28,7 +28,7 @@ import com.dtsworkshop.flextools.model.ClassStateType;
 import com.dtsworkshop.flextools.model.FunctionNodeType;
 
 public class ClassProcessor extends DefaultNodeProcessor {
-	private Logger log = Logger.getLogger(ClassProcessor.class.getName());
+	private Logger log = Logger.getLogger(ClassProcessor.class);
 	
 	public ClassProcessor(Class modelNode, Class xmlNode) {
 		super(modelNode, xmlNode);
@@ -48,8 +48,9 @@ public class ClassProcessor extends DefaultNodeProcessor {
 		// TODO Auto-generated method stub
 		ClassStateType type = (ClassStateType) super.getNode(node, parentType, buildState);
 		
-		log.info("Processing class.");
+		
 		ClassNode classNode = (ClassNode)node;
+		log.debug(String.format("Processing class %s", classNode.getName()));
 		IScopedNode scopedNode = node.getScopeNode();
 		
 		ExpressionNode baseClassNode = classNode.getBaseClassNode();

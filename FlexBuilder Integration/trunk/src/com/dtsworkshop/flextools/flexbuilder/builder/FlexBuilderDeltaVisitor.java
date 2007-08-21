@@ -18,6 +18,7 @@
  */
 package com.dtsworkshop.flextools.flexbuilder.builder;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -42,14 +43,14 @@ import com.dtsworkshop.flextools.model.BuildStateDocument;
  *
  */
 public class FlexBuilderDeltaVisitor extends AbstractFlexBuilderDeltaVisitor {
-
+	private static Logger log = Logger.getLogger(FlexBuilderDeltaVisitor.class);
 	public FlexBuilderDeltaVisitor() {
 		super();
+		log.debug("Created.");
 	}
 	
 	@Override
 	public boolean canVisit(IResource resource) {
-		// TODO Auto-generated method stub
 		return isParseableResource(resource);
 	}
 
@@ -79,7 +80,7 @@ public class FlexBuilderDeltaVisitor extends AbstractFlexBuilderDeltaVisitor {
 	@Override
 	public boolean changed(IResource resource) {
 		IFile file = (IFile)resource;
-		//FlexToolsBuilder.log.info(String.format("Visiting resource %s", resource.getName()));
+		log.debug(String.format("Processing file %s", resource.getName()));
 		synchronized (CMFactory.getLockObject())
         {
 			try {
@@ -89,6 +90,7 @@ public class FlexBuilderDeltaVisitor extends AbstractFlexBuilderDeltaVisitor {
 			} catch (RuntimeException e) {
 				e.printStackTrace();
 				FlexToolsLog.logError(e);
+				log.error(String.format("Caught exception processing file %s", resource.getName()), e);
 				return false;
 			}
         }
