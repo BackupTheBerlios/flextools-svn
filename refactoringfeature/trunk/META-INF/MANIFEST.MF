@@ -7,5 +7,6 @@ Bundle-Vendor: DTS Workshop
 Fragment-Host: com.dtsworkshop.flextools;bundle-version="0.1.1"
 Bundle-Localization: plugin
 Export-Package: com.dtsworkshop.flextools.actions.refactor
-Require-Bundle: org.eclipse.ltk.core.refactoring
+Require-Bundle: org.eclipse.ltk.core.refactoring,
+ org.eclipse.ltk.ui.refactoring
 Import-Package: org.eclipse.ui
