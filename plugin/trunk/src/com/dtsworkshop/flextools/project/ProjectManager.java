@@ -48,8 +48,16 @@ public class ProjectManager {
 			IResource resource = delta.getResource();
 			log.debug(String.format("Visiting %s", resource.getName()));
 			if(resource instanceof IProject) {
-				log.debug("Is project, opening...");
-				loadProject((IProject)resource);
+				boolean isOpen = delta.getFlags() == IResourceDelta.OPEN;
+				boolean isClose = isOpen && !((IProject)resource).isOpen();
+				if(isClose) {
+					log.debug("Project is closing, close it now");
+					closeProject((IProject)resource);
+				}
+				else {
+					log.debug("Is project, opening...");
+					loadProject((IProject)resource);
+				}
 				return false;
 			}
 			return true;
@@ -148,6 +156,7 @@ public class ProjectManager {
 				FlexToolsLog.logError(String.format("Error occurred while waiting for a project loader to rejoin"), e);
 			}
 		}
+		log.debug("Loaders called.");
 //		
 //		for(AbstractProjectLoadContributor loader : loaders) {
 //			try {

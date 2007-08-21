@@ -8,8 +8,8 @@ package com.dtsworkshop.flextools.builder;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -47,8 +47,8 @@ public class FlexToolsBuilder extends IncrementalProjectBuilder {
 
 	private static final String MARKER_TYPE = "com.dtsworkshop.flextools.xmlProblem";
 
-	static Logger log = Logger.getLogger(FlexToolsBuilder.class.getName());
-	public static final String dumpLocation = "d:\\builder state";
+	private static Logger log = Logger.getLogger(FlexToolsBuilder.class);
+	public static final String dumpLocation = "c:\\builder state";
 
 
 	/*
@@ -60,8 +60,10 @@ public class FlexToolsBuilder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
 		if (kind == FULL_BUILD) {
+			log.info(String.format("Performing full build on %s", getProject().getName()));
 			fullBuild(monitor);
 		} else {
+			log.info(String.format("Performing incremental build on %s", getProject().getName()));
 			IResourceDelta delta = getDelta(getProject());
 			if (delta == null) {
 				fullBuild(monitor);
@@ -83,6 +85,7 @@ public class FlexToolsBuilder extends IncrementalProjectBuilder {
 	protected void fullBuild(final IProgressMonitor monitor)
 			throws CoreException {
 		try {
+			log.debug("Beginning full build...");
 			monitor.beginTask("Removing project state.", 1);
 			Activator.getStateManager().removeProjectState(getProject());
 			monitor.worked(1);
@@ -96,11 +99,13 @@ public class FlexToolsBuilder extends IncrementalProjectBuilder {
 			e.printStackTrace();
 			FlexToolsLog.logError("Error occurred during build.", e);
 		}
+		log.debug("Full build completed.");
 	}
 
 
 	protected void incrementalBuild(IResourceDelta delta,
 			IProgressMonitor monitor) throws CoreException {
+		log.debug("Beginning incremental build.");
 		List<IResourceAsDeltaVisitor> visitors = Activator.getDefault().getVisitors();
 		for(IResourceAsDeltaVisitor visitor : visitors) {
 			visitor.setProject(getProject());
