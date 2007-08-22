@@ -9,4 +9,5 @@ Bundle-Localization: plugin
 Export-Package: com.dtsworkshop.flextools.actions.refactor
 Require-Bundle: org.eclipse.ltk.core.refactoring,
  org.eclipse.ltk.ui.refactoring
-Import-Package: org.eclipse.ui
+Import-Package: com.adobe.flexbuilder.editors.actionscript,
+ org.eclipse.ui
