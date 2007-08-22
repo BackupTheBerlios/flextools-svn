@@ -91,6 +91,9 @@ public class FlexToolsBuilder extends IncrementalProjectBuilder {
 			monitor.worked(1);
 			//getProject().accept(new FlexResourceVisitor());
 			List<IResourceAsDeltaVisitor> visitors = Activator.getDefault().getVisitors();
+			if(visitors.size() == 0) {
+				log.warn("Apparently there are no build visitors registered. No building will actually occur.");
+			}
 			for(IResourceAsDeltaVisitor visitor : visitors) {
 				visitor.setProject(getProject());
 				getProject().accept(visitor);
