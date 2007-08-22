@@ -35,6 +35,7 @@ public class ImportNodeProcessor extends DefaultNodeProcessor {
 		super(modelNode, xmlNode);
 	}
 
+	@SuppressWarnings("restriction")
 	@Override
 	public BuildReference getNode(NodeBase node, BuildReference parentType, BuildStateType buildState) {
 		ImportNodeType createdNode = (ImportNodeType)super.getNode(node, parentType, buildState);

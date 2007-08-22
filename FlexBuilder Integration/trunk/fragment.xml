@@ -13,5 +13,26 @@
             class="com.dtsworkshop.flextools.flexbuilder.initialisation.FbProjectLoader"
             name="Flex Builder Project Loading Initialisation"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="com.dtsworkshop.flextools.flexbuilder.actionSet"
+            label="Sample Action Set"
+            visible="true">
+         <menu
+               id="sampleMenu"
+               label="Sample &amp;Menu">
+            <separator name="sampleGroup"/>
+         </menu>
+         <action
+               class="com.dtsworkshop.flextools.flexbuilder.actions.SampleAction"
+               icon="icons/sample.gif"
+               id="com.dtsworkshop.flextools.flexbuilder.actions.SampleAction"
+               label="&amp;Sample Action"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               tooltip="Hello, Eclipse world"/>
+      </actionSet>
+   </extension>
 
 </fragment>

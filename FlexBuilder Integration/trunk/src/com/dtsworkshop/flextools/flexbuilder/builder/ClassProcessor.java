@@ -5,22 +5,14 @@ package com.dtsworkshop.flextools.flexbuilder.builder;
 
 import org.apache.log4j.Logger;
 
-import com.adobe.flexbuilder.codemodel.definitions.IASScope;
 import com.adobe.flexbuilder.codemodel.definitions.IDefinition;
-import com.adobe.flexbuilder.codemodel.internal.tree.BlockNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.ClassNode;
-import com.adobe.flexbuilder.codemodel.internal.tree.ContainerNode;
-import com.adobe.flexbuilder.codemodel.internal.tree.ExpressionNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.FunctionNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.IdentifierNode;
-import com.adobe.flexbuilder.codemodel.internal.tree.KeywordNode;
-import com.adobe.flexbuilder.codemodel.internal.tree.MemberedNode;
 import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
 import com.adobe.flexbuilder.codemodel.internal.tree.TransparentContainerNode;
-import com.adobe.flexbuilder.codemodel.internal.tree.VariableNode;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IExpressionNode;
-import com.adobe.flexbuilder.codemodel.tree.IScopedNode;
 import com.dtsworkshop.flextools.model.BuildReference;
 import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.ClassInterfaceReference;
@@ -43,17 +35,16 @@ public class ClassProcessor extends DefaultNodeProcessor {
  - ClassNode
  - ImportNode
  */
+	@SuppressWarnings("restriction")
 	@Override
 	public BuildReference getNode(NodeBase node, BuildReference parentType, BuildStateType buildState) {
-		// TODO Auto-generated method stub
 		ClassStateType type = (ClassStateType) super.getNode(node, parentType, buildState);
 		
 		
 		ClassNode classNode = (ClassNode)node;
 		log.debug(String.format("Processing class %s", classNode.getName()));
-		IScopedNode scopedNode = node.getScopeNode();
 		
-		ExpressionNode baseClassNode = classNode.getBaseClassNode();
+		IExpressionNode baseClassNode = classNode.getBaseClassNode();
 		type.setBaseClassName(classNode.getBaseClassName());
 		type.setName(classNode.getName());
 		type.setQualifiedName(classNode.getQualifiedName());
@@ -62,24 +53,22 @@ public class ClassProcessor extends DefaultNodeProcessor {
 		FunctionNode constructorNode = classNode.getConstructorNode(); 
 		functionNode.setStartPos(constructorNode.getStart());
 		functionNode.setEndPos(constructorNode.getEnd());
-		VariableNode superNode = classNode.getSuperNode();
-		if(superNode != null) {
-			if(superNode.getStart() != -1) {
-				log.info("Supernode has a start.");
-			}
-		}
-		KeywordNode extendsNode = classNode.getExtendsKeywordNode();
-		if(extendsNode != null) {
-			if(extendsNode.getStart() != -1) {
-				log.info("Extends node has a start");
-			}
-		}
+//		IASNode superNode = classNode.getSuperNode();
+//		if(superNode != null) {
+//			if(superNode.getStart() != -1) {
+//				log.info("Supernode has a start.");
+//			}
+//		}
+//		IASNode extendsNode = classNode.getExtendsKeywordNode();
+//		if(extendsNode != null) {
+//			if(extendsNode.getStart() != -1) {
+//				log.info("Extends node has a start");
+//			}
+//		}
 		if(baseClassNode != null) {
 			if(baseClassNode.getDefinition() != null) {
 				log.info("Processing base class.");
-				baseClassNode.getScopeNode();
-				BlockNode contents = classNode.getContents();
-				ContainerNode contNode;
+//				BlockNode contents = classNode.getContents();
 				
 				ClassInterfaceReference baseRef = type.addNewExtends();
 				addClassInterfaceRef(baseRef, baseClassNode, baseClassNode.getDefinition());
@@ -93,6 +82,7 @@ public class ClassProcessor extends DefaultNodeProcessor {
 		return type;
 	}
 	
+	@SuppressWarnings("restriction")
 	private void addDeriviationNode(ClassStateType typeNode, IASNode sourceNode) {
 		IASNode extendsNode = sourceNode.getChild(1);
 		if(sourceNode instanceof ClassNode) {

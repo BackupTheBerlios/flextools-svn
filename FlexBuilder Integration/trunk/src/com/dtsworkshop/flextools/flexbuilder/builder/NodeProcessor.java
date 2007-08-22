@@ -10,7 +10,18 @@ import com.dtsworkshop.flextools.model.BuildStateType;
 public abstract class NodeProcessor {
 	public Class modelNode;
 	public Class xmlNode;
+	private String fileData;
 	
+	
+	
+	public String getFileData() {
+		return fileData;
+	}
+
+	public void setFileData(String fileData) {
+		this.fileData = fileData;
+	}
+
 	public abstract BuildReference getNode(NodeBase node, BuildReference parentType, BuildStateType buildState);
 	
 	public NodeProcessor(Class modelNode, Class xmlNode) {

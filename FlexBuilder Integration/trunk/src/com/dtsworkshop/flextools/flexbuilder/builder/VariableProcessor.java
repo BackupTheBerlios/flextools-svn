@@ -31,6 +31,7 @@ import com.dtsworkshop.flextools.model.NodeType;
 
 public class VariableProcessor extends DefaultNodeProcessor {
 
+	@SuppressWarnings("restriction")
 	@Override
 	public BuildReference getNode(NodeBase node, BuildReference parentType, BuildStateType buildState) {
 		// TODO Auto-generated method stub

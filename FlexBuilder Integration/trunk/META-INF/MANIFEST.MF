@@ -8,7 +8,9 @@ Fragment-Host: com.dtsworkshop.flextools;bundle-version="0.1.1"
 Bundle-Localization: plugin
 Export-Package: com.dtsworkshop.flextools.flexbuilder.builder,
  com.dtsworkshop.flextools.flexbuilder.initialisation
-Import-Package: com.adobe.flexbuilder.editors.actionscript
+Import-Package: com.adobe.flexbuilder.editors.actionscript,
+ uk.co.badgersinfoil.metaas,
+ uk.co.badgersinfoil.metaas.dom
 Require-Bundle: com.adobe.extflashplayer,
  com.adobe.flexbuilder.antlr,
  com.adobe.flexbuilder.components.config,
@@ -25,4 +27,6 @@ Require-Bundle: com.adobe.extflashplayer,
  com.adobe.flexbuilder.SWTFlashPlayer,
  com.adobe.flexbuilder.ui,
  com.adobe.flexbuilder.utils.osnative,
- org.eclipse.ui.workbench.texteditor
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.ui,
+ com.dtsworkshop.flextools.dependencies

@@ -88,6 +88,7 @@ public class ModelProcessor {
 		options.setSavePrettyPrint();
 		options.setSavePrettyPrintIndent(2);
 		BuildStateDocument doc = BuildStateDocument.Factory.newInstance(options);
+		IDefinition [] defs = startNode.getAllTopLevelDefinitions(false, true);
 		buildStateDocument(startNode, sourceFile, doc);
 		return doc;
 	}
@@ -106,6 +107,7 @@ public class ModelProcessor {
 		IASNode [] children = node.getChildren();
 		for(IASNode child : children) {
 			NodeProcessor processor = getProcessor(child.getClass());
+			processor.setFileData(textData);
 			BuildReference newXmlChild = processor.getNode((NodeBase)child, parentXmlNode, buildState);
 			//newXmlChild.setContents(getNodeContents(textData, child));
 			if(child.getChildCount() > 0) {
@@ -132,6 +134,7 @@ public class ModelProcessor {
 	 */
 	private static Map<Class, NodeProcessor> processorMap;
 	
+	@SuppressWarnings("restriction")
 	/** Default fallback processor for any node types not handled by custom processors */
 	private static NodeProcessor defaultProcessor;
 	static {

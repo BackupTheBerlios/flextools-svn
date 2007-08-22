@@ -31,7 +31,6 @@ import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.adobe.flexbuilder.editors.actionscript.ActionScriptDocumentProvider;
 import com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor;
 import com.adobe.flexbuilder.editors.actionscript.ActionScriptPlugin;
-import com.adobe.flexbuilder.editors.actionscript.lookup.LookupManager;
 import com.adobe.flexbuilder.editors.common.CommonPlugin;
 import com.adobe.flexbuilder.editors.common.EditorUtility;
 import com.adobe.flexbuilder.editors.common.document.IFlexDocument;
@@ -68,7 +67,7 @@ public class FbProjectLoader extends AbstractProjectLoadContributor  {
 				provider.connect(file);
 				IDocument doc1 = provider.getDocument(file);
 				IFlexDocument doc = (IFlexDocument)CMFactory.getManager().getDocumentForPath(filePath);
-				LookupManager.Instance().getDefinition(doc, 1);
+				//LookupManager.Instance().getDefinition(doc, 1);
 				EditorUtility.getOffsetInformation(doc, 1);
 				provider.disconnect(file);
 			} catch (CoreException e) {
