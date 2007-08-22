@@ -2,10 +2,11 @@ package com.dtsworkshop.flextools.sampleEditors;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.ui.editors.text.TextEditor;
 
-import com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor;
+//import com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor;
 
-public class XMLEditor extends ActionScriptEditor {
+public class XMLEditor extends TextEditor {
 	
 	private ColorManager colorManager;
 	public static final String EDITOR_CONTEXT = "com.dtsworkshop.flextools.sampleEditors.XMLEditor";
