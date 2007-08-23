@@ -1,5 +1,6 @@
 package com.dtsworkshop.flextools.actions.refactor;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
@@ -22,7 +23,6 @@ import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IExpressionNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.adobe.flexbuilder.codemodel.tree.IScopedNode;
-import com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor;
 import com.adobe.flexbuilder.editors.common.document.IFlexDocument;
 import com.adobe.flexbuilder.editors.common.editor.AbstractFlexEditor;
 import com.dtsworkshop.flextools.FlexToolsLog;
@@ -32,8 +32,10 @@ import com.dtsworkshop.flextools.refactoring.ui.RenameClassWizard;
 
 public class RenameClassActionFromEditor implements IEditorActionDelegate {
 	private IEditorPart editor;
+	private static Logger log = Logger.getLogger(RenameClassActionFromEditor.class);
 	
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+		log.debug("Editor set for editor");
 		this.editor = targetEditor;
 	}
 	
@@ -76,21 +78,28 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 
 	public void run(IAction action) {
 		if(!(lastSelected instanceof TextSelection)) {
-			FlexToolsLog.logWarning("Text selection isn't instance of TextSelection.");
+			//FlexToolsLog.logWarning("Text selection isn't instance of TextSelection.");
+			log.warn(String.format("Text selection isn't instance of TextSelection. Ignoring."));
 			return;
 		}
 		TextSelection castedSelection = (TextSelection)lastSelected;
 		String classQualifiedName = getQualifiedName(castedSelection.getOffset());
 		if(classQualifiedName == null) {
 			//TODO: output useful error message to the user!
-			System.out.println("The user hadn't selected any text... I think...");
-			FlexToolsLog.logWarning(
-				String.format(
-					"No text selected so cannot perform rename." +
-					"Offset is: %d", castedSelection.getOffset()					
-			));
+			log.debug(String.format("Don't think the user has selected anything. Offset %d", castedSelection.getOffset()));
 			return;
 		}
+		renameClass(classQualifiedName);
+	}
+
+	/**
+	 * Begins the class renaming refactoring based upon the supplied
+	 * qualified class name.
+	 * 
+	 * @param classQualifiedName The qualified name of the class to rename
+	 */
+	protected void renameClass(String classQualifiedName) {
+		log.debug(String.format("Renaming class %s", classQualifiedName));
 		IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
 		
 		ClassNameRefactoring refactorer = new ClassNameRefactoring();
@@ -106,7 +115,9 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 			op.run(shell, titleForFailedChecks);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-			FlexToolsLog.logError(String.format("Error running the class rename refactorer"), e);
+			String message = String.format("Error running the class rename refactorer");
+			log.error(message);
+			FlexToolsLog.logError(message, e);
 		}
 	}
 	private ISelection lastSelected = null;
