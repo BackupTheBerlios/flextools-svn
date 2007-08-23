@@ -105,12 +105,12 @@ public class IdentifierProcessor extends DefaultNodeProcessor {
 			ActionScriptParser parser = asFactory.newParser();
 			StringReader reader = new StringReader(parentData);
 			
-			try {
-				ASCompilationUnit parseResult = parser.parse(reader);
-				log.debug("asdf");
-			} catch (RuntimeException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				ASCompilationUnit parseResult = parser.parse(reader);
+//				log.debug("asdf");
+//			} catch (RuntimeException e) {
+//				e.printStackTrace();
+//			}
 		}
 		
 //		String content = "";
