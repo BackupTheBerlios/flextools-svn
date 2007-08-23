@@ -12,9 +12,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.jface.dialogs.MessageDialog;
 
-import uk.co.badgersinfoil.metaas.ActionScriptFactory;
-import uk.co.badgersinfoil.metaas.ActionScriptParser;
-import uk.co.badgersinfoil.metaas.dom.ASCompilationUnit;
+//import uk.co.badgersinfoil.metaas.ActionScriptFactory;
+//import uk.co.badgersinfoil.metaas.ActionScriptParser;
+//import uk.co.badgersinfoil.metaas.dom.ASCompilationUnit;
 
 import com.adobe.flexbuilder.codemodel.common.CMFactory;
 import com.adobe.flexbuilder.codemodel.project.IProject;
@@ -73,15 +73,15 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 					e.printStackTrace();
 					return;
 				}
-				ActionScriptFactory factory = new ActionScriptFactory();
-				ActionScriptParser parser = factory.newParser();
-				try {
-					ASCompilationUnit result = parser.parse(reader);
-					System.out.println("Got result");
-				} catch (RuntimeException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				ActionScriptFactory factory = new ActionScriptFactory();
+//				ActionScriptParser parser = factory.newParser();
+//				try {
+//					ASCompilationUnit result = parser.parse(reader);
+//					System.out.println("Got result");
+//				} catch (RuntimeException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				
 //				ModelProcessor processor = new ModelProcessor();
 //				IFileNode fileNode = null;

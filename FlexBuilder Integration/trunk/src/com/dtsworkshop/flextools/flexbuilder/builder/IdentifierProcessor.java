@@ -26,9 +26,9 @@ import java.util.Stack;
 
 import org.apache.log4j.Logger;
 
-import uk.co.badgersinfoil.metaas.ActionScriptFactory;
-import uk.co.badgersinfoil.metaas.ActionScriptParser;
-import uk.co.badgersinfoil.metaas.dom.ASCompilationUnit;
+//import uk.co.badgersinfoil.metaas.ActionScriptFactory;
+//import uk.co.badgersinfoil.metaas.ActionScriptParser;
+//import uk.co.badgersinfoil.metaas.dom.ASCompilationUnit;
 
 import antlr.Token;
 
@@ -101,10 +101,10 @@ public class IdentifierProcessor extends DefaultNodeProcessor {
 //			ActionScriptFactory fact = new ActionScriptFactory();
 //			ActionScriptParser parser = fact.newParser();
 //			ASCompilationUnit unit = parser.parse(reader);
-			ActionScriptFactory asFactory = new ActionScriptFactory();
-			ActionScriptParser parser = asFactory.newParser();
-			StringReader reader = new StringReader(parentData);
-			
+//			ActionScriptFactory asFactory = new ActionScriptFactory();
+//			ActionScriptParser parser = asFactory.newParser();
+//			StringReader reader = new StringReader(parentData);
+//			
 //			try {
 //				ASCompilationUnit parseResult = parser.parse(reader);
 //				log.debug("asdf");

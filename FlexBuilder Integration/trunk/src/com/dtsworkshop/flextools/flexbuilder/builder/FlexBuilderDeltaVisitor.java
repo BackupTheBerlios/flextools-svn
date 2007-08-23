@@ -60,16 +60,19 @@ public class FlexBuilderDeltaVisitor extends AbstractFlexBuilderDeltaVisitor {
 	}
 
 	/**
+	 * <p>
 	 * TextDocumentProvider internally connects to an IAdaptable interface
 	 * that can convert to ILocationProvider (provides location information
 	 * about the element) and IFile (the file itself).
-	 * 
+	 * </p>
+	 * <p>
 	 * This class fakes the required information as I'm not sure what
 	 * pre-built classes in Eclipse provide this information - probably
 	 * just the editor input classes.
-	 * 
+	 * </p>
+	 * <p>
 	 * TODO: Will an editor input class suit our requirements?
-	 * 
+	 * </p>
 	 * @author otupman
 	 *
 	 */

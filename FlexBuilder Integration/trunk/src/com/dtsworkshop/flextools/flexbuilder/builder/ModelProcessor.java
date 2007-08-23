@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlOptions;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -58,7 +59,8 @@ import com.dtsworkshop.flextools.utils.ResourceHelper;
  *
  */
 public class ModelProcessor {
-
+	private static Logger log = Logger.getLogger(ModelProcessor.class);
+	
 	private String getFileContents(IFile file) {
 		
 		try {
@@ -84,6 +86,7 @@ public class ModelProcessor {
 	 * @return The constructed state document
 	 */
 	public BuildStateDocument getStateDocument(IFileNode startNode, IFile sourceFile) {
+		log.debug("Getting state document for " + sourceFile.getName());
 		XmlOptions options = new XmlOptions();
 		options.setSavePrettyPrint();
 		options.setSavePrettyPrintIndent(2);
@@ -94,6 +97,7 @@ public class ModelProcessor {
 	}
 	
 	private void buildStateDocument(IFileNode startNode, IFile sourceFile, BuildStateDocument doc) {
+		log.debug("Building state document for " + sourceFile.getName());
 		BuildStateType buildType = doc.addNewBuildState();
 		buildType.setFile(sourceFile.getProjectRelativePath().toString());
 		buildType.setProject(sourceFile.getProject().getName());
