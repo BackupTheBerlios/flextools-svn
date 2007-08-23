@@ -160,7 +160,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 
 
 	public void removeBuildState(IProject project, IPath sourceFilePath) {
-		ProjectStateEntry entry = projectStates.get(project);
+		ProjectStateEntry entry = getEntry(project);
 		Assert.isNotNull(entry, "Project state entry for " + project.getName() + " is null.");
 		log.debug(String.format("[Project: %s] Removing state file for %s", project.getName(), sourceFilePath.toOSString()));
 		BuildStateDocument document = entry.findStateForPath(sourceFilePath);
@@ -175,23 +175,41 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 		removeBuildState(project, resource.getProjectRelativePath());
 	}
 	
+	/**
+	 * Gets the target state filename to store this document.
+	 * 
+	 * @param state The state document
+	 * @param entry The entry for the project the state belongs to
+	 * @return The file to store the document to
+	 */
 	private File getStateFile(BuildStateDocument state, ProjectStateEntry entry) {
+		Assert.isNotNull(state);
+		Assert.isNotNull(entry);
 		String stateFilename  = getStateFilename(state);
 		IPath statePath = entry.getWorkingSpace().append(stateFilename);
 		File targetStateFile = statePath.toFile();
 		return targetStateFile;
 	}
 	
+	/**
+	 * Gets the target filename for the supplied state document
+	 * @param state The state document to get the filename for
+	 * @return The filename for the state document
+	 */
 	private String getStateFilename(BuildStateDocument state) {
+		Assert.isNotNull(state, "Build state document is null");
+		Assert.isNotNull(state.getBuildState(), "Build state from build doc is null");
 		String filename = StateManagerHelpers.getStateName(state.getBuildState().getFile())  + ".xml";
 		return filename;
 	}
 	
 	private void storeEntry(ProjectStateEntry newEntry) {
+		Assert.isNotNull(newEntry, "Project state entry is null.");
 		projectStates.put(newEntry.getProject().getName(), newEntry);
 	}
 	
 	private ProjectStateEntry getEntry(IProject project) {
+		Assert.isNotNull(project, "Project is null.");
 		return projectStates.get(project.getName());
 	}
 

@@ -89,12 +89,14 @@ public class FlexToolsBuilder extends IncrementalProjectBuilder {
 			monitor.beginTask("Removing project state.", 1);
 			Activator.getStateManager().removeProjectState(getProject());
 			monitor.worked(1);
+			
 			//getProject().accept(new FlexResourceVisitor());
 			List<IResourceAsDeltaVisitor> visitors = Activator.getDefault().getVisitors();
 			if(visitors.size() == 0) {
-				log.warn("Apparently there are no build visitors registered. No building will actually occur.");
+				log.warn("There are no AS resource visitors registered.");
 			}
 			for(IResourceAsDeltaVisitor visitor : visitors) {
+				log.debug("Running visitor on project");
 				visitor.setProject(getProject());
 				getProject().accept(visitor);
 			}

@@ -95,6 +95,9 @@ public class SearchQuery implements ISearchQuery {
 
 	public IStatus run(IProgressMonitor monitor)
 			throws OperationCanceledException {
+		if(this.className == null) {
+			this.className = this.searcher.getSearchText();
+		}
 		log.debug(String.format("Running search for %s", this.className));
 		IProjectStateManager manager = Activator.getStateManager();
 		manager.acceptVisitor(searcher, monitor);
