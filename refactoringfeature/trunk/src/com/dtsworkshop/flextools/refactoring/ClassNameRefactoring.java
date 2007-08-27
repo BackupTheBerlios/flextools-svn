@@ -8,34 +8,18 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.jface.text.IRegion;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
-import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.TextEditBasedChange;
-import org.eclipse.ltk.core.refactoring.TextEditBasedChangeGroup;
 import org.eclipse.ltk.core.refactoring.TextFileChange;
-import org.eclipse.osgi.baseadaptor.loader.ClasspathEntry;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.ui.internal.editors.text.StatusUtil;
 
-import com.adobe.flexbuilder.codemodel.common.CMFactory;
-import com.adobe.flexbuilder.codemodel.definitions.IClass;
-import com.adobe.flexbuilder.codemodel.definitions.IDefinition;
-import com.adobe.flexbuilder.codemodel.indices.IClassNameIndex;
-import com.adobe.flexbuilder.codemodel.indices.IIndex;
-import com.adobe.flexbuilder.codemodel.internal.indices.IClassInheritanceIndex;
-import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.search.ClassSearcher;
 import com.dtsworkshop.flextools.search.SearchQuery;
 import com.dtsworkshop.flextools.search.SearchReference;
@@ -43,8 +27,7 @@ import com.dtsworkshop.flextools.search.SearchReference;
 public class ClassNameRefactoring extends Refactoring {
 	private static Logger log = Logger.getLogger(ClassNameRefactoring.class);
 	
-	private IProject containingProject = null;
-	
+	private IFile typeFile;
 	/**
 	 * The qualified name of the type
 	 */
@@ -191,25 +174,15 @@ public class ClassNameRefactoring extends Refactoring {
 	}
 	
 	private Change createFilenameChange() {
-		IClassNameIndex index = getClassnameIndex();
-		IClass sourceClass = index.getByQualifiedName(getQualifiedName());
-		IFile sourceFile = getSourceFile(sourceClass);
+		IFile sourceFile = this.typeFile;
 		String extension = sourceFile.getFileExtension();
-		IPath targetFile = sourceFile.getLocation().removeLastSegments(1);
-		targetFile = targetFile.append(getNewShortName()).append(extension);
+		IPath targetFile = sourceFile.getProjectRelativePath().removeLastSegments(1);
+		targetFile = targetFile.append(getNewShortName() + "." + extension);
+		
 		FilenameChange fileChange = new FilenameChange(sourceFile, targetFile);
 		return fileChange;
 	}
 
-	private IFile getSourceFile(IClass sourceClass) {
-		String containingFilePath = sourceClass.getContainingFilePath();
-		return getContainingProject().getFile(containingFilePath);
-	}
-
-	private IClassNameIndex getClassnameIndex() {
-		com.adobe.flexbuilder.codemodel.project.IProject flexProject = CMFactory.getManager().getProjectFor(getContainingProject());
-		return (IClassNameIndex)flexProject.getIndex(IClassNameIndex.ID);
-	}
 		
 	@Override
 	public String getName() {
@@ -230,11 +203,17 @@ public class ClassNameRefactoring extends Refactoring {
 	}
 
 	public IProject getContainingProject() {
-		return containingProject;
+		return this.typeFile.getProject();
 	}
 
-	public void setContainingProject(IProject containingProject) {
-		this.containingProject = containingProject;
+	public IFile getTypeFile() {
+		return typeFile;
 	}
+
+	public void setTypeFile(IFile typeFile) {
+		this.typeFile = typeFile;
+	}
+	
+	
 
 }

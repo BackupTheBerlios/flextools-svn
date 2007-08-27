@@ -70,36 +70,44 @@ public class FilenameChange extends Change {
 	}
 	@Override
 	public Change perform(IProgressMonitor pm) throws CoreException {
-		File file = this.sourceFile.getLocation().toFile();
-		File targetFile = this.targetPath.toFile();
-		if(targetFile.exists()) {
-			throw new RuntimeException("File " + targetFile.getName() + " exists.");
-		}
+		IPath currentPath = sourceFile.getProjectRelativePath();
+		IPath newName = targetPath.removeFirstSegments(currentPath.segmentCount() - 1);
 		
-		try {
-			if(!targetFile.createNewFile()) {
-				throw new RuntimeException("Error creating new file " + targetFile.getName());
-			}
-			BufferedWriter writer = new BufferedWriter(new FileWriter(targetFile));
-			BufferedReader reader = new BufferedReader(new FileReader(file));
-			String inputString = "";
-			while((inputString = reader.readLine()) != null) {
-				writer.write(inputString);
-			}
-			writer.close();
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException("IO error creating new file", e);
-		}
-		IProject containingProject = this.sourceFile.getProject();
-		IPath toPath = this.sourceFile.getLocation();
-		if(!file.delete()) {
-			targetFile.delete();
-			throw new RuntimeException("Could not delete source file.");
-		}
-		IFile createdFile = containingProject.getFile(targetPath); 
-		return createUndo(createdFile, toPath);
+		IPath movePath = newName;
+		this.sourceFile.move(movePath, true, pm);
+		Change undoAction = new FilenameChange(sourceFile, currentPath);
+		return undoAction;
+		
+//		File file = this.sourceFile.getLocation().toFile();
+//		File targetFile = this.targetPath.toFile();
+//		if(targetFile.exists()) {
+//			throw new RuntimeException("File " + targetFile.getName() + " exists.");
+//		}
+//		
+//		try {
+//			if(!targetFile.createNewFile()) {
+//				throw new RuntimeException("Error creating new file " + targetFile.getName());
+//			}
+//			BufferedWriter writer = new BufferedWriter(new FileWriter(targetFile));
+//			BufferedReader reader = new BufferedReader(new FileReader(file));
+//			String inputString = "";
+//			while((inputString = reader.readLine()) != null) {
+//				writer.write(inputString);
+//			}
+//			writer.close();
+//			reader.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			throw new RuntimeException("IO error creating new file", e);
+//		}
+//		IProject containingProject = this.sourceFile.getProject();
+//		IPath toPath = this.sourceFile.getLocation();
+//		if(!file.delete()) {
+//			targetFile.delete();
+//			throw new RuntimeException("Could not delete source file.");
+//		}
+//		IFile createdFile = containingProject.getFile(targetPath); 
+//		return createUndo(createdFile, toPath);
 	}
 
 }

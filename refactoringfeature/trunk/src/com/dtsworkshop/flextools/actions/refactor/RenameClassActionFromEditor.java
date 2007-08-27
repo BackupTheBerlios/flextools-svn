@@ -2,7 +2,12 @@ package com.dtsworkshop.flextools.actions.refactor;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
@@ -18,6 +23,7 @@ import org.eclipse.ui.actions.WorkspaceAction;
 
 import com.adobe.flexbuilder.codemodel.common.CMFactory;
 import com.adobe.flexbuilder.codemodel.definitions.IDefinition;
+import com.adobe.flexbuilder.codemodel.indices.IClassNameIndex;
 import com.adobe.flexbuilder.codemodel.project.IProject;
 import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IExpressionNode;
@@ -39,6 +45,11 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 		this.editor = targetEditor;
 	}
 	
+	private class TypeInfo {
+		public String qualifiedName;
+		public IFile typeFile;
+	}
+	
 	private IASNode findAsNodeByOffset(IASNode root, int offset) {
 		IASNode [] children = root.getChildren();
 		boolean isLeafNode = children.length == 0;
@@ -55,10 +66,11 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 		return foundNode;
 	}
 	
-	private String getQualifiedName(int offset) {
-		String qualifiedName = null;
+	private TypeInfo getQualifiedName(int offset) {
+		TypeInfo info = new TypeInfo();
+		
 		AbstractFlexEditor asEditor = (AbstractFlexEditor)this.editor;
-		IDocument doc = asEditor.getCurrentActiveDocument();
+		IFlexDocument doc = (IFlexDocument)asEditor.getCurrentActiveDocument();
 		synchronized (CMFactory.getLockObject()) {
 			IProject project = CMFactory.getManager().getProjectForDocument(doc);
 			IPath path = CMFactory.getManager().getPathForDocument(doc);
@@ -70,11 +82,19 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 				if(def == null) {
 					throw new RuntimeException("Definition isn't present.");
 				}
-				qualifiedName = def.getQualifiedName();
+				String containingPath = def.getContainingSourceFilePath();
+				IPath cPath = new Path(containingPath);
+				IWorkspaceRoot wkRoot = ResourcesPlugin.getWorkspace().getRoot();
+				IFile [] files = wkRoot.findFilesForLocation(cPath);
+				Assert.isTrue(files.length > 0);
+				//TODO: Find out when findFilesForLocation might return more than one result
+				info.typeFile = files[0];
+				info.qualifiedName = def.getQualifiedName();
 			}
 		}
-		return qualifiedName;
+		return info;
 	}
+
 
 	public void run(IAction action) {
 		if(!(lastSelected instanceof TextSelection)) {
@@ -83,31 +103,37 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 			return;
 		}
 		TextSelection castedSelection = (TextSelection)lastSelected;
-		String classQualifiedName = getQualifiedName(castedSelection.getOffset());
+		TypeInfo selectedTypeInfo = getQualifiedName(castedSelection.getOffset());
+		String classQualifiedName = selectedTypeInfo.qualifiedName;
+		
 		if(classQualifiedName == null) {
 			//TODO: output useful error message to the user!
 			log.debug(String.format("Don't think the user has selected anything. Offset %d", castedSelection.getOffset()));
 			return;
 		}
-		renameClass(classQualifiedName);
+		
+		renameClass(classQualifiedName, selectedTypeInfo.typeFile);
 	}
-
+	
 	/**
 	 * Begins the class renaming refactoring based upon the supplied
 	 * qualified class name.
 	 * 
 	 * @param classQualifiedName The qualified name of the class to rename
 	 */
-	protected void renameClass(String classQualifiedName) {
+	protected void renameClass(String classQualifiedName, IFile typeFile) {
 		log.debug(String.format("Renaming class %s", classQualifiedName));
 		IWorkbenchWindow window = editor.getSite().getWorkbenchWindow();
-		
+
 		ClassNameRefactoring refactorer = new ClassNameRefactoring();
 		refactorer.setQualifiedName(classQualifiedName);
 		refactorer.setOldShortName(ProcessorHelper.getLocalName(classQualifiedName));
-		int info = RefactoringWizard.DIALOG_BASED_USER_INTERFACE;
-		RenameClassWizard wizard = new RenameClassWizard(refactorer, info);
-		
+		refactorer.setTypeFile(typeFile);
+
+		RenameClassWizard wizard = new RenameClassWizard(
+			refactorer, 
+			RefactoringWizard.DIALOG_BASED_USER_INTERFACE
+		);
 		RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(wizard);
 		String titleForFailedChecks = "failed";
 		try {
