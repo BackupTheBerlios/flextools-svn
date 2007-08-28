@@ -135,12 +135,46 @@ public class ClassNameRefactoring extends Refactoring {
 	public Change createChange(IProgressMonitor pm) throws CoreException,
 			OperationCanceledException {
 		log.debug("Creating changes");
+		CompositeChange parentChange = null;
+		try {
+			parentChange = createParentChange();
+			
+			Change filenameChange = createFilenameChange();
+			parentChange.add(filenameChange);
+			
+			Map<IFile, MultiTextEdit> fileToEditMap = createFileEdits();
+			attachToFileChanges(parentChange, fileToEditMap);
+			log.debug("All changes created.");
+		} catch (RuntimeException e) {
+			log.debug("Exception occurred while creating changes.", e);
+			e.printStackTrace();
+		}
+		return parentChange;
+	}
+
+	private void attachToFileChanges(CompositeChange parentChange, Map<IFile, MultiTextEdit> fileToEditMap) {
+		for(IFile currentFile : fileToEditMap.keySet()) {
+			MultiTextEdit edit = fileToEditMap.get(currentFile);
+			TextFileChange fileChange = new TextFileChange(
+				String.format("Renaming %s", currentFile.getName()),
+				currentFile
+			);
+			fileChange.setEdit(edit);
+			parentChange.add(fileChange);
+		}
+	}
+
+	private CompositeChange createParentChange() {
 		CompositeChange parentChange = new CompositeChange(
 			String.format(
 				"Renaming class from '%s' to '%s'",
 				oldShortName, newShortName
 			)
 		);
+		return parentChange;
+	}
+
+	private Map<IFile, MultiTextEdit> createFileEdits() {
 		Map<IFile, MultiTextEdit> fileToEditMap = new HashMap<IFile, MultiTextEdit>(40);
 		for(SearchReference ref : references) {
 			if(!fileToEditMap.containsKey(ref.getFilePath())) {
@@ -156,21 +190,7 @@ public class ClassNameRefactoring extends Refactoring {
 			
 			change.addChild(edit);
 		}
-		
-		for(IFile currentFile : fileToEditMap.keySet()) {
-			MultiTextEdit edit = fileToEditMap.get(currentFile);
-			TextFileChange fileChange = new TextFileChange(
-				String.format("Renaming %s", currentFile.getName()),
-				currentFile
-			);
-			fileChange.setEdit(edit);
-			parentChange.add(fileChange);
-		}
-		
-		Change filenameChange = createFilenameChange();
-		parentChange.add(filenameChange);
-		log.debug("All changes created.");
-		return parentChange;
+		return fileToEditMap;
 	}
 	
 	private Change createFilenameChange() {
