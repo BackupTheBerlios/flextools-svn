@@ -18,6 +18,8 @@
  */
 package com.dtsworkshop.flextools.flexbuilder.builder;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -30,8 +32,12 @@ import org.eclipse.ui.editors.text.ILocationProvider;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import com.adobe.flexbuilder.codemodel.common.CMFactory;
+import com.adobe.flexbuilder.codemodel.common.IMXMLDataProvider;
+import com.adobe.flexbuilder.codemodel.mxml.MXMLData;
+import com.adobe.flexbuilder.codemodel.mxml.MXMLUnitData;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.adobe.flexbuilder.editors.actionscript.ActionScriptDocumentProvider;
+import com.adobe.flexbuilder.editors.common.document.IFlexDocument;
 import com.adobe.flexbuilder.editors.mxml.code.MXMLDocumentProvider;
 
 import com.dtsworkshop.flextools.Activator;
@@ -128,10 +134,22 @@ public class FlexBuilderDeltaVisitor extends AbstractFlexBuilderDeltaVisitor {
 		fileNode.getScope(); 
 		
 		ModelProcessor processor = new ModelProcessor();
-		
+		IFlexDocument flexDoc = (IFlexDocument)doc;
+		if(doc instanceof IMXMLDataProvider) {
+			processMxmlFile(doc);
+		}
 		BuildStateDocument stateDocument = processor.getStateDocument(fileNode, file);
 		Activator.getStateManager().storeBuildState(stateDocument);
 		return true;
+	}
+
+	private void processMxmlFile(IDocument doc) {
+		IMXMLDataProvider mxmlProvider = (IMXMLDataProvider)doc;
+		MXMLData mxmlData = mxmlProvider.getMXMLData();
+		List<MXMLUnitData> units = mxmlData.getUnits();
+		for(MXMLUnitData mxmlUnit : units) {
+			
+		}
 	}
 
 	/**
