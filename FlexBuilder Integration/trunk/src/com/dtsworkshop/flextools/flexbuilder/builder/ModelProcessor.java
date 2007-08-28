@@ -58,6 +58,7 @@ import com.dtsworkshop.flextools.utils.ResourceHelper;
  * @author otupman
  *
  */
+@SuppressWarnings("restriction")
 public class ModelProcessor {
 	private static Logger log = Logger.getLogger(ModelProcessor.class);
 	
@@ -110,6 +111,10 @@ public class ModelProcessor {
 	private void processNode(IASNode node, BuildReference parentXmlNode, String textData, BuildStateType buildState) {
 		IASNode [] children = node.getChildren();
 		for(IASNode child : children) {
+			if(child.getStart() == child.getEnd()) {
+				log.warn(String.format("Found a node of type %s whose start & end are the same [start: %d]", child.getNodeType(), child.getStart()));
+			//	continue;
+			}
 			NodeProcessor processor = getProcessor(child.getClass());
 			processor.setFileData(textData);
 			BuildReference newXmlChild = processor.getNode((NodeBase)child, parentXmlNode, buildState);
@@ -138,9 +143,10 @@ public class ModelProcessor {
 	 */
 	private static Map<Class, NodeProcessor> processorMap;
 	
-	@SuppressWarnings("restriction")
+	
 	/** Default fallback processor for any node types not handled by custom processors */
 	private static NodeProcessor defaultProcessor;
+	
 	static {
 		processors = new ArrayList<NodeProcessor>(20);
 		//TODO: Determine whether the following mappings can use the interfaces
@@ -152,7 +158,7 @@ public class ModelProcessor {
 		processors.add(new FullNameNodeProcessor(FullNameNode.class, NodeType.class));
 		processors.add(new ImportNodeProcessor(ImportNode.class, ImportNodeType.class));
 		processors.add(new MemberAccessExpressionNodeProcessor(MemberAccessExpressionNode.class, NodeType.class));
-		
+		processors.add(new AttributeNodeProcessor(AttributeNode.class, NodeType.class));
 		defaultProcessor = new DefaultNodeProcessor(NodeBase.class, NodeType.class);
 		
 		

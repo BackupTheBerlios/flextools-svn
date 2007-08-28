@@ -21,6 +21,8 @@ package com.dtsworkshop.flextools.flexbuilder.builder;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.log4j.Logger;
+
 import com.adobe.flexbuilder.codemodel.internal.tree.NodeBase;
 import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.model.BuildReference;
@@ -28,7 +30,7 @@ import com.dtsworkshop.flextools.model.BuildStateType;
 import com.dtsworkshop.flextools.model.NodeType;
 
 public class DefaultNodeProcessor extends NodeProcessor {
-
+	private static Logger log = Logger.getLogger(DefaultNodeProcessor.class);
 	public DefaultNodeProcessor(Class modelNode, Class xmlNode) {
 		super(modelNode, xmlNode);
 	}
@@ -42,6 +44,7 @@ public class DefaultNodeProcessor extends NodeProcessor {
 		BuildReference newInstance = createNode(parentType, methodName);
 		newInstance.setStartPos(node.getStart());
 		newInstance.setEndPos(node.getEnd());
+		
 		return newInstance;
 	}
 
