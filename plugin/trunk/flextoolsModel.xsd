@@ -49,29 +49,30 @@
 
     <group name="treeNodeElements">
     	<sequence>
-    		<element ref="tns:AssignmentExpressionNode"/>
-    		<element ref="tns:BlockNode"/>
-    		<element ref="tns:ModifiersNode"/>
-    		<element ref="tns:IdentifierNode"/>
-    		<element ref="tns:FunctionNode"/>
-    		<element ref="tns:KeywordNode"/>
-    		<element ref="tns:ContainerNode"/>
-    		<element ref="tns:ImportNode"/>
-    		<element ref="tns:FullNameNode"/>
-    		<element ref="tns:VariableNode"/>
-    		<element ref="tns:FunctionCallNode"/>
-    		<element ref="tns:MemberAccessExpressionNode"/>
-    		<element ref="tns:StopNode"/>
-    		<element ref="tns:AssignmentExpressionNode"/>
-    		<element ref="tns:LiteralNode"/>
-    		<element ref="tns:ClassNode"/>
-    		<element ref="tns:InterfaceNode"/>
-    		<element ref="tns:TransparentContainerNode"/>
-    		<element ref="tns:GetterNode"/>
-    		<element ref="tns:SetterNode"/>
-    		<element ref="tns:PackageNode"/>
-    		<element ref="tns:ArgumentNode"/>
-    		<element ref="tns:OperatorExpressionNode"/>
+    		<element ref="tns:AssignmentExpressionNode" />
+    		<element ref="tns:BlockNode" />
+    		<element ref="tns:ModifiersNode" />
+    		<element ref="tns:IdentifierNode" />
+    		<element ref="tns:FunctionNode" />
+    		<element ref="tns:KeywordNode" />
+    		<element ref="tns:ContainerNode" />
+    		<element ref="tns:ImportNode" />
+    		<element ref="tns:FullNameNode" />
+    		<element ref="tns:VariableNode" />
+    		<element ref="tns:FunctionCallNode" />
+    		<element ref="tns:MemberAccessExpressionNode" />
+    		<element ref="tns:StopNode" />
+    		<element ref="tns:AssignmentExpressionNode" />
+    		<element ref="tns:LiteralNode" />
+    		<element ref="tns:ClassNode" />
+    		<element ref="tns:InterfaceNode" />
+    		<element ref="tns:TransparentContainerNode" />
+    		<element ref="tns:GetterNode" />
+    		<element ref="tns:SetterNode" />
+    		<element ref="tns:PackageNode" />
+    		<element ref="tns:ArgumentNode" />
+    		<element ref="tns:OperatorExpressionNode" />
+    		<element ref="tns:AttributeNode"></element>
     	</sequence>
     </group>
 
@@ -199,4 +200,6 @@
     		</extension>
     	</complexContent>
     </complexType>
+
+    <element name="AttributeNode" type="tns:NodeType"></element>
 </schema>

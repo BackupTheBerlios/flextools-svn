@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     27 Aug 2007 22:49:56                                                        
+
+     Flex Tools Project Build File    
+               
+     otupman
+     ====================================================================== -->
+<project name="Flex Tools Project Build File" default="default">
+    <description>
+            description
+    </description>
+	<property name="xmlbeanPath" value="../Flex Tools Dependencies/xmlbeans-2.3.0/lib/"/>
+	<property 
+		name="xmlbeanClassPath" 
+		value="${xmlbeanPath}/xbean.jar:${xmlbeanPath}/jsr173_1.0_api.jar"
+	/>
+	<property name="libPath" value="./libs"/>
+	
+	<taskdef name="xmlbean" 
+		classname="org.apache.xmlbeans.impl.tool.XMLBean"
+		classpath="${xmlbeanClassPath}"
+	/>
+	
+	<target name="default" description="Default task (does nothing at the moment)">
+	
+	</target>
+	
+    <target name="xmlbeans" description="Generates the xml bean model">
+        <xmlbean schema="flextoolsModel.xsd"
+        	classpath="${xmlbeanClassPath}"
+        	destfile="${libPath}/xmlbeans-flextoolsmodel.jar"
+        	
+        />
+    </target>
+</project>
