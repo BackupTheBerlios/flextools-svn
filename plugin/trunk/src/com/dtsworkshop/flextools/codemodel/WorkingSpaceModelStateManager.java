@@ -164,6 +164,9 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 		Assert.isNotNull(entry, "Project state entry for " + project.getName() + " is null.");
 		log.debug(String.format("[Project: %s] Removing state file for %s", project.getName(), sourceFilePath.toOSString()));
 		BuildStateDocument document = entry.findStateForPath(sourceFilePath);
+		if(document == null) {
+			return;
+		}
 		File stateFile = getStateFile(document, entry);
 		if(stateFile.exists()) {
 			stateFile.delete();

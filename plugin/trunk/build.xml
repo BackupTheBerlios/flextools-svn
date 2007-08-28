@@ -10,13 +10,13 @@
     <description>
             description
     </description>
-	<property name="xmlbeanPath" value="../Flex Tools Dependencies/xmlbeans-2.3.0/lib/"/>
+	<property name="xmlbeanPath" value="../Flex Tools Dependencies Project/xmlbeans-2.3.0/lib/"/>
 	<property 
 		name="xmlbeanClassPath" 
 		value="${xmlbeanPath}/xbean.jar:${xmlbeanPath}/jsr173_1.0_api.jar"
 	/>
 	<property name="libPath" value="./libs"/>
-	
+	 
 	<taskdef name="xmlbean" 
 		classname="org.apache.xmlbeans.impl.tool.XMLBean"
 		classpath="${xmlbeanClassPath}"
@@ -29,6 +29,7 @@
     <target name="xmlbeans" description="Generates the xml bean model">
         <xmlbean schema="flextoolsModel.xsd"
         	classpath="${xmlbeanClassPath}"
+        	executable="${compilerLocation}"
         	destfile="${libPath}/xmlbeans-flextoolsmodel.jar"
         	
         />
