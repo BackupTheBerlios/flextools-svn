@@ -10,7 +10,7 @@
     <description>
             description
     </description>
-	<property name="xmlbeanPath" value="../Flex Tools Dependencies Project/xmlbeans-2.3.0/lib/"/>
+	<property name="xmlbeanPath" value="../Flex Tools Dependencies/xmlbeans-2.3.0/lib/"/>
 	<property 
 		name="xmlbeanClassPath" 
 		value="${xmlbeanPath}/xbean.jar:${xmlbeanPath}/jsr173_1.0_api.jar"

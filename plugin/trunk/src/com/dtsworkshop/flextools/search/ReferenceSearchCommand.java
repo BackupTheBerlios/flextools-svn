@@ -23,13 +23,18 @@ import org.eclipse.core.runtime.Assert;
 
 import com.dtsworkshop.flextools.model.IdentifierNodeType;
 
-
+/**
+ * 
+ * 
+ * @author otupman
+ *
+ */
 public class ReferenceSearchCommand extends AbstractSearchCommand implements ISearchCommand {
 
 	public String getSearchText(SearchInfo info) {
 		return String.format(
 			"%s " +
-			"$this//mod:IdentifierNode",
+			"$this//mod:IdentifierNode | $this//mod:ClassReference",
 			getSearcher().getNamespaceDecl()
 		);
 	}

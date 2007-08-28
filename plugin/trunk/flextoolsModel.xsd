@@ -81,7 +81,10 @@
     <complexType name="BuildStateType">
     	<sequence>    		<element maxOccurs="1" minOccurs="1" ref="tns:FileNode" />
     		<sequence>
-    			<element name="importReference" type="tns:TypeReference"></element>
+    			<element name="importReference"
+    				type="tns:TypeReference">
+    			</element>
+    			<element ref="tns:ClassReference" maxOccurs="unbounded" minOccurs="0"></element>
     		</sequence>
     	</sequence>
     	<attribute name="file" type="string"/>
@@ -202,4 +205,6 @@
     </complexType>
 
     <element name="AttributeNode" type="tns:NodeType"></element>
+
+    <element name="ClassReference" type="tns:IdentifierNodeType"></element>
 </schema>
