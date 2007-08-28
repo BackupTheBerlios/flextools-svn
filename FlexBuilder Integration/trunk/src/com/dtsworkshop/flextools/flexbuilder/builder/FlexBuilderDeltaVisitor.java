@@ -33,7 +33,15 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import com.adobe.flexbuilder.codemodel.common.CMFactory;
 import com.adobe.flexbuilder.codemodel.common.IMXMLDataProvider;
+import com.adobe.flexbuilder.codemodel.definitions.IClass;
+import com.adobe.flexbuilder.codemodel.definitions.IDefinition;
+import com.adobe.flexbuilder.codemodel.indices.IClassNameIndex;
+import com.adobe.flexbuilder.codemodel.indices.ITagInformation;
+import com.adobe.flexbuilder.codemodel.indices.ITagInformationIndex;
+import com.adobe.flexbuilder.codemodel.internal.indices.IClassInheritanceIndex;
 import com.adobe.flexbuilder.codemodel.mxml.MXMLData;
+import com.adobe.flexbuilder.codemodel.mxml.MXMLTagData;
+import com.adobe.flexbuilder.codemodel.mxml.MXMLTextData;
 import com.adobe.flexbuilder.codemodel.mxml.MXMLUnitData;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.adobe.flexbuilder.editors.actionscript.ActionScriptDocumentProvider;
@@ -44,6 +52,7 @@ import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.builder.AbstractFlexBuilderDeltaVisitor;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
+import com.dtsworkshop.flextools.model.IdentifierNodeType;
 
 /**
  * FlexBuilder delta visitor. Processes the parse trees provided by FlexBuilder
@@ -135,20 +144,65 @@ public class FlexBuilderDeltaVisitor extends AbstractFlexBuilderDeltaVisitor {
 		
 		ModelProcessor processor = new ModelProcessor();
 		IFlexDocument flexDoc = (IFlexDocument)doc;
-		if(doc instanceof IMXMLDataProvider) {
-			processMxmlFile(doc);
-		}
+		
+		
 		BuildStateDocument stateDocument = processor.getStateDocument(fileNode, file);
+		if(doc instanceof IMXMLDataProvider) {			
+			processMxmlFile((IFlexDocument)doc, stateDocument);			
+		}
 		Activator.getStateManager().storeBuildState(stateDocument);
 		return true;
 	}
 
-	private void processMxmlFile(IDocument doc) {
+	/**
+	 * Post-processes an MXML file. This is intended to be called once the
+	 * standard build parser has generated a state based upon the AS model.
+	 * 
+	 * This then goes through and appends the relevant information to do with
+	 * things such as tag names and the classes that they relate to.
+	 * 
+	 * @param doc The document to work with
+	 */
+	private void processMxmlFile(IFlexDocument doc, BuildStateDocument stateDoc) {
 		IMXMLDataProvider mxmlProvider = (IMXMLDataProvider)doc;
 		MXMLData mxmlData = mxmlProvider.getMXMLData();
 		List<MXMLUnitData> units = mxmlData.getUnits();
+		
+		
 		for(MXMLUnitData mxmlUnit : units) {
-			
+			String logData = "";
+			if(mxmlUnit instanceof MXMLTagData) {
+				MXMLTagData tag = (MXMLTagData)mxmlUnit;
+				logData = String.format(
+					"name: %s", tag.getName()	
+				);
+				String name = tag.getName();
+				ITagInformationIndex nameIndex = (ITagInformationIndex)CMFactory.getManager().getProjectForDocument(doc).getIndex(ITagInformationIndex.ID);
+				ITagInformation tagInfo = nameIndex.getTagInformation(name, mxmlProvider);
+				IClass tagClass = tagInfo.getClassForTag();
+				if(tagClass == null) {
+					log.warn("Null class for tag " + name);
+					continue;
+				}
+				IdentifierNodeType classRef = stateDoc.getBuildState().addNewClassReference();
+				
+				classRef.setQualifiedName(tagClass.getQualifiedName());
+				classRef.setName(tagClass.getShortName());
+				int nameStart = tag.getNameStart();
+				int nameEnd = tag.getNameEnd();
+				nameStart = nameEnd - tagClass.getShortName().length();
+				
+				classRef.setStartPos(nameStart);
+				classRef.setEndPos(nameEnd);
+			}
+			else {
+				MXMLTextData data = (MXMLTextData)mxmlUnit;
+				logData = String.format(
+					"text: %s", data.getText()	
+				);
+			}
+			logData+= String.format(" from: %d, to: %d", mxmlUnit.getStart(), mxmlUnit.getEnd());
+			log.debug(logData);
 		}
 	}
 

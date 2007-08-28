@@ -112,7 +112,7 @@ public class ModelProcessor {
 		IASNode [] children = node.getChildren();
 		for(IASNode child : children) {
 			if(child.getStart() == child.getEnd()) {
-				log.warn(String.format("Found a node of type %s whose start & end are the same [start: %d]", child.getNodeType(), child.getStart()));
+			//	log.warn(String.format("Found a node of type %s whose start & end are the same [start: %d]", child.getNodeType(), child.getStart()));
 			//	continue;
 			}
 			NodeProcessor processor = getProcessor(child.getClass());
