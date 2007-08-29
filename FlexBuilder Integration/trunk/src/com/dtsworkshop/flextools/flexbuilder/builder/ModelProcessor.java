@@ -63,11 +63,12 @@ public class ModelProcessor {
 	private static Logger log = Logger.getLogger(ModelProcessor.class);
 	
 	private String getFileContents(IFile file) {
-		
+		String data = null;
 		try {
 			InputStream fileInputStream = file.getContents();
 
-			return ResourceHelper.streamToString(fileInputStream);
+			data = ResourceHelper.streamToString(fileInputStream);
+			fileInputStream.close();
 		} catch (CoreException e) {
 			e.printStackTrace();
 			FlexToolsLog.logError(e);
@@ -75,7 +76,7 @@ public class ModelProcessor {
 			e.printStackTrace();
 			FlexToolsLog.logError(e);
 		}
-		return "";
+		return data;
 	}
 
 	/**
