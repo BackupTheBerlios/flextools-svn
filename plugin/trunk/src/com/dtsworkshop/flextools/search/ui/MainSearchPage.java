@@ -46,6 +46,13 @@ import com.dtsworkshop.flextools.search.ClassSearcher;
 import com.dtsworkshop.flextools.search.SearchQuery;
 import com.dtsworkshop.flextools.search.SearchReference;
 
+/**
+ * The search page presented to the user to allow them to perform a search.
+ * 
+ * 
+ * @author otupman
+ *
+ */
 public class MainSearchPage extends DialogPage implements ISearchPage {
 
 	public MainSearchPage() {

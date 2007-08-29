@@ -19,10 +19,18 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 
+import com.dtsworkshop.flextools.Activator;
 import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.builder.SampleNature;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 
+/**
+ * Manages the registration of projects and the loading/caching/whatever of
+ * the build states.
+ * 
+ * @author otupman
+ *
+ */
 public class WorkingSpaceModelStateManager extends AbstractStateManager implements IProjectStateManager {
 
 	private static Logger log = Logger.getLogger(WorkingSpaceModelStateManager.class);
@@ -30,6 +38,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 	private Map<String, ProjectStateEntry> projectStates;
 	
 	public WorkingSpaceModelStateManager() {
+		Activator.initLogging();
 		log.info("Initialising");
 		projectStates = new HashMap<String, ProjectStateEntry>(10);
 	}
@@ -46,7 +55,8 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated Please use initialiseProject(IProject, IProgressMonitor) instead
+	 * @see #initialiseProject(IProject, IProgressMonitor)
 	 * @param monitor
 	 */
 	public void initialise(IProgressMonitor monitor) {
@@ -74,6 +84,17 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 
 	public void initialiseProject(IProject project, IProgressMonitor monitor) {
 		log.debug(String.format("Initialising project %s", project.getName()));
+		
+		try {
+			if(!project.hasNature(SampleNature.NATURE_ID)) {
+				log.debug(String.format("Project %s does not have the Flex Tools nature. Ignoring it.", project.getName()));
+				return;
+			}
+		} catch (CoreException e1) {
+			e1.printStackTrace();
+			return;
+		}
+		
 		ProjectStateEntry newEntry = new ProjectStateEntry();
 		newEntry.setProject(project);
 		File projectDirectory = newEntry.getWorkingSpace().toFile();

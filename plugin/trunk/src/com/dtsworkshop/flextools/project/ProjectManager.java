@@ -46,6 +46,14 @@ public class ProjectManager {
 		public boolean visit(IResourceDelta delta) throws CoreException {
 			
 			IResource resource = delta.getResource();
+			try {
+				if(!resource.getProject().hasNature(SampleNature.NATURE_ID)) {
+					log.debug(String.format("Project %s is not under Flex Tools control, ignoring.", resource.getProject().getName()));
+					return false;
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 			log.debug(String.format("Visiting %s", resource.getName()));
 			if(resource instanceof IProject) {
 				boolean isOpen = delta.getFlags() == IResourceDelta.OPEN;
@@ -199,12 +207,28 @@ public class ProjectManager {
 			break;
 		case IResourceChangeEvent.PRE_CLOSE:
 			project = (IProject)event.getResource();
+			try {
+				if(!project.hasNature(SampleNature.NATURE_ID)) {
+					log.debug(String.format("Project %s is not under Flex Tools control, ignoring.", project.getName()));
+					return;
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 			log.debug(String.format("Resources have changed. Project %s closing...", project.getName()));
 			closeProject(project);
 			break;
 		case IResourceChangeEvent.PRE_DELETE:
 			//TODO: Remove all project information stored and finalise the clearup
 			project = (IProject)event.getResource();
+			try {
+				if(!project.hasNature(SampleNature.NATURE_ID)) {
+					log.debug(String.format("Project %s is not under Flex Tools control, ignoring.", project.getName()));
+					return;
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 			log.debug(String.format("Project %s is being deleted.", project.getName()));
 			closeProject(project);
 			break;
