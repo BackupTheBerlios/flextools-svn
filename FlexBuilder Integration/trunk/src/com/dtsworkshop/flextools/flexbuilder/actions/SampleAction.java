@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -33,6 +34,7 @@ import com.dtsworkshop.flextools.model.BuildStateDocument;
  */
 public class SampleAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
+	private static Logger log = Logger.getLogger(SampleAction.class); 
 	/**
 	 * The constructor.
 	 */
@@ -60,40 +62,41 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#selectionChanged
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		if(selection instanceof TreeSelection) {
-			Object selectedItem = ((TreeSelection)selection).getFirstElement();
-			if(selectedItem instanceof IFile) {
-				IFile file = (IFile)selectedItem;
-				
-				
-				FileReader reader = null;
-				try {
-					reader = new FileReader(file.getLocation().toFile());
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-					return;
-				}
-//				ActionScriptFactory factory = new ActionScriptFactory();
-//				ActionScriptParser parser = factory.newParser();
-//				try {
-//					ASCompilationUnit result = parser.parse(reader);
-//					System.out.println("Got result");
-//				} catch (RuntimeException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-				
-//				ModelProcessor processor = new ModelProcessor();
-//				IFileNode fileNode = null;
+		log.debug("Selection changed");
+//		if(selection instanceof TreeSelection) {
+//			Object selectedItem = ((TreeSelection)selection).getFirstElement();
+//			if(selectedItem instanceof IFile) {
+//				IFile file = (IFile)selectedItem;
 //				
-//				synchronized (CMFactory.getLockObject()) {
-//					IProject project =  CMFactory.getManager().getProjectFor(file.getProject());
-//					fileNode = project.findFileNodeInProject(file.getLocation());
-//					BuildStateDocument doc = processor.getStateDocument(fileNode, file);
-//					System.out.println("Boo");
+//				
+//				FileReader reader = null;
+//				try {
+//					reader = new FileReader(file.getLocation().toFile());
+//				} catch (FileNotFoundException e) {
+//					e.printStackTrace();
+//					return;
 //				}
-			}
-		}
+////				ActionScriptFactory factory = new ActionScriptFactory();
+////				ActionScriptParser parser = factory.newParser();
+////				try {
+////					ASCompilationUnit result = parser.parse(reader);
+////					System.out.println("Got result");
+////				} catch (RuntimeException e) {
+////					// TODO Auto-generated catch block
+////					e.printStackTrace();
+////				}
+//				
+////				ModelProcessor processor = new ModelProcessor();
+////				IFileNode fileNode = null;
+////				
+////				synchronized (CMFactory.getLockObject()) {
+////					IProject project =  CMFactory.getManager().getProjectFor(file.getProject());
+////					fileNode = project.findFileNodeInProject(file.getLocation());
+////					BuildStateDocument doc = processor.getStateDocument(fileNode, file);
+////					System.out.println("Boo");
+////				}
+//			}
+//		}
 	}
 
 	/**

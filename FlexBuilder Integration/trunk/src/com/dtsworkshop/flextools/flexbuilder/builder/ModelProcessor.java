@@ -63,6 +63,7 @@ public class ModelProcessor {
 	private static Logger log = Logger.getLogger(ModelProcessor.class);
 	
 	private String getFileContents(IFile file) {
+		log.debug(String.format("Getting contents for %s", file.getName()));
 		String data = null;
 		try {
 			InputStream fileInputStream = file.getContents();

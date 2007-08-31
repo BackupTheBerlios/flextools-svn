@@ -34,5 +34,22 @@
                tooltip="Hello, Eclipse world"/>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            id="com.dtsworkshop.flexbuilder.asViewerContribution"
+            targetID="#com.adobe.flexbuilder.editors.actionscript.ContextMenuContext">
+         <menu
+               id="com.dtsworkshop.flexbuilder.searchMenu"
+               label="Find...">
+            <separator name="separator"/>
+         </menu>
+         <action
+               class="com.dtsworkshop.flextools.flexbuilder.actions.FindReferencesAction"
+               id="com.dtsworkshop.flexbuilder.actions.findReferences"
+               label="References..."
+               menubarPath="com.dtsworkshop.flexbuilder.searchMenu/separator"/>
+      </viewerContribution>
+   </extension>
 
 </fragment>
