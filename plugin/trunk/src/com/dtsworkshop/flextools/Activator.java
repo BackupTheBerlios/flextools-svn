@@ -46,6 +46,7 @@ import com.dtsworkshop.flextools.project.ProjectManager;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
+	private static final String LOG_DESTINATION = "D:\\Documents and Settings\\otupman\\My Documents\\Eclipse Dev Workspace\\Flex Tools Project\\log4j.properties";
 	private static Logger log = Logger.getLogger(Activator.class);
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.dtsworkshop.flextools";
@@ -96,17 +97,17 @@ public class Activator extends AbstractUIPlugin {
 	public Activator() {
 		// Force initialisation of the model manager
 		//CodeModelManager.getManager();
-		initLogging();
+		
 	}
 	
-	static {
+	static  {
 		initLogging();
 	}
+	private static boolean loggingInitialised = false;
 	
-	private static boolean isLoggingActivated = false;
 	public static void initLogging() {
-		if(!isLoggingActivated) {
-			PropertyConfigurator.configure("C:\\Documents and Settings\\Ollie\\My Documents\\Personal Eclipse Workspace\\Flex Tools Project\\src\\log4j.properties");
+		if(!loggingInitialised) {
+			PropertyConfigurator.configure(LOG_DESTINATION);			
 		}
 	}
 
@@ -117,6 +118,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		String bundleLocation = context.getBundle().getLocation();
 		initialise();
 		FlexToolsStartup.doStartup();
 		FlexToolsLog.logInfo("FlexTools Core has started.");

@@ -23,7 +23,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.eclipse.ui.workbench.texteditor,
  com.adobe.flexbuilder.editors.actionscript,
- org.eclipse.core.filesystem
+ org.eclipse.core.filesystem,
+ com.dtsworkshop.flextools.dependencies
 Eclipse-LazyStart: true
 Bundle-Vendor: DTS Workshop
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -36,7 +36,7 @@ public class ImplementationSearchCommand extends AbstractSearchCommand implement
 	public void processResult(SearchInfo info, XmlObject result) {
 		Assert.isTrue(result instanceof ClassInterfaceReference);
 		ClassInterfaceReference ref = (ClassInterfaceReference)result;
-		if(info.isMatch(ref.getShortName())) {
+		if(info.isMatch(ref.getQualifiedName())) {
 			info.addReference(ref,
 				String.format(
 					"Implements %s", ref.getShortName()

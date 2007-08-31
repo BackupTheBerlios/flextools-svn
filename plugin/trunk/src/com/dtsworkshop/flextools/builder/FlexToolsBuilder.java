@@ -100,7 +100,7 @@ public class FlexToolsBuilder extends IncrementalProjectBuilder {
 				visitor.setProject(getProject());
 				getProject().accept(visitor);
 			}
-		} catch (CoreException e) {
+		} catch (RuntimeException e) {
 			e.printStackTrace();
 			FlexToolsLog.logError("Error occurred during build.", e);
 		}
