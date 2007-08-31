@@ -66,6 +66,7 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 		return foundNode;
 	}
 	
+	//TODO: This should be refactored into the integration project.
 	private TypeInfo getQualifiedName(int offset) {
 		TypeInfo info = new TypeInfo();
 		

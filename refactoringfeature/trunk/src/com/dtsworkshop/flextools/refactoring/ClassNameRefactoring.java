@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,6 +25,16 @@ import com.dtsworkshop.flextools.search.ClassSearcher;
 import com.dtsworkshop.flextools.search.SearchQuery;
 import com.dtsworkshop.flextools.search.SearchReference;
 
+/**
+ * This is the refactoring that can rename types in a Flex project. It makes
+ * use of the Flex Tools searcher to look for references to the short name
+ * of the type. This will also rename long(qualified) names as the searcher
+ * matches to the last segment of a qualified name.
+ * 
+ * @author otupman
+ * 
+ * TODO: Refactor to TypeNameRefactoring
+ */
 public class ClassNameRefactoring extends Refactoring {
 	private static Logger log = Logger.getLogger(ClassNameRefactoring.class);
 	
@@ -140,10 +151,11 @@ public class ClassNameRefactoring extends Refactoring {
 			parentChange = createParentChange();
 			
 			Change filenameChange = createFilenameChange();
-			parentChange.add(filenameChange);
+			//parentChange.add(filenameChange);
 			
 			Map<IFile, MultiTextEdit> fileToEditMap = createFileEdits();
 			attachToFileChanges(parentChange, fileToEditMap);
+			parentChange.add(filenameChange);
 			log.debug("All changes created.");
 		} catch (RuntimeException e) {
 			log.debug("Exception occurred while creating changes.", e);
@@ -187,6 +199,12 @@ public class ClassNameRefactoring extends Refactoring {
 				ref.getFrom(), ref.getTo() - ref.getFrom(),
 				newShortName
 			);
+			log.debug(String.format(
+				"Replace from %d to %d text %s"
+				, ref.getFrom(), ref.getTo()
+				, ref.getDescription()
+			));
+			
 			
 			change.addChild(edit);
 		}
