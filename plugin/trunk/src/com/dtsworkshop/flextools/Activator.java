@@ -96,7 +96,18 @@ public class Activator extends AbstractUIPlugin {
 	public Activator() {
 		// Force initialisation of the model manager
 		//CodeModelManager.getManager();
-		PropertyConfigurator.configure("C:\\Documents and Settings\\Ollie\\My Documents\\Personal Eclipse Workspace\\Flex Tools Project\\src\\log4j.properties");
+		initLogging();
+	}
+	
+	static {
+		initLogging();
+	}
+	
+	private static boolean isLoggingActivated = false;
+	public static void initLogging() {
+		if(!isLoggingActivated) {
+			PropertyConfigurator.configure("C:\\Documents and Settings\\Ollie\\My Documents\\Personal Eclipse Workspace\\Flex Tools Project\\src\\log4j.properties");
+		}
 	}
 
 	/*

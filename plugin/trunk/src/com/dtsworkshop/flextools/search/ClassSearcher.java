@@ -129,7 +129,7 @@ public class ClassSearcher extends AbstractSearcher implements IBuildStateVisito
 		info.isCaseSensitive = isCaseSensitive;
 		info.isSearchExact = this.exactMatch;
 		
-		log.info(String.format("Visiting file %s", info.containingFile.getName()));
+		log.info(String.format("Visiting file %s", info.containingFile.getProjectRelativePath().toString()));
 		
 		ISearchCommand [] commands = new ISearchCommand[0];
 		if(limit == LimitTo.AllOccurences) {

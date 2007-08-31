@@ -6,6 +6,7 @@ Copyright (C) Oliver B. Tupman, 2007.
 */
 package com.dtsworkshop.flextools.builder;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -14,8 +15,20 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.dtsworkshop.flextools.Activator;
 
+/**
+ * The project nature for Flex Tools project. Currently users have to manually
+ * add the nature to a project.
+ * 
+ * 
+ * TODO: Make the addition of the builder automatic for any and all FlexBuilder
+ * projects available.
+ * TODO: Add bridge item to allow FT to ask integration items whether to add the nature
+ * 
+ * @author otupman
+ *
+ */
 public class SampleNature implements IProjectNature {
-
+	private static Logger log = Logger.getLogger(SampleNature.class);
 	/**
 	 * ID of this project nature
 	 */
@@ -30,6 +43,7 @@ public class SampleNature implements IProjectNature {
 	 */
 	public void configure() throws CoreException {
 		IProjectDescription desc = project.getDescription();
+		log.info(String.format("Adding Flex Tools nature to the project '%s'", project.getName()));
 		ICommand[] commands = desc.getBuildSpec();
 
 		for (int i = 0; i < commands.length; ++i) {
@@ -54,6 +68,7 @@ public class SampleNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
 	 */
 	public void deconfigure() throws CoreException {
+		log.info(String.format("Removing the Flex Tools nature from project '%s'", project.getName()));
 		IProjectDescription description = getProject().getDescription();
 		ICommand[] commands = description.getBuildSpec();
 		for (int i = 0; i < commands.length; ++i) {

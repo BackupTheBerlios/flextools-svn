@@ -19,6 +19,7 @@
 package com.dtsworkshop.flextools.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,7 +28,8 @@ public class ResourceHelper {
 
 	public static String streamToString(InputStream fileInputStream) throws IOException {
 		StringBuilder builder = new StringBuilder();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
+		InputStreamReader inputReader = new InputStreamReader(fileInputStream);
+		BufferedReader reader = new BufferedReader(inputReader);
 		
 		String input = "";
 		while((input = reader.readLine()) != null) {
@@ -35,6 +37,9 @@ public class ResourceHelper {
 			builder.append("\n\r");
 		}
 		reader.close();
+		inputReader.close();
+		fileInputStream.close();
+		
 		return builder.toString();
 	}
 

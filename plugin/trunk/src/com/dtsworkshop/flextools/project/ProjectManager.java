@@ -46,9 +46,14 @@ public class ProjectManager {
 		public boolean visit(IResourceDelta delta) throws CoreException {
 			
 			IResource resource = delta.getResource();
+			IProject project = resource.getProject();
+			if(project == null) {
+				return true;
+			}
 			try {
-				if(!resource.getProject().hasNature(SampleNature.NATURE_ID)) {
-					log.debug(String.format("Project %s is not under Flex Tools control, ignoring.", resource.getProject().getName()));
+				
+				if(!project.hasNature(SampleNature.NATURE_ID)) {
+					log.debug(String.format("Project %s is not under Flex Tools control, ignoring.", project.getName()));
 					return false;
 				}
 			} catch (CoreException e) {

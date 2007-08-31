@@ -107,8 +107,9 @@ public class SearchQuery implements ISearchQuery {
 				listener.newResult(ref);
 			}
 			log.debug(String.format(
-				"Match in file %s in project %s", ref.getFilePath().getName(),
+				"Match in file %s in project %s [%d,%d]", ref.getFilePath().getName(),
 				ref.getProject().getName()
+				, ref.getFrom(), ref.getTo()
 			));
 		}
 

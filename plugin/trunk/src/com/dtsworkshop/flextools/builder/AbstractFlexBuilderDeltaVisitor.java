@@ -1,5 +1,6 @@
 package com.dtsworkshop.flextools.builder;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -19,7 +20,7 @@ import com.dtsworkshop.flextools.Activator;
  */
 public abstract class AbstractFlexBuilderDeltaVisitor  implements IResourceAsDeltaVisitor {
 	private IProject project;
-
+	private static Logger log = Logger.getLogger(AbstractFlexBuilderDeltaVisitor.class);
 	/**
 	 * Sets the project that this delta visitor is visiting resources for.
 	 *
@@ -47,8 +48,9 @@ public abstract class AbstractFlexBuilderDeltaVisitor  implements IResourceAsDel
 		if(resource instanceof IFolder) {
 			return true;
 		}
-
+		
 		if(resource instanceof IFile && canVisit(resource)) {
+			log.debug(String.format("Visiting %s", resource.getName()));
 			changed(resource);
 		}
 		return true;
@@ -80,6 +82,7 @@ public abstract class AbstractFlexBuilderDeltaVisitor  implements IResourceAsDel
 	}
 
 	private void removeBuildState(IFile resource) {
+		log.debug(String.format("Removing build state file for %s", resource.getName()));
 		Activator.getStateManager().removeBuildState(getProject(), resource);
 	}
 

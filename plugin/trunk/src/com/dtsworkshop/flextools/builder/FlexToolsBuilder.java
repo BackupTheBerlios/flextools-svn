@@ -116,5 +116,6 @@ public class FlexToolsBuilder extends IncrementalProjectBuilder {
 			visitor.setProject(getProject());
 			delta.accept(visitor);
 		}
+		log.debug("Incremental build complete.");
 	}
 }

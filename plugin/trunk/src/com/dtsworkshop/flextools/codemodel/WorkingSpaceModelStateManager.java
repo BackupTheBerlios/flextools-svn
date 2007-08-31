@@ -49,8 +49,13 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 		List<BuildStateDocument> states = new ArrayList<BuildStateDocument>(100);
 		
 		for(ProjectStateEntry entry : projectStates.values()) {
+			log.debug(String.format("Entry: %s", entry.getProject().getName()));
 			states.addAll(entry.getStates());
 		}
+		for(BuildStateDocument doc : states) {
+			log.debug(String.format("State present: %s", doc.getBuildState().getFile()));
+		}
+		
 		processVisitor(visitor, monitor, states);
 	}
 
@@ -123,6 +128,7 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 		}
 		projectStates.put(project.getName(), newEntry);
 		monitor.done();
+		log.debug("Finished initialising project.");
 	}
 	
 	public boolean isProjectManaged(IProject project) {
@@ -175,7 +181,8 @@ public class WorkingSpaceModelStateManager extends AbstractStateManager implemen
 		ProjectStateEntry entry = getEntry(project);
 		File targetStateFile = getStateFile(state, entry);
 		writeBuildState(state, targetStateFile);
-		entry.getStates().add(state);
+		//entry.getStates().add(state);
+		entry.addState(state);
 	}
 
 

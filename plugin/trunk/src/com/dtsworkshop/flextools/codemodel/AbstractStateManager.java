@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.internal.utils.WrappedRuntimeException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -11,7 +12,8 @@ import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.model.BuildStateDocument;
 
 public class AbstractStateManager {
-
+	private static Logger log = Logger.getLogger(AbstractStateManager.class);
+	
 	public AbstractStateManager() {
 		super();
 	}
@@ -25,6 +27,7 @@ public class AbstractStateManager {
 	 * @param buildStates List of build states for the visitor to visit.
 	 */
 	protected void processVisitor(IBuildStateVisitor visitor, IProgressMonitor monitor, List<BuildStateDocument> buildStates) {
+		log.debug(String.format("Processing visitor ", visitor.toString()));
 		for(BuildStateDocument currentDoc : buildStates) {
 			if(monitor.isCanceled()) {
 				return;
@@ -50,6 +53,7 @@ public class AbstractStateManager {
 	 * @param stateFilename The destination file
 	 */
 	protected void writeBuildState(BuildStateDocument state, File stateFilename) {
+		log.debug("Writing build state.");
 		if(!stateFilename.exists()) {
 			try {
 				stateFilename.createNewFile();
