@@ -19,6 +19,7 @@ import com.adobe.flexbuilder.codemodel.tree.IASNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.adobe.flexbuilder.editors.common.document.IFlexDocument;
 import com.adobe.flexbuilder.editors.common.editor.AbstractFlexEditor;
+import com.adobe.flexbuilder.editors.common.editor.IFlexEditor;
 import com.adobe.flexbuilder.project.FlexProjectManager;
 import com.adobe.flexbuilder.project.IFlexProject;
 import com.dtsworkshop.flextools.FlexToolsLog;
@@ -26,12 +27,12 @@ import com.dtsworkshop.flextools.refactoring.CodeInfoHelper;
 
 public class ExtractMethodEditorAction implements IEditorActionDelegate {
 	private static Logger logger = Logger.getLogger("ExtractMethodEditorAction");
-	private AbstractFlexEditor editor;
+	private IFlexEditor editor;
 	
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		// TODO Auto-generated method stub
 		logger.info("setActiveEditor()");
-		editor = (AbstractFlexEditor)targetEditor;
+		editor = (IFlexEditor)targetEditor;
 		
 	}
 

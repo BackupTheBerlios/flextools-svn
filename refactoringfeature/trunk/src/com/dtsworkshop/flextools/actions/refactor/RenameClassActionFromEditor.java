@@ -30,7 +30,7 @@ import com.adobe.flexbuilder.codemodel.tree.IExpressionNode;
 import com.adobe.flexbuilder.codemodel.tree.IFileNode;
 import com.adobe.flexbuilder.codemodel.tree.IScopedNode;
 import com.adobe.flexbuilder.editors.common.document.IFlexDocument;
-import com.adobe.flexbuilder.editors.common.editor.AbstractFlexEditor;
+import com.adobe.flexbuilder.editors.common.editor.IFlexEditor;
 import com.dtsworkshop.flextools.FlexToolsLog;
 import com.dtsworkshop.flextools.builder.processors.ProcessorHelper;
 import com.dtsworkshop.flextools.refactoring.ClassNameRefactoring;
@@ -70,7 +70,7 @@ public class RenameClassActionFromEditor implements IEditorActionDelegate {
 	private TypeInfo getQualifiedName(int offset) {
 		TypeInfo info = new TypeInfo();
 		
-		AbstractFlexEditor asEditor = (AbstractFlexEditor)this.editor;
+		IFlexEditor asEditor = (IFlexEditor)this.editor;
 		IFlexDocument doc = (IFlexDocument)asEditor.getCurrentActiveDocument();
 		synchronized (CMFactory.getLockObject()) {
 			IProject project = CMFactory.getManager().getProjectForDocument(doc);
