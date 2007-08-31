@@ -27,7 +27,12 @@ import com.dtsworkshop.flextools.search.SearchQuery;
 import com.dtsworkshop.flextools.search.ClassSearcher.LimitTo;
 import com.dtsworkshop.flextools.search.ClassSearcher.SearchFor;
 
-
+/**
+ * Finds references within the workspace.
+ * 
+ * @author otupman
+ *
+ */
 public class FindReferencesAction extends AbstractTypeEditorActionDelegate implements IEditorActionDelegate {
 	public FindReferencesAction() {
 		super();
@@ -35,12 +40,12 @@ public class FindReferencesAction extends AbstractTypeEditorActionDelegate imple
 
 	@Override
 	protected void runWithType(TypeInfo info) {
-		SearchQuery typeQuery = new SearchQuery(info.qualifiedName);
+		SearchQuery typeQuery = new SearchQuery(info.getQualifiedName());
 		typeQuery.getSearcher()
 		.setExactMatch(true)
 		.setLimit(ClassSearcher.LimitTo.AllOccurences)
 		.setSearchFor(ClassSearcher.SearchFor.Type)
-		.setSearchText(info.qualifiedName)
+		.setSearchText(info.getQualifiedName())
 		.setCaseSensitive(true);
 
 		NewSearchUI.runQueryInBackground(typeQuery);

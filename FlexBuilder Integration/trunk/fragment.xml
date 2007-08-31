@@ -49,6 +49,11 @@
                id="com.dtsworkshop.flexbuilder.actions.findReferences"
                label="References..."
                menubarPath="com.dtsworkshop.flexbuilder.searchMenu/separator"/>
+         <action
+               class="com.dtsworkshop.flextools.flexbuilder.actions.FindImplementorsDelegateAction"
+               id="com.dtsworkshop.flexbuilder.actions.findImplementors"
+               label="Implementors..."
+               menubarPath="com.dtsworkshop.flexbuilder.searchMenu/separator"/>
       </viewerContribution>
    </extension>
 

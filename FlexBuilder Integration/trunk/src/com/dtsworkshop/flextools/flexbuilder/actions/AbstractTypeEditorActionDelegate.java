@@ -52,25 +52,6 @@ public abstract class AbstractTypeEditorActionDelegate {
 		return foundNode;
 	}
 
-	/**
-	 * Simple value class representing some information about a type.
-	 * Provided is the qualified name of the class, as well as a
-	 * reference to the file that contains the  type.
-	 * 
-	 * @author otupman
-	 *
-	 */
-	protected class TypeInfo {
-		/**
-		 * The full name (qualified name) of the type
-		 */
-		public String qualifiedName;
-		/**
-		 * Reference to the file that contains the type
-		 */
-		public IFile typeFile;
-	}
-	
 	protected TypeInfo getQualifiedName(IEditorPart editor, int offset) {
 		TypeInfo info = new TypeInfo();
 		Assert.isTrue(editor instanceof IFlexEditor);
@@ -94,8 +75,8 @@ public abstract class AbstractTypeEditorActionDelegate {
 				IFile [] files = wkRoot.findFilesForLocation(cPath);
 				Assert.isTrue(files.length > 0);
 				//TODO: Find out when findFilesForLocation might return more than one result
-				info.typeFile = files[0];
-				info.qualifiedName = def.getQualifiedName();
+				info.setTypeFile(files[0]);
+				info.setQualifiedName(def.getQualifiedName());
 			}
 		}
 		return info;
@@ -117,7 +98,7 @@ public abstract class AbstractTypeEditorActionDelegate {
 	public void run(IAction action) {
 		TextSelection castedSelection = (TextSelection)lastSelected;
 		TypeInfo selectedTypeInfo = getQualifiedName(this.editor, castedSelection.getOffset());
-		String classQualifiedName = selectedTypeInfo.qualifiedName;
+		String classQualifiedName = selectedTypeInfo.getQualifiedName();
 		
 		if(classQualifiedName == null) {
 			//TODO: output useful error message to the user!
